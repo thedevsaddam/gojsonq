@@ -437,8 +437,8 @@ func (j *JSONQ) reset() *JSONQ {
 	return j
 }
 
-// Rest reset the current state of JSON instance and make a fresh object with the original json content
-func (j *JSONQ) Rest() *JSONQ {
+// Reset reset the current state of JSON instance and make a fresh object with the original json content
+func (j *JSONQ) Reset() *JSONQ {
 	return j.reset()
 }
 
