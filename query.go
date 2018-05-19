@@ -28,7 +28,7 @@ const (
 	signNotIn          = "notIn"
 )
 
-// QueryFunc decribes a conditional function which perform comparison
+// QueryFunc describes a conditional function which perform comparison
 type QueryFunc func(x, y interface{}) bool
 
 // eq checks whether x, y are deeply eq

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// New a new instance of JSON
+// New a new instance of JSONQ
 func New() *JSONQ {
 	return &JSONQ{
 		queryMap: loadDefaultQueryMap(),
@@ -322,7 +322,7 @@ func (j *JSONQ) GroupBy(property string) *JSONQ {
 	return j
 }
 
-// Sort sort an array or an array // defualt ascending order. pass "desc" for descending order
+// Sort sort an array or an array // default ascending order. pass "desc" for descending order
 func (j *JSONQ) Sort(order ...string) *JSONQ {
 	j.prepare()
 
@@ -339,7 +339,7 @@ func (j *JSONQ) Sort(order ...string) *JSONQ {
 	return j
 }
 
-// SortBy sort an array // defualt ascending order. pass "desc" for descending order
+// SortBy sort an array // default ascending order. pass "desc" for descending order
 func (j *JSONQ) SortBy(order ...string) *JSONQ {
 	j.prepare()
 	asc := true
@@ -381,6 +381,7 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	if len(sortedResult) == 0 {
 		return j
 	}
+	// FIXME: the sort.Slice will fail go < 1.8
 	if str {
 		if asc {
 			sort.Slice(sortedResult, func(i, j int) bool { return sortedResult[i][property].(string) < sortedResult[j][property].(string) })

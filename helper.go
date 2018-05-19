@@ -101,6 +101,11 @@ func sorter(list []interface{}, asc bool) []interface{} {
 	return result
 }
 
+// func sortMap(mlist []map[string]interface{}, asc bool, stype string) []interface{} {
+//
+// 	return nil
+// }
+
 // sorter18 should use this func for go 1.8 build in future
 // func sorter18(slice []interface{}) []interface{} {
 // 	sort.SliceStable(slice, func(i int, j int) bool {
