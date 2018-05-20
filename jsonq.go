@@ -406,7 +406,7 @@ func (j *JSONQ) Only(properties ...string) *JSONQ {
 	return j
 }
 
-// reset reset the current state of JSON instance
+// reset reset the current state of JSONQ instance
 func (j *JSONQ) reset() *JSONQ {
 	j.jsonContent = j.rootJSONContent
 	j.queries = make([][]query, 0)
@@ -542,8 +542,8 @@ func (j *JSONQ) getFloatValFromArray(arr []interface{}, property ...string) []fl
 	return ff
 }
 
-// getAggregattionVals return a list of float64 values for aggration
-func (j *JSONQ) getAggregattionVals(property ...string) []float64 {
+// getAggregationValues return a list of float64 values for aggration
+func (j *JSONQ) getAggregationValues(property ...string) []float64 {
 	j.prepare()
 
 	ff := []float64{}
@@ -568,7 +568,7 @@ func (j *JSONQ) getAggregattionVals(property ...string) []float64 {
 // Sum return sum of values from array or from map using property
 func (j *JSONQ) Sum(property ...string) float64 {
 	var sum float64
-	for _, flt := range j.getAggregattionVals(property...) {
+	for _, flt := range j.getAggregationValues(property...) {
 		sum += flt
 	}
 	return sum
@@ -577,7 +577,7 @@ func (j *JSONQ) Sum(property ...string) float64 {
 // Avg return average of values from array or from map using property
 func (j *JSONQ) Avg(property ...string) float64 {
 	var sum float64
-	fl := j.getAggregattionVals(property...)
+	fl := j.getAggregationValues(property...)
 	for _, flt := range fl {
 		sum += flt
 	}
@@ -587,7 +587,7 @@ func (j *JSONQ) Avg(property ...string) float64 {
 // Min return minimum value from array or from map using property
 func (j *JSONQ) Min(property ...string) float64 {
 	var min float64
-	flist := j.getAggregattionVals(property...)
+	flist := j.getAggregationValues(property...)
 	if len(flist) > 0 {
 		min = flist[0]
 	}
@@ -602,7 +602,7 @@ func (j *JSONQ) Min(property ...string) float64 {
 // Max return maximum value from array or from map using property
 func (j *JSONQ) Max(property ...string) float64 {
 	var max float64
-	flist := j.getAggregattionVals(property...)
+	flist := j.getAggregationValues(property...)
 	if len(flist) > 0 {
 		max = flist[0]
 	}

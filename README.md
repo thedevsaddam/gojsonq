@@ -30,7 +30,7 @@ You can start Query your data using the various query methods such as **Find**, 
 Let's see a quick example:
 
 <details><summary>Sample data (data.json)</summary>
-```json
+
 {
    "name":"computers",
    "description":"List of computer products",
@@ -64,7 +64,7 @@ Let's see a quick example:
       }
    ]
 }
-```
+
 </details>
 
 **Example:**

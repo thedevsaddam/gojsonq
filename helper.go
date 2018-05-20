@@ -174,19 +174,3 @@ func (s *sortMap) Less(i, j int) bool {
 
 	return false
 }
-
-// sorter18 should use this func for go 1.8 build in future
-// func sorter18(slice []interface{}) []interface{} {
-// 	sort.SliceStable(slice, func(i int, j int) bool {
-// 		if x, ok := slice[i].(string); ok {
-// 			y, _ := slice[j].(string)
-// 			return x < y
-// 		}
-// 		if x, ok := slice[i].(float64); ok {
-// 			y, _ := slice[j].(float64)
-// 			return x < y
-// 		}
-// 		return false
-// 	})
-// 	return slice
-// }
