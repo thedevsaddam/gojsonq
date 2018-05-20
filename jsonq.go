@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
-	"sort"
 	"strings"
 )
 
@@ -359,9 +358,7 @@ func (j *JSONQ) SortBy(order ...string) *JSONQ {
 
 // sortBy sort list of map
 func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
-	str := true
-	sortedResult := []map[string]interface{}{}
-
+	sortResult := []map[string]interface{}{}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		if len(aa) == 0 {
 			return j
@@ -369,35 +366,22 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 		for _, am := range aa {
 			if mv, ok := am.(map[string]interface{}); ok {
 				// convert []interface{} to []map[string]interface{}
-				sortedResult = append(sortedResult, mv)
-				if mp, ok := mv[property]; ok {
-					if _, fv := mp.(float64); fv {
-						str = false
-					}
-				}
+				sortResult = append(sortResult, mv)
 			}
 		}
 	}
-	if len(sortedResult) == 0 {
+	if len(sortResult) == 0 {
 		return j
 	}
-	// FIXME: the sort.Slice will fail go < 1.8
-	if str {
-		if asc {
-			sort.Slice(sortedResult, func(i, j int) bool { return sortedResult[i][property].(string) < sortedResult[j][property].(string) })
-		} else {
-			sort.Slice(sortedResult, func(i, j int) bool { return sortedResult[i][property].(string) > sortedResult[j][property].(string) })
-		}
-	} else {
-		if asc {
-			sort.Slice(sortedResult, func(i, j int) bool { return sortedResult[i][property].(float64) < sortedResult[j][property].(float64) })
-		} else {
-			sort.Slice(sortedResult, func(i, j int) bool { return sortedResult[i][property].(float64) > sortedResult[j][property].(float64) })
-		}
+	sm := &sortMap{}
+	sm.key = property
+	if !asc {
+		sm.desc = true
 	}
+	sm.Sort(sortResult)
 
 	results := []interface{}{}
-	for _, r := range sortedResult {
+	for _, r := range sortResult {
 		results = append(results, r)
 	}
 	//replace the new result with the previous result

@@ -2,6 +2,7 @@ package gojsonq
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -101,10 +102,77 @@ func sorter(list []interface{}, asc bool) []interface{} {
 	return result
 }
 
-// func sortMap(mlist []map[string]interface{}, asc bool, stype string) []interface{} {
-//
-// 	return nil
-// }
+type sortMap struct {
+	data interface{}
+	key  string
+	desc bool
+}
+
+// Sort sort the slice of maps
+func (s *sortMap) Sort(data interface{}) {
+	s.data = data
+	sort.Sort(s)
+}
+
+// Len satisfy the sort.Interface
+func (s *sortMap) Len() int {
+	return reflect.ValueOf(s.data).Len()
+}
+
+// Swap satisfy the sort.Interface
+func (s *sortMap) Swap(i, j int) {
+	if i > j {
+		i, j = j, i
+	}
+	list := reflect.ValueOf(s.data)
+	tmp := list.Index(i).Interface()
+	list.Index(i).Set(list.Index(j))
+	list.Index(j).Set(reflect.ValueOf(tmp))
+}
+
+// Less satisfy the sort.Interface // Note: this will work for string/float64 only
+func (s *sortMap) Less(i, j int) bool {
+	list := reflect.ValueOf(s.data)
+	x := list.Index(i).Interface()
+	y := list.Index(j).Interface()
+
+	xv, okX := x.(map[string]interface{})
+	if !okX {
+		return false
+	}
+
+	yv, okY := y.(map[string]interface{})
+	if !okY {
+		return false
+	}
+
+	if mvx, ok := xv[s.key]; ok {
+		mvy, okY := yv[s.key]
+		if !okY {
+			return false
+		}
+
+		if mfv, ok := mvx.(float64); ok {
+			if mvy, oky := mvy.(float64); oky {
+				if s.desc {
+					return mfv > mvy
+				}
+				return mfv < mvy
+			}
+		}
+
+		if mfv, ok := mvx.(string); ok {
+			if mvy, oky := mvy.(string); oky {
+				if s.desc {
+					return mfv > mvy
+				}
+				return mfv < mvy
+			}
+		}
+	}
+
+	return false
+}
 
 // sorter18 should use this func for go 1.8 build in future
 // func sorter18(slice []interface{}) []interface{} {
