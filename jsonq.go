@@ -358,21 +358,14 @@ func (j *JSONQ) SortBy(order ...string) *JSONQ {
 
 // sortBy sort list of map
 func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
-	sortResult := []map[string]interface{}{}
-	if aa, ok := j.jsonContent.([]interface{}); ok {
-		if len(aa) == 0 {
-			return j
-		}
-		for _, am := range aa {
-			if mv, ok := am.(map[string]interface{}); ok {
-				// convert []interface{} to []map[string]interface{}
-				sortResult = append(sortResult, mv)
-			}
-		}
+	sortResult, ok := j.jsonContent.([]interface{})
+	if !ok {
+		return j
 	}
 	if len(sortResult) == 0 {
 		return j
 	}
+
 	sm := &sortMap{}
 	sm.key = property
 	if !asc {
