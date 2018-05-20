@@ -93,13 +93,37 @@ func createTestFile(t *testing.T, filename string) func() {
 	}
 }
 
-func assertJSON(t *testing.T, v interface{}, expJSON string) {
+func assertJSON(t *testing.T, v interface{}, expJSON string, tag ...string) {
 	bb, err := json.Marshal(v)
 	if err != nil {
 		t.Errorf("failed to marshal: %v", err)
 	}
 	eb := []byte(expJSON)
 	if !bytes.Equal(bb, eb) {
-		t.Errorf("Expected: %v\nGot: %v", expJSON, string(bb))
+		if len(tag) > 0 {
+			t.Errorf("Tag: %s\nExpected: %v\nGot: %v", tag[0], expJSON, string(bb))
+		} else {
+			t.Errorf("Expected: %v\nGot: %v", expJSON, string(bb))
+		}
+	}
+}
+
+func assertInterface(t *testing.T, x, y interface{}, tag ...string) {
+	bbX, err := json.Marshal(x)
+	if err != nil {
+		t.Errorf("failed to marshal x: %v", err)
+	}
+
+	bbY, err := json.Marshal(y)
+	if err != nil {
+		t.Errorf("failed to marshal x: %v", err)
+	}
+
+	if !bytes.Equal(bbX, bbY) {
+		if len(tag) > 0 {
+			t.Errorf("Tag: %s\nExpected: %v\nGot: %v", tag[0], string(bbX), string(bbY))
+		} else {
+			t.Errorf("Expected: %v\nGot: %v", string(bbX), string(bbY))
+		}
 	}
 }

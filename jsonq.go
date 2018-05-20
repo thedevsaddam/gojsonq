@@ -333,7 +333,7 @@ func (j *JSONQ) Sort(order ...string) *JSONQ {
 		asc = false
 	}
 	if arr, ok := j.jsonContent.([]interface{}); ok {
-		j.jsonContent = sorter(arr, asc)
+		j.jsonContent = sortList(arr, asc)
 	}
 	return j
 }

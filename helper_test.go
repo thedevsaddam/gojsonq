@@ -191,10 +191,93 @@ func Test_sorter(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		obb, _ := json.Marshal(sorter(tc.inArr, tc.asc))
+		obb, _ := json.Marshal(sortList(tc.inArr, tc.asc))
 		ebb, _ := json.Marshal(tc.outArr)
 		if !bytes.Equal(obb, ebb) {
 			t.Errorf("expected: %v got: %v", string(obb), string(ebb))
 		}
+	}
+}
+
+func Test_sortMap(t *testing.T) {
+	testCases := []struct {
+		inObjs  interface{}
+		outObjs interface{}
+		key     string
+		asc     bool
+	}{
+		{
+			key: "name",
+			asc: true,
+			inObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "X", "height": 5.9},
+			},
+			outObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "X", "height": 5.9},
+				map[string]interface{}{"name": "Z", "height": 5.8},
+			},
+		},
+		{
+			key: "name",
+			asc: false,
+			inObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "X", "height": 5.9},
+			},
+			outObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "X", "height": 5.9},
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "A", "height": 5.5},
+			},
+		},
+		{
+			key: "height",
+			asc: true,
+			inObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "X", "height": 5.9},
+			},
+			outObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "X", "height": 5.9},
+			},
+		},
+		{
+			key: "height",
+			asc: false,
+			inObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "D", "height": 4.9},
+				map[string]interface{}{"name": "X", "height": 5.9},
+			},
+			outObjs: []map[string]interface{}{
+				map[string]interface{}{"name": "X", "height": 5.9},
+				map[string]interface{}{"name": "Z", "height": 5.8},
+				map[string]interface{}{"name": "A", "height": 5.5},
+				map[string]interface{}{"name": "D", "height": 4.9},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		inObjs := tc.inObjs
+		sm := &sortMap{}
+		sm.key = tc.key
+		sm.desc = !tc.asc
+		sm.Sort(inObjs)
+		assertInterface(t, inObjs, tc.outObjs)
 	}
 }

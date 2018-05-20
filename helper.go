@@ -63,8 +63,8 @@ func toFloat64(v interface{}) (float64, bool) {
 	return f, flag
 }
 
-// sorter sor a list of intertace
-func sorter(list []interface{}, asc bool) []interface{} {
+// sortList sor a list of intertace
+func sortList(list []interface{}, asc bool) []interface{} {
 	ss := []string{}
 	ff := []float64{}
 	result := []interface{}{}
@@ -130,6 +130,7 @@ func (s *sortMap) Swap(i, j int) {
 	list.Index(j).Set(reflect.ValueOf(tmp))
 }
 
+// TODO: need improvement
 // Less satisfy the sort.Interface // Note: this will work for string/float64 only
 func (s *sortMap) Less(i, j int) bool {
 	list := reflect.ValueOf(s.data)
