@@ -37,7 +37,7 @@ func toString(v interface{}) string {
 	// }
 }
 
-// toFloat64 convert interface{} value to float64 if value is numeric else return false
+// toFloat64 converts interface{} value to float64 if value is numeric else return false
 func toFloat64(v interface{}) (float64, bool) {
 	var f float64
 	flag := true
@@ -63,17 +63,17 @@ func toFloat64(v interface{}) (float64, bool) {
 	return f, flag
 }
 
-// sortList sor a list of intertace
+// sortList sorts a list of interfaces
 func sortList(list []interface{}, asc bool) []interface{} {
 	ss := []string{}
 	ff := []float64{}
 	result := []interface{}{}
 	for _, v := range list {
-		//sort elements for string
+		// sort elements for string
 		if sv, ok := v.(string); ok {
 			ss = append(ss, sv)
 		}
-		//sort elements for float64
+		// sort elements for float64
 		if fv, ok := v.(float64); ok {
 			ff = append(ff, fv)
 		}
@@ -108,18 +108,18 @@ type sortMap struct {
 	desc bool
 }
 
-// Sort sort the slice of maps
+// Sort sorts the slice of maps
 func (s *sortMap) Sort(data interface{}) {
 	s.data = data
 	sort.Sort(s)
 }
 
-// Len satisfy the sort.Interface
+// Len satisfies the sort.Interface
 func (s *sortMap) Len() int {
 	return reflect.ValueOf(s.data).Len()
 }
 
-// Swap satisfy the sort.Interface
+// Swap satisfies the sort.Interface
 func (s *sortMap) Swap(i, j int) {
 	if i > j {
 		i, j = j, i
@@ -131,7 +131,8 @@ func (s *sortMap) Swap(i, j int) {
 }
 
 // TODO: need improvement
-// Less satisfy the sort.Interface // Note: this will work for string/float64 only
+// Less satisfies the sort.Interface
+// This will work for string/float64 only
 func (s *sortMap) Less(i, j int) bool {
 	list := reflect.ValueOf(s.data)
 	x := list.Index(i).Interface()
