@@ -25,12 +25,12 @@ import "github.com/thedevsaddam/gojsonq"
 ```
 
 
-You can start Query your data using the various query methods such as **Find**, **Where**, **OrWhere**, **WhereIn**, **WhereStartsWith**, **WhereEndsWith**, **WhereContains** and so on. Also you can aggregate your data after query using **Sum**, **Count**, **GroupBy**, **Max**, **Min** etc.
+You can Query your data using the various query methods such as **Find**, **Where**, **OrWhere**, **WhereIn**, **WhereStartsWith**, **WhereEndsWith**, **WhereContains** and so on. Also you can aggregate your data after query using **Sum**, **Count**, **GroupBy**, **Max**, **Min** etc.
 
 Let's see a quick example:
 
 <details><summary>Sample data (data.json)</summary>
-
+<pre>
 {
    "name":"computers",
    "description":"List of computer products",
@@ -64,7 +64,7 @@ Let's see a quick example:
       }
    ]
 }
-
+</pre>
 </details>
 
 **Example:**
@@ -91,7 +91,7 @@ jq := gojsonq.New().
     File("./data.json").
     From("items").
     Where("price", ">", 1200)
-fmt.Printf("%#v\n", jq.Get())
+fmt.Printf("%#v\n", jq.Sum())
 ```
 
 **Output**
@@ -175,11 +175,11 @@ fmt.Printf("%#v\n", item)
 
 By default, query would be started from the root of the JSON Data you've given. If you want to first move to a nested path hierarchy of the data from where you want to start your query, you would use this method. Skipping the `path` parameter or giving **'.'** as parameter will also start query from the root Data.
 
-Difference between this method and `Find()` is that, `Find()` method will return the data from the given path hierarchy. On the other hand, this method will return the Object instance, so that you can further chain query methods after it.
+Difference between this method and `Find()` is that `Find()` method will return the data from the given path hierarchy. On the other hand, this method will return the Object instance, so that you can further chain query methods after it.
 
 **Example:**
 
-Let's say you want to start query over the values of _'items'_ property of your Json Data. You can do it like this:
+Let's say you want to start query over the values of _'items'_ property of your JSON Data. You can do it like this:
 
 ```go
 jq := gojsonq.New().File("./data.json").From("items").Where("price", ">", 1200)
@@ -207,7 +207,7 @@ Also, you can shoot me an email to
 
 ## Credit
 
-Speical thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiration and guidance for the package.
+Special thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiration and guidance for the package.
 
 ## Contribution
 If you are interested to make the package better please send pull requests or create an issue so that others can fix.

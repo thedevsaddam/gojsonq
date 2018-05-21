@@ -49,7 +49,7 @@ func neq(x, y interface{}) bool {
 	return !eq(x, y)
 }
 
-//  gt checks whether x is greather than y
+// gt checks whether x is greather than y
 func gt(x, y interface{}) bool {
 	xv, ok := x.(float64)
 	if !ok {
@@ -62,7 +62,7 @@ func gt(x, y interface{}) bool {
 	return false
 }
 
-//  lt checks whether x is less than y
+// lt checks whether x is less than y
 func lt(x, y interface{}) bool {
 	xv, ok := x.(float64)
 	if !ok {
@@ -75,7 +75,7 @@ func lt(x, y interface{}) bool {
 	return false
 }
 
-//  gte checks whether x is greather than or equal y
+// gte checks whether x is greater than or equal to y
 func gte(x, y interface{}) bool {
 	xv, ok := x.(float64)
 	if !ok {
@@ -88,7 +88,7 @@ func gte(x, y interface{}) bool {
 	return false
 }
 
-//  lte checks whether x is less than or equal y
+// lte checks whether x is less than or equal to y
 func lte(x, y interface{}) bool {
 	xv, ok := x.(float64)
 	if !ok {
@@ -101,7 +101,8 @@ func lte(x, y interface{}) bool {
 	return false
 }
 
-// strStrictContains works like `select * from table where column like %a%`.
+// strStrictContains checks if x contains y
+// This is case sensitive search
 func strStrictContains(x, y interface{}) bool {
 	xv, okX := x.(string)
 	if !okX {
@@ -114,7 +115,8 @@ func strStrictContains(x, y interface{}) bool {
 	return strings.Contains(xv, yv)
 }
 
-// strContains works like `select * from table where column like %a%`. this is case insensitive serarch
+// strContains checks if x contains y
+// This is case insensitive search
 func strContains(x, y interface{}) bool {
 	xv, okX := x.(string)
 	if !okX {
@@ -127,7 +129,7 @@ func strContains(x, y interface{}) bool {
 	return strings.Contains(strings.ToLower(xv), strings.ToLower(yv))
 }
 
-// strStartsWith works like `select * from table where column like a%`. Basically find value starts with 'a'
+// strStartsWith checks if x starts with y
 func strStartsWith(x, y interface{}) bool {
 	xv, okX := x.(string)
 	if !okX {
@@ -140,7 +142,7 @@ func strStartsWith(x, y interface{}) bool {
 	return strings.HasPrefix(xv, yv)
 }
 
-// strEndsWith works like `select * from table where column like %o`. Basically find value ends with 'a'
+// strEndsWith checks if x ends with y
 func strEndsWith(x, y interface{}) bool {
 	xv, okX := x.(string)
 	if !okX {
@@ -153,7 +155,7 @@ func strEndsWith(x, y interface{}) bool {
 	return strings.HasSuffix(xv, yv)
 }
 
-// in checks whether any value exist. e.g: in("id", []int{1,3,5,8})
+// in checks if x exists in y e.g: in("id", []int{1,3,5,8})
 func in(x, y interface{}) bool {
 	if yv, ok := y.([]string); ok {
 		for _, v := range yv {
@@ -179,7 +181,7 @@ func in(x, y interface{}) bool {
 	return false
 }
 
-// notIn checks whether any value does not contain provided values. e.g: in("id", []int{1,3,5,8})
+// notIn checks if x doesn't exists in y e.g: in("id", []int{1,3,5,8})
 func notIn(x, y interface{}) bool {
 	if yv, ok := y.([]string); ok {
 		for _, v := range yv {
