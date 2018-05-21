@@ -11,7 +11,7 @@ func Test_eq(t *testing.T) {
 		expected bool
 	}{
 		{
-			x:        9.0, // our expectation for json unmarshalar is little bit different. here 9 privided by user will be equal to float64 9
+			x:        9.0, // our expectation for json unmarshalar is little bit different. here 9 provided by user will be equal to float64 9
 			y:        9,
 			expected: true,
 		},
@@ -67,7 +67,7 @@ func Test_neq(t *testing.T) {
 	}{
 		{
 			x:        9.0, // as x is out json unmarshal value which is float64
-			y:        9,   // our expectation for json unmarshalar is little bit different. here 9 privided by user will be equal to float64 9
+			y:        9,   // our expectation for json unmarshalar is little bit different. here 9 provided by user will be equal to float64 9
 			expected: false,
 		},
 		{

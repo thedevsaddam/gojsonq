@@ -129,8 +129,8 @@ func Test_toFloat64(t *testing.T) {
 		},
 		{
 			val:      float32(99.01),
-			expected: 99.01000213623047, // The nearest IEEE754 float32 value of 99.01 is 99.01000213623047; which are not equal (while using ==). Need suggestions for precesion float value.
-			// one way to solve the comparison using convertFloat(string with float precesion)==float64
+			expected: 99.01000213623047, // The nearest IEEE754 float32 value of 99.01 is 99.01000213623047; which are not equal (while using ==). Need suggestions for precision float value.
+			// one way to solve the comparison using convertFloat(string with float precision)==float64
 		},
 		{
 			val:      float32(-99),
@@ -165,25 +165,25 @@ func Test_sorter(t *testing.T) {
 		outArr []interface{}
 	}{
 		{
-			tag:    "list of string, result hould be in ascending order",
+			tag:    "list of string, result should be in ascending order",
 			asc:    true,
 			inArr:  []interface{}{"x", "b", "a", "c", "z"},
 			outArr: []interface{}{"a", "b", "c", "x", "z"},
 		},
 		{
-			tag:    "list of string, result hould be in descending order",
+			tag:    "list of string, result should be in descending order",
 			asc:    false,
 			inArr:  []interface{}{"x", "b", "a", "c", "z"},
 			outArr: []interface{}{"z", "x", "c", "b", "a"},
 		},
 		{
-			tag:    "list of float64, result hould be in ascending order",
+			tag:    "list of float64, result should be in ascending order",
 			asc:    true,
 			inArr:  []interface{}{8.0, 7.0, 1.0, 3.0, 5.0, 8.0},
 			outArr: []interface{}{1.0, 3.0, 5.0, 7.0, 8.0, 8.0},
 		},
 		{
-			tag:    "list of float64, result hould be in descending order",
+			tag:    "list of float64, result should be in descending order",
 			asc:    false,
 			inArr:  []interface{}{8.0, 7.0, 1.0, 3.0, 5.0, 8.0},
 			outArr: []interface{}{8.0, 8.0, 7.0, 5.0, 3.0, 1.0},

@@ -17,7 +17,7 @@ func TestNew(t *testing.T) {
 
 func TestJSONQ_String(t *testing.T) {
 	jq := New()
-	expected := fmt.Sprintf("\nContent: %s\nQuries:%v\n", string(jq.raw), jq.queries)
+	expected := fmt.Sprintf("\nContent: %s\nQueries:%v\n", string(jq.raw), jq.queries)
 	if out := jq.String(); out != expected {
 		t.Errorf("Expected: %v\n Got: %v", expected, out)
 	}
@@ -485,7 +485,7 @@ func TestJSONQ_Sort_string_ascending_order(t *testing.T) {
 		Sort()
 	expected := `["Abby","Jane Doe","Jerry","John Doe","Nicolas","Tom"]`
 	out := jq.Get()
-	assertJSON(t, out, expected, "sorring array of string in ascending desc")
+	assertJSON(t, out, expected, "sorting array of string in ascending desc")
 }
 
 func TestJSONQ_Sort_float64_descending_order(t *testing.T) {
@@ -494,7 +494,7 @@ func TestJSONQ_Sort_float64_descending_order(t *testing.T) {
 		Sort("desc")
 	expected := `[2400,2100,1200,400.87,150.1,89.9]`
 	out := jq.Get()
-	assertJSON(t, out, expected, "sorring array of float in descending order")
+	assertJSON(t, out, expected, "sorting array of float in descending order")
 }
 
 func TestJSONQ_Sort_with_two_args_expecting_error(t *testing.T) {
@@ -513,7 +513,7 @@ func TestJSONQ_SortBy_float_ascending_order(t *testing.T) {
 		SortBy("price")
 	expected := `[{"id":null,"name":"HP core i3 SSD","price":850},{"id":4,"name":"Fujitsu","price":850},{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":6,"name":"HP core i7","price":950},{"id":3,"name":"Sony VAIO","price":1200},{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700}]`
 	out := jq.Get()
-	assertJSON(t, out, expected, "sorring array of object by its key (price-float64) in ascending desc")
+	assertJSON(t, out, expected, "sorting array of object by its key (price-float64) in ascending desc")
 }
 
 func TestJSONQ_SortBy_float_descending_order(t *testing.T) {
@@ -522,7 +522,7 @@ func TestJSONQ_SortBy_float_descending_order(t *testing.T) {
 		SortBy("price", "desc")
 	expected := `[{"id":2,"name":"MacBook Pro 15 inch retina","price":1700},{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":3,"name":"Sony VAIO","price":1200},{"id":6,"name":"HP core i7","price":950},{"id":4,"name":"Fujitsu","price":850},{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":null,"name":"HP core i3 SSD","price":850}]`
 	out := jq.Get()
-	assertJSON(t, out, expected, "sorring array of object by its key (price-float64) in descending desc")
+	assertJSON(t, out, expected, "sorting array of object by its key (price-float64) in descending desc")
 }
 
 func TestJSONQ_SortBy_string_ascending_order(t *testing.T) {
@@ -531,7 +531,7 @@ func TestJSONQ_SortBy_string_ascending_order(t *testing.T) {
 		SortBy("name")
 	expected := `[{"id":4,"name":"Fujitsu","price":850},{"id":null,"name":"HP core i3 SSD","price":850},{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":6,"name":"HP core i7","price":950},{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700},{"id":3,"name":"Sony VAIO","price":1200}]`
 	out := jq.Get()
-	assertJSON(t, out, expected, "sorring array of object by its key (name-string) in ascending desc")
+	assertJSON(t, out, expected, "sorting array of object by its key (name-string) in ascending desc")
 }
 
 func TestJSONQ_SortBy_string_descending_order(t *testing.T) {
@@ -540,7 +540,7 @@ func TestJSONQ_SortBy_string_descending_order(t *testing.T) {
 		SortBy("name", "desc")
 	expected := `[{"id":3,"name":"Sony VAIO","price":1200},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700},{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":6,"name":"HP core i7","price":950},{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":null,"name":"HP core i3 SSD","price":850},{"id":4,"name":"Fujitsu","price":850}]`
 	out := jq.Get()
-	assertJSON(t, out, expected, "sorring array of object by its key (name-string) in descending desc")
+	assertJSON(t, out, expected, "sorting array of object by its key (name-string) in descending desc")
 }
 
 func TestJSONQ_SortBy_no_argument_expecting_error(t *testing.T) {
@@ -717,7 +717,7 @@ func TestJSONQ_Count_expecting_int_from_list(t *testing.T) {
 		From("vendor.items")
 	out := jq.Count()
 	expected := `7`
-	assertJSON(t, out, expected, "Count expecting a int number of total item of an arry")
+	assertJSON(t, out, expected, "Count expecting a int number of total item of an array")
 }
 
 func TestJSONQ_Count_expecting_int_from_list_of_objects(t *testing.T) {
@@ -725,7 +725,7 @@ func TestJSONQ_Count_expecting_int_from_list_of_objects(t *testing.T) {
 		From("vendor.items.[0]")
 	out := jq.Count()
 	expected := `3`
-	assertJSON(t, out, expected, "Count expecting a int number of total item of an arry of objects")
+	assertJSON(t, out, expected, "Count expecting a int number of total item of an array of objects")
 }
 
 func TestJSONQ_Count_expecting_int_from_objects(t *testing.T) {
@@ -734,7 +734,7 @@ func TestJSONQ_Count_expecting_int_from_objects(t *testing.T) {
 		GroupBy("price")
 	out := jq.Count()
 	expected := `5`
-	assertJSON(t, out, expected, "Count expecting a int number of total item of an arry of groupped objects")
+	assertJSON(t, out, expected, "Count expecting a int number of total item of an array of grouped objects")
 }
 
 func TestJSONQ_Sum_of_array_numeric_values(t *testing.T) {
@@ -742,7 +742,7 @@ func TestJSONQ_Sum_of_array_numeric_values(t *testing.T) {
 		From("vendor.prices")
 	out := jq.Sum()
 	expected := `6340.87`
-	assertJSON(t, out, expected, "Sum expecting sum an arry")
+	assertJSON(t, out, expected, "Sum expecting sum an array")
 }
 
 func TestJSONQ_Sum_of_array_objects_property_numeric_values(t *testing.T) {
@@ -750,7 +750,7 @@ func TestJSONQ_Sum_of_array_objects_property_numeric_values(t *testing.T) {
 		From("vendor.items")
 	out := jq.Sum("price")
 	expected := `7750`
-	assertJSON(t, out, expected, "Sum expecting sum an arry of objects property")
+	assertJSON(t, out, expected, "Sum expecting sum an array of objects property")
 }
 
 func TestJSONQ_Sum_expecting_error_for_providing_property_of_array(t *testing.T) {
@@ -785,7 +785,7 @@ func TestJSONQ_Sum_expecting_result_from_nested_object(t *testing.T) {
 		From("vendor.items.[0]")
 	out := jq.Sum("price")
 	expected := `1350`
-	assertJSON(t, out, expected, "Sum expecting resut from nested object")
+	assertJSON(t, out, expected, "Sum expecting result from nested object")
 }
 
 func TestJSONQ_Avg_array(t *testing.T) {
@@ -793,7 +793,7 @@ func TestJSONQ_Avg_array(t *testing.T) {
 		From("vendor.prices")
 	out := jq.Avg()
 	expected := `1056.8116666666667`
-	assertJSON(t, out, expected, "Avg expecting average an arry")
+	assertJSON(t, out, expected, "Avg expecting average an array")
 }
 
 func TestJSONQ_Avg_array_of_objects(t *testing.T) {
@@ -801,7 +801,7 @@ func TestJSONQ_Avg_array_of_objects(t *testing.T) {
 		From("vendor.items")
 	out := jq.Avg("price")
 	expected := `1107.142857142857`
-	assertJSON(t, out, expected, "Avg expecting average an arry of objects property")
+	assertJSON(t, out, expected, "Avg expecting average an array of objects property")
 }
 
 func TestJSONQ_Min_array(t *testing.T) {
@@ -809,7 +809,7 @@ func TestJSONQ_Min_array(t *testing.T) {
 		From("vendor.prices")
 	out := jq.Min()
 	expected := `89.9`
-	assertJSON(t, out, expected, "Min expecting min an arry")
+	assertJSON(t, out, expected, "Min expecting min an array")
 }
 
 func TestJSONQ_Min_array_of_objects(t *testing.T) {
@@ -817,7 +817,7 @@ func TestJSONQ_Min_array_of_objects(t *testing.T) {
 		From("vendor.items")
 	out := jq.Min("price")
 	expected := `850`
-	assertJSON(t, out, expected, "Min expecting min an arry of objects property")
+	assertJSON(t, out, expected, "Min expecting min an array of objects property")
 }
 
 func TestJSONQ_Max_array(t *testing.T) {
@@ -825,7 +825,7 @@ func TestJSONQ_Max_array(t *testing.T) {
 		From("vendor.prices")
 	out := jq.Max()
 	expected := `2400`
-	assertJSON(t, out, expected, "Max expecting max an arry")
+	assertJSON(t, out, expected, "Max expecting max an array")
 }
 
 func TestJSONQ_Max_array_of_objects(t *testing.T) {
@@ -833,7 +833,7 @@ func TestJSONQ_Max_array_of_objects(t *testing.T) {
 		From("vendor.items")
 	out := jq.Max("price")
 	expected := `1700`
-	assertJSON(t, out, expected, "Max expecting max an arry of objects property")
+	assertJSON(t, out, expected, "Max expecting max an array of objects property")
 }
 
 // TODO: Need to write some more combined query test
