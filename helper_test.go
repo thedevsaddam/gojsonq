@@ -270,6 +270,12 @@ func Test_sortMap(t *testing.T) {
 				map[string]interface{}{"name": "D", "height": 4.9},
 			},
 		},
+		{
+			key:     "height",
+			asc:     false,
+			inObjs:  []string{"a", "z", "x"},
+			outObjs: []string{"a", "z", "x"},
+		},
 	}
 
 	for _, tc := range testCases {

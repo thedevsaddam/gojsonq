@@ -180,6 +180,24 @@ func TestJSONQ_From(t *testing.T) {
 	}
 }
 
+func TestJSONQ_reset(t *testing.T) {
+	node := "root.items"
+	jq := New().From(node).WhereEqual("price", "1900").WhereEqual("id", 1)
+	jq.reset()
+	if len(jq.queries) != 0 || jq.queryIndex != 0 {
+		t.Error("reset failed")
+	}
+}
+
+func TestJSONQ_Reset(t *testing.T) {
+	node := "root.items"
+	jq := New().From(node).WhereEqual("price", "1900").WhereEqual("id", 1)
+	jq.Reset()
+	if len(jq.queries) != 0 || jq.queryIndex != 0 {
+		t.Error("reset failed")
+	}
+}
+
 func TestJSONQ_findNode(t *testing.T) {
 	testCases := []struct {
 		tag         string
@@ -246,26 +264,6 @@ func TestJSONQ_Where_multiple_where_expecting_result(t *testing.T) {
 	expected := `[{"id":2,"name":"MacBook Pro 15 inch retina","price":1700}]`
 	out := jq.Get()
 	assertJSON(t, out, expected, "multiple Where expecting data")
-	// t.Run("multiple Where expecting empty result", func(t *testing.T) {
-	// 	jq := New().JSONString(jsonStr).
-	// 		From("vendor.items").
-	// 		Where("price", "=", 1700).
-	// 		Where("id", "=", "1700")
-	// 	expected := `[]`
-	// 	out := jq.Get()
-	// 	assertJSON(t, out, expected)
-	// })
-	//
-	// t.Run("Where with invalid operator expecting error", func(t *testing.T) {
-	// 	jq := New().JSONString(jsonStr).
-	// 		From("vendor.items").
-	// 		Where("price", "invalid_op", 1700)
-	// 	jq.Get()
-	//
-	// 	if jq.Error() == nil {
-	// 		t.Error("expecting: invalid operator invalid_op")
-	// 	}
-	// })
 }
 
 func TestJSONQ_Where_multiple_where_expecting_empty_result(t *testing.T) {
@@ -563,6 +561,24 @@ func TestJSONQ_SortBy_more_than_two_argument_expecting_error(t *testing.T) {
 	if jq.Error() == nil {
 		t.Error("expecting an error")
 	}
+}
+
+func TestJSONQ_SortBy_expecting_as_provided_node_is_not_list(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("nam").
+		SortBy("name", "desc")
+	out := jq.Get()
+	expJSON := `null`
+	assertJSON(t, out, expJSON)
+}
+
+func TestJSONQ_SortBy_expecting_empty_as_provided_node_is_not_list(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Where("price", ">", 2500).
+		SortBy("name", "desc")
+	out := jq.Get()
+	expJSON := `[]`
+	assertJSON(t, out, expJSON)
 }
 
 func TestJSONQ_Only(t *testing.T) {
