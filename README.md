@@ -109,41 +109,70 @@ Following API examples are shown based on the sample JSON data given above. To g
 
 **List of API:**
 
-* [File](#file)
-* [JSONString](#jsonstring)
-* [Reader](#reader)
+* [File](#filepath)
+* [JSONString](#jsonstringjson)
+* [Reader](#readerioreader)
 * [Get](#get)
-* [Find](#find)
-* [From](#from)
+* [Find](#findpath)
+* [From](#frompath)
 * [Where](#wherekey-op-val)
 * [OrWhere](#orwherekey-op-val)
 * [WhereIn](#whereinkey-val)
 * [WhereNotIn](#wherenotinkey-val)
 * [WhereNil](#wherenilkey)
 * [WhereNotNil](#wherenotnilkey)
-* [WhereEqual](#whereequalkey)
-* [WhereNotEqual](#wherenotequalkey)
+* [WhereEqual](#whereequalkey-val)
+* [WhereNotEqual](#wherenotequalkey-val)
 * [WhereStartsWith](#wherestartswithkey-val)
 * [WhereEndsWith](#whereendswithkey-val)
 * [WhereContains](#wherecontainskey-val)
 * [WhereStrictContains](#wherestrictcontainskey-val)
-* [Sum](#sumproperty)
+* [Sum](#sum)
 * [Count](#count)
-* [Max](#maxproperty)
-* [Min](#minproperty)
-* [Avg](#avgproperty)
+* [Max](#max)
+* [Min](#min)
+* [Avg](#avg)
 * [First](#first)
 * [Last](#last)
-* [Nth](#nthindex)
-* [GroupBy](#groupbyproperty)
-* [Sort](#sortorder)
-* [Reset](#resetdata)
+* [Nth](#nth)
+* [GroupBy](#groupby)
+* [Sort](#sort)
+* [SortBy](#sortby)
+* [Reset](#reset)
 * [Only](#only)
 * [Pluck](#pluck)
+* [Macro](#macrooperator-queryfunc)
+
+### `File(path)`
+
+This method takes a JSON file path as argument for further queries.
+
+```go
+res := gojsonq.New().File("./data.json").From("items").Get()
+fmt.Printf("%#v\n", res)
+```
+
+### `JSONString(json)`
+
+This method takes a valid JSON string as argument for further queries.
+
+```go
+res := gojsonq.New().JSONString("[19, 90.9, 7, 67.5]").Sum()
+fmt.Printf("%#v\n", res)
+```
+### `Reader(io.Reader)`
+
+This method takes an `io reader` as argument to read JSON data for further queries.
+
+```go
+strReader := strings.NewReader("[19, 90.9, 7, 67.5]")
+res := gojsonq.New().JSONString(strReader).Avg()
+fmt.Printf("%#v\n", res)
+```
 
 ### `Get()`
 
-This method will execute queries and will return the resulted data. You need to call it finally after using some query methods. Details can be found in other API examples.
+This method will execute queries and will return the resulted data. You need to call it finally after using some query methods. [See usage in the above example](#filepath)
 
 ### `Find(path)`
 
