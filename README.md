@@ -167,7 +167,7 @@ This method takes an `io.Reader` as argument to read JSON data for further queri
 
 ```go
 strReader := strings.NewReader("[19, 90.9, 7, 67.5]")
-res := gojsonq.New().JSONString(strReader).Avg()
+res := gojsonq.New().Reader(strReader).Avg()
 fmt.Printf("%#v\n", res)
 ```
 
