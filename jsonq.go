@@ -508,9 +508,9 @@ func (j *JSONQ) Pluck(property string) interface{} {
 
 // Count returns the number of total items.
 // This could be a length of list/array/map
-func (j *JSONQ) Count() (lnth int) {
+func (j *JSONQ) Count() int {
 	j.prepare()
-	lnth = 0
+	lnth := 0
 	// list of items
 	if list, ok := j.jsonContent.([]interface{}); ok {
 		lnth = len(list)
@@ -524,7 +524,7 @@ func (j *JSONQ) Count() (lnth int) {
 		lnth = len(m)
 	}
 
-	return
+	return lnth
 }
 
 // getFloatValFromArray returns a list of float64 values from array/map for aggregation
