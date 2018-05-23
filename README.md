@@ -89,8 +89,7 @@ Let's say we want to get the Summation of price of the Queried result. We can do
 ```go
 jq := gojsonq.New().
     File("./data.json").
-    From("items").
-    Where("price", ">", 1200)
+    From("prices")
 fmt.Printf("%#v\n", jq.Sum())
 ```
 
@@ -222,6 +221,148 @@ If you want to traverse to more deep in hierarchy, you can do it like:
 jq := gojsonq.New().File("./data.json").From("vendor.items").Where("price", ">", 1200)
 fmt.Printf("%#v\n", jq.Get())
 ```
+
+### `where(key, op, val)`
+
+* `key` -- the property name of the data.
+
+* `val` -- value to be matched with. It can be a _int_, _string_, _bool_ or _slice_ - depending on the `op`.
+
+* `op` -- operand to be used for matching. The following operands are available to use:
+
+    * `=` : For equality matching
+
+    * `eq` : Same as `=`
+
+    * `!=` : For 4not equality matching
+
+    * `neq` : Same as `!=`
+
+    * `<>` : Same as `!=`
+
+    * `>` : Check if value of given **key** in data is Greater than **val**
+    * `gt` : Same as `>`
+
+    * `<` : Check if value of given **key** in data is Less than **val**
+
+    * `lt` : Same as `<`
+
+    * `>=` : Check if value of given **key** in data is Greater than or Equal of **val**
+
+    * `gte` : Same as `>=`
+
+    * `<=` : Check if value of given **key** in data is Less than or Equal of **val**
+
+    * `lte` : Same as `<=`
+
+    * `in` : Check if the value of given **key** in data is exists in given **val**. **val** should be a _Slice_ of `int/float64/string`.
+
+    * `notIn` : Check if the value of given **key** in data is not exists in given **val**. **val** should be a _Slice_ of `int/float64/string`.
+
+    * `startsWith` : Check if the value of given **key** in data starts with (has a prefix of) the given **val**. This would only works for _String_ type data.
+
+    * `endsWith` : Check if the value of given **key** in data ends with (has a suffix of) the given **val**. This would only works for _String_ type data.
+
+    * `contains` : Check if the value of given **key** in data has a substring of given **val**. This would only works for _String_ type data and loose match.
+
+    * `strictContains` : Check if the value of given **key** in data has a substring of given **val**. This would only works for _String_ type data and exact match.
+
+**example:**
+
+Let's say you want to find the _'items'_ who has _price_ greater than `1200`. You can do it like this:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items").Where("price", ">", 1200)
+fmt.Printf("%#v\n", jq.Get())
+```
+
+You can add multiple _where_ conditions. It'll give the result by AND-ing between these multiple where conditions.
+
+```go
+jq := gojsonq.New().File("./data.json").From("items").Where("price", ">", 500).Where("name","=", "Fujitsu")
+fmt.Printf("%#v\n", jq.Get())
+```
+### `OrWhere(key, op, val)`
+
+Parameters of `OrWhere()` are the same as `Where()`. The only difference between `Where()` and `OrWhere()` is: condition given by the `OrWhere()` method will OR-ed the result with other conditions.
+
+For example, if you want to find the _'items'_ with _id_ of `1` or `2`, you can do it like this:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items").Where("id", "=", 1).OrWhere("id", "=", 2)
+fmt.Printf("%#v\n", jq.Get())
+```
+
+### `WhereIn(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a **Slice** of `int/float64/string`
+
+This method will behave like `where(key, 'in', val)` method call.
+
+### `WhereNotIn(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a **Slice** of `int/float64/string`
+
+
+This method will behave like `Where(key, 'notIn', val)` method call.
+
+### `WhereNil(key)`
+
+* `key` -- the property name of the data
+
+This method will behave like `Where(key, "=", nil)` method call.
+
+### `WhereNotNil(key)`
+
+* `key` -- the property name of the data
+
+This method will behave like `Where(key, '!=', nil)` method call.
+
+### `WhereEqual(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a `int/float64/string`
+
+This method will behave like `Where(key, '=', val)` method call.
+
+### `WhereNotEqual(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a `int/float64/string`
+
+This method will behave like `Where(key, '!=', val)` method call.
+
+### `WhereStartsWith(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `Where(key, 'startsWith', val)` method call.
+
+### `WhereEndsWith(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `where(key, 'endsWith', val)` method call.
+
+### `WhereContains(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `Where(key, 'contains', val)` method call.
+
+### `WhereStrictContains(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `Where(key, 'strictContains', val)` method call.
+
+
 ## TODO
 
 - [ ] Add missing methods
