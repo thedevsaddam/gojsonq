@@ -578,10 +578,10 @@ func TestJSONQ_SortBy_more_than_two_argument_expecting_error(t *testing.T) {
 
 func TestJSONQ_SortBy_expecting_as_provided_node_is_not_list(t *testing.T) {
 	jq := New().JSONString(jsonStr).
-		From("nam").
+		From("name").
 		SortBy("name", "desc")
 	out := jq.Get()
-	expJSON := `null`
+	expJSON := `"computers"`
 	assertJSON(t, out, expJSON)
 }
 

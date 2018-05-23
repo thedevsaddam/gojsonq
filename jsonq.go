@@ -385,12 +385,8 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	}
 	sm.Sort(sortResult)
 
-	results := []interface{}{}
-	for _, r := range sortResult {
-		results = append(results, r)
-	}
 	// replace the new result with the previous result
-	j.jsonContent = results
+	j.jsonContent = sortResult
 	return j
 }
 

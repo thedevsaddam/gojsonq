@@ -27,14 +27,6 @@ func getIndex(in string) (int, error) {
 
 func toString(v interface{}) string {
 	return fmt.Sprintf("%v", v)
-	// switch v.(type) {
-	// default:
-	//  return fmt.Sprintf("%v", v)
-	// case string:
-	// 	return v.(string)
-	// case float64:
-	//
-	// }
 }
 
 // toFloat64 converts interface{} value to float64 if value is numeric else return false
@@ -143,10 +135,7 @@ func (s *sortMap) Less(i, j int) bool {
 		return false
 	}
 
-	yv, okY := y.(map[string]interface{})
-	if !okY {
-		return false
-	}
+	yv := y.(map[string]interface{})
 
 	if mvx, ok := xv[s.key]; ok {
 		mvy, okY := yv[s.key]
