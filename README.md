@@ -142,6 +142,7 @@ Following API examples are shown based on the sample JSON data given above. To g
 * [Only](#only)
 * [Pluck](#pluck)
 * [Macro](#macrooperator-queryfunc)
+* [Copy](#copy)
 
 ### `File(path)`
 
@@ -162,7 +163,7 @@ fmt.Printf("%#v\n", res)
 ```
 ### `Reader(io.Reader)`
 
-This method takes an `io reader` as argument to read JSON data for further queries.
+This method takes an `io.Reader` as argument to read JSON data for further queries.
 
 ```go
 strReader := strings.NewReader("[19, 90.9, 7, 67.5]")
