@@ -169,16 +169,16 @@ func TestJSONQ_Errors(t *testing.T) {
 
 func TestJSONQ_Macro(t *testing.T) {
 	jq := New()
-	jq.Macro("mac1", func(x, y interface{}) bool {
-		return true
+	jq.Macro("mac1", func(x, y interface{}) (bool, error) {
+		return true, nil
 	})
 
 	if _, ok := jq.queryMap["mac1"]; !ok {
 		t.Error("failed to register macro")
 	}
 
-	jq.Macro("mac1", func(x, y interface{}) bool {
-		return true
+	jq.Macro("mac1", func(x, y interface{}) (bool, error) {
+		return true, nil
 	})
 	if jq.Error() == nil {
 		t.Error("failed to throw error for already registered macro")

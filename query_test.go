@@ -53,7 +53,7 @@ func Test_eq(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := eq(tc.x, tc.y); o != tc.expected {
+		if o, _ := eq(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -108,7 +108,7 @@ func Test_neq(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := neq(tc.x, tc.y); o != tc.expected {
+		if o, _ := neq(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -143,7 +143,7 @@ func Test_gt(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := gt(tc.x, tc.y); o != tc.expected {
+		if o, _ := gt(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -178,7 +178,7 @@ func Test_lt(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := lt(tc.x, tc.y); o != tc.expected {
+		if o, _ := lt(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -223,7 +223,7 @@ func Test_gte(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := gte(tc.x, tc.y); o != tc.expected {
+		if o, _ := gte(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -273,7 +273,7 @@ func Test_lte(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := lte(tc.x, tc.y); o != tc.expected {
+		if o, _ := lte(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -318,7 +318,7 @@ func Test_strStrictContains(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := strStrictContains(tc.x, tc.y); o != tc.expected {
+		if o, _ := strStrictContains(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -363,7 +363,7 @@ func Test_strContains(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := strContains(tc.x, tc.y); o != tc.expected {
+		if o, _ := strContains(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -408,7 +408,7 @@ func Test_strStartsWith(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := strStartsWith(tc.x, tc.y); o != tc.expected {
+		if o, _ := strStartsWith(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -453,7 +453,7 @@ func Test_strEndsWith(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := strEndsWith(tc.x, tc.y); o != tc.expected {
+		if o, _ := strEndsWith(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -498,7 +498,7 @@ func Test_in(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := in(tc.x, tc.y); o != tc.expected {
+		if o, _ := in(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}
@@ -543,7 +543,7 @@ func Test_notIn(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		if o := notIn(tc.x, tc.y); o != tc.expected {
+		if o, _ := notIn(tc.x, tc.y); o != tc.expected {
 			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
 		}
 	}

@@ -138,11 +138,7 @@ func (s *sortMap) Less(i, j int) bool {
 	yv := y.(map[string]interface{})
 
 	if mvx, ok := xv[s.key]; ok {
-		mvy, okY := yv[s.key]
-		if !okY {
-			return false
-		}
-
+		mvy := yv[s.key]
 		if mfv, ok := mvx.(float64); ok {
 			if mvy, oky := mvy.(float64); oky {
 				if s.desc {

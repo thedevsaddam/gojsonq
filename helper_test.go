@@ -276,6 +276,12 @@ func Test_sortMap(t *testing.T) {
 			inObjs:  []string{"a", "z", "x"},
 			outObjs: []string{"a", "z", "x"},
 		},
+		{
+			key:     "invalid_key",
+			asc:     false,
+			inObjs:  []string{"x", "z", "a"},
+			outObjs: []string{"x", "z", "a"},
+		},
 	}
 
 	for _, tc := range testCases {

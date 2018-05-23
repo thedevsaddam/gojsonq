@@ -275,7 +275,11 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 					j.addError(fmt.Errorf("invalid operator %s", q.operator))
 					return result
 				}
-				andPassed = andPassed && cf(mv, q.value)
+				qb, err := cf(mv, q.value)
+				if err != nil {
+					j.addError(err)
+				}
+				andPassed = andPassed && qb
 			} else {
 				andPassed = false
 			}
