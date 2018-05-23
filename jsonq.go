@@ -52,7 +52,14 @@ func (j *JSONQ) decode() *JSONQ {
 	return j
 }
 
-// File reads the json content from physical file
+// Copy returns a new fresh instance of JSONQ with the original copy of data so that you can do
+// concurrent operation on the same data without being decoded again
+func (j *JSONQ) Copy() *JSONQ {
+	tmp := *j
+	return tmp.reset()
+}
+
+// File read the json content from physical file
 func (j *JSONQ) File(filename string) *JSONQ {
 	bb, err := ioutil.ReadFile(filename)
 	if err != nil {

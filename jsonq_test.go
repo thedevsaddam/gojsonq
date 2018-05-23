@@ -51,6 +51,19 @@ func TestJSONQ_decode(t *testing.T) {
 	}
 }
 
+func TestJSONQ_Copy(t *testing.T) {
+	jq := New()
+	mp := map[string]int{}
+	for i := 0; i < 100; i++ {
+		adr := fmt.Sprintf("%p", jq.Copy())
+		if _, ok := mp[adr]; ok {
+			t.Error("failed to copy JSONQ")
+		} else {
+			mp[adr] = i
+		}
+	}
+}
+
 func TestJSONQ_File(t *testing.T) {
 	filename := "./data.json"
 	fc := createTestFile(t, filename)
