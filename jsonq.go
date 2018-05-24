@@ -418,6 +418,24 @@ func (j *JSONQ) Only(properties ...string) *JSONQ {
 	return j
 }
 
+// Pluck build an array of vlaues form a property of a list of objects
+func (j *JSONQ) Pluck(property string) *JSONQ {
+	j.prepare()
+	result := []interface{}{}
+	if aa, ok := j.jsonContent.([]interface{}); ok {
+		for _, am := range aa {
+			if mv, ok := am.(map[string]interface{}); ok {
+				if v, ok := mv[property]; ok {
+					result = append(result, v)
+				}
+			}
+		}
+	}
+	// replace the new result with the previous result
+	j.jsonContent = result
+	return j
+}
+
 // reset resets the current state of JSONQ instance
 func (j *JSONQ) reset() *JSONQ {
 	j.jsonContent = j.rootJSONContent
@@ -486,24 +504,6 @@ func (j *JSONQ) Nth(index int) interface{} {
 // Find returns the result of a exact matching path
 func (j *JSONQ) Find(path string) interface{} {
 	return j.From(path).Get()
-}
-
-// Pluck plucks a property from a list of objects and returns a slice of interface{}
-func (j *JSONQ) Pluck(property string) interface{} {
-	j.prepare()
-	result := []interface{}{}
-	if aa, ok := j.jsonContent.([]interface{}); ok {
-		for _, am := range aa {
-			if mv, ok := am.(map[string]interface{}); ok {
-				if v, ok := mv[property]; ok {
-					result = append(result, v)
-				}
-			}
-		}
-	}
-	// replace the new result with the previous result
-	j.jsonContent = result
-	return j.jsonContent
 }
 
 // Count returns the number of total items.

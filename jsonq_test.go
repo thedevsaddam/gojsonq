@@ -712,7 +712,7 @@ func TestJSONQ_Find_nested_property(t *testing.T) {
 func TestJSONQ_Pluck_expecting_list_of_float64(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
-	out := jq.Pluck("price")
+	out := jq.Pluck("price").Get()
 	expected := `[1350,1700,1200,850,850,950,850]`
 	assertJSON(t, out, expected, "Pluck expecting prices from list of objects")
 }
@@ -720,7 +720,7 @@ func TestJSONQ_Pluck_expecting_list_of_float64(t *testing.T) {
 func TestJSONQ_Pluck_expecting_empty_list_of_float64(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
-	out := jq.Pluck("invalid_prop")
+	out := jq.Pluck("invalid_prop").Get()
 	expected := `[]`
 	assertJSON(t, out, expected, "Pluck expecting empty list from list of objects, because of invalid property name")
 }
