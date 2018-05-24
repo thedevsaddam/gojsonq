@@ -394,7 +394,8 @@ Let's say you want to find how many elements are in the _'items'_ property. You 
 ```go
 jq := gojsonq.New().File("./data.json").From("items")
 fmt.Printf("%#v\n", jq.Count())
-//or count properties of an object
+
+// or count properties of an object
 jq := gojsonq.New().File("./data.json").From("items.[0]")
 fmt.Printf("%#v\n", jq.Count())
 ```
@@ -462,10 +463,184 @@ jq := gojsonq.New().File("./data.json").From("prices")
 fmt.Printf("%#v\n", jq.Avg())
 ```
 
-## TODO
+### `First()`
 
-- [ ] Add missing methods
-- [ ] Write full documentation with example
+It will return the first element of the collection.
+
+**example:**
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.First())
+```
+
+### `Last()`
+
+It will return the last element of the collection.
+
+**example:**
+
+```go
+jq := gojsonq.New().File("./data.json").From("prices")
+fmt.Printf("%#v\n", jq.Last())
+```
+
+### `Nth(index)`
+
+* `index` -- index of the element to be returned.
+
+It will return the nth element of the collection. If the given index is a **positive** value, it will return the nth element from the beginning. If the given index is a **negative** value, it will return the nth element from the end.
+
+**example:**
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Nth(2))
+```
+
+### `GroupBy(property)`
+
+* `property` -- The property by which you want to group the collection.
+
+**example:**
+
+Let's say you want to group the _'items'_ data based on the _'price'_ property. You can do it like:
+
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.GroupBy("price").Get())
+```
+
+### `Sort(order)`
+
+* `order` -- If you skip the _'order'_ property the data will be by default ordered as **ascending**. You need to pass **'desc'** as the _'order'_ parameter to sort the data in **descending** order.
+
+**Note:** This method should be used for `Slice`. If you want to sort an Array of Objects you should use the **SortBy()** method described later.
+
+**example:**
+
+Let's say you want to sort the _'prices/names'_ data. You can do it like:
+
+
+```go
+jq := gojsonq.New().File("./data.json").From("prices")
+fmt.Printf("%#v\n", jq.Sort().Get())
+
+// or sort array of strings in descending order
+jq := gojsonq.New().File("./data.json").From("names")
+fmt.Printf("%#v\n", jq.Sort("desc").Get())
+```
+
+### `SortBy(property, order)`
+
+* `property` -- You need to pass the property name on which the sorting will be done.
+* `order` -- If you skip the _'order'_ property the data will be by default ordered as **ascending**. You need to pass **'desc'** as the _'order'_ parameter to sort the data in **descending** order.
+
+**Note:** This method should be used for Array of Objects. If you want to sort a plain Array you should use the **Sort()** method described earlier.
+
+**example:**
+
+Let's say you want to sort the _'price'_ data of _'items'_. You can do it like:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.SortBy("price").Get())
+
+// or in descending order
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.SortBy("price", "desc").Get())
+```
+
+### `Reset()`
+
+Reset the queries with the original data so that you can query again.
+See the example below:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+
+res1 := jq.Where("price", ">", 900).Sum("price")
+
+// got our first result, now reset the instance and query again
+res2 := jq.Reset().SortBy("price").Get()
+fmt.Printf("Res1: %#v\nRes2: %#v\n", res1, res2)
+```
+
+### `Only(properties)`
+
+Only returns the properties passed as argument. To get a clear idea see the example below:
+
+**Example**
+
+```go
+jq := gojsonq.New().File("./data.json").From("items").WhereNotNil("id")
+fmt.Printf("%#v\n", jq.Only("id", "price").Get())
+```
+
+**Output**
+```go
+[]interface {}{
+    map[string]interface {}{"id":1, "price":1350},
+    map[string]interface {}{"id":2, "price":1700},
+    map[string]interface {}{"id":3, "price":1200},
+    map[string]interface {}{"id":4, "price":850},
+}
+```
+
+### `Pluck(property)`
+
+Only returns a plain array of values for the property. To get a clear idea see the example below:
+
+**Example**
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Pluck("price"))
+```
+
+**Output**
+```go
+[]interface {}{1350, 1700, 1200, 850, 850}
+```
+
+### `Macro()`
+
+Query matcher can be written as macro and used multiple time for further queries. Lets' say we don't have loose match for `WhereStartsWith`, we can write one. See the example below:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+jq.Macro("LM", func(x, y interface{}) (bool, error) { // LM is our loose match operator
+    xs, okx := x.(string)
+    ys, oky := y.(string)
+    if !okx || !oky {
+        return false, fmt.Errorf("loose_match only support string")
+    }
+
+    return strings.HasPrefix(strings.ToLower(xs), strings.ToLower(ys)), nil
+})
+jq.Where("name", "LM", "mac")
+fmt.Printf("%#v\n", jq.Get())
+```
+
+### `Copy()`
+
+It will return a complete clone of the Object instance. Note `Copy` method is very useful when working concurrently. You can copy the instance for multiple `goroutine`
+
+**Example**
+
+```go
+jq := gojsonq.New().File("./data.json")
+for i := 0; i < 10; i++ {
+    go func(j *gojsonq.JSONQ) {
+        fmt.Printf("Sum: %#v\n", j.From("items").Sum("price"))
+    }(jq.Copy())
+
+    go func(j *gojsonq.JSONQ) {
+        fmt.Printf("Min: %#v\n", j.From("items").Min("price"))
+    }(jq.Copy())
+}
+time.Sleep(time.Second)
+```
 
 ## Bugs and Issues
 
