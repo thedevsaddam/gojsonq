@@ -95,7 +95,7 @@ fmt.Printf("%#v\n", jq.Sum())
 
 **Output**
 ```json
-(float64) 3050
+(float64) 6340.87
 ```
 
 
@@ -126,20 +126,20 @@ Following API examples are shown based on the sample JSON data given above. To g
 * [WhereEndsWith](#whereendswithkey-val)
 * [WhereContains](#wherecontainskey-val)
 * [WhereStrictContains](#wherestrictcontainskey-val)
-* [Sum](#sum)
+* [Sum](#sumproperty)
 * [Count](#count)
-* [Max](#max)
-* [Min](#min)
-* [Avg](#avg)
+* [Max](#maxproperty)
+* [Min](#minproperty)
+* [Avg](#avgproperty)
 * [First](#first)
 * [Last](#last)
-* [Nth](#nth)
-* [GroupBy](#groupby)
+* [Nth](#nthindex)
+* [GroupBy](#groupbyproperty)
 * [Sort](#sort)
-* [SortBy](#sortby)
+* [SortBy](#sortbyproperty-order)
 * [Reset](#reset)
-* [Only](#only)
-* [Pluck](#pluck)
+* [Only](#onlyproperties)
+* [Pluck](#pluckproperty)
 * [Macro](#macrooperator-queryfunc)
 * [Copy](#copy)
 
@@ -259,9 +259,9 @@ fmt.Printf("%#v\n", jq.Get())
 
     * `notIn` : Check if the value of given **key** in data is not exists in given **val**. **val** should be a _Slice_ of `int/float64/string`.
 
-    * `startsWith` : Check if the value of given **key** in data starts with (has a prefix of) the given **val**. This would only works for _String_ type data.
+    * `startsWith` : Check if the value of given **key** in data starts with (has a prefix of) the given **val**. This would only works for _String_ type data and exact match.
 
-    * `endsWith` : Check if the value of given **key** in data ends with (has a suffix of) the given **val**. This would only works for _String_ type data.
+    * `endsWith` : Check if the value of given **key** in data ends with (has a suffix of) the given **val**. This would only works for _String_ type data and exact match.
 
     * `contains` : Check if the value of given **key** in data has a substring of given **val**. This would only works for _String_ type data and loose match.
 
@@ -362,6 +362,105 @@ This method will behave like `Where(key, 'contains', val)` method call.
 
 This method will behave like `Where(key, 'strictContains', val)` method call.
 
+### `Sum(property)`
+
+* `property` -- the property name of the data.
+
+**example:**
+
+Let's say you want to find the sum of the _'price'_ of the _'items'_. You can do it like this:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Sum("price"))
+```
+
+If the data you are aggregating slice of `int/float`, you don't need to pass the 'property' parameter.
+See example below:
+
+```go
+jq := gojsonq.New().File("./data.json").From("prices")
+fmt.Printf("%#v\n", jq.Sum())
+```
+
+### `Count()`
+
+It will return the number of elements in the collection/object.
+
+**example:**
+
+Let's say you want to find how many elements are in the _'items'_ property. You can do it like:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Count())
+//or count properties of an object
+jq := gojsonq.New().File("./data.json").From("items.[0]")
+fmt.Printf("%#v\n", jq.Count())
+```
+
+### `Max(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the maximum of the _'price'_ of the _'items'_. You can do it like this:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Max("price"))
+```
+
+If the data you are querying a slice of `int/float`, you don't need to pass the 'property' parameter.
+See example below:
+
+```go
+jq := gojsonq.New().File("./data.json").From("prices")
+fmt.Printf("%#v\n", jq.Max())
+```
+
+### `Min(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the minimum of the _'price'_ of the _'items'_. You can do it like this:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Min("price"))
+```
+
+If the data you are querying a slice of `int/float`, you don't need to pass the 'property' parameter.
+See detail example:
+
+```go
+jq := gojsonq.New().File("./data.json").From("prices")
+fmt.Printf("%#v\n", jq.Min())
+```
+
+### `Avg(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the average of the _'price'_ of the _'items'_. You can do it like this:
+
+```go
+jq := gojsonq.New().File("./data.json").From("items")
+fmt.Printf("%#v\n", jq.Avg("price"))
+```
+
+If the data you are querying a slice of `int/float`, you don't need to pass the 'property' parameter.
+See detail example:
+
+```go
+jq := gojsonq.New().File("./data.json").From("prices")
+fmt.Printf("%#v\n", jq.Avg())
+```
 
 ## TODO
 
