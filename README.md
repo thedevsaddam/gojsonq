@@ -135,7 +135,7 @@ Following API examples are shown based on the sample JSON data given above. To g
 * [Last](#last)
 * [Nth](#nthindex)
 * [GroupBy](#groupbyproperty)
-* [Sort](#sort)
+* [Sort](#sortorder)
 * [SortBy](#sortbyproperty-order)
 * [Reset](#reset)
 * [Only](#onlyproperties)
@@ -569,7 +569,7 @@ fmt.Printf("Res1: %#v\nRes2: %#v\n", res1, res2)
 
 ### `Only(properties)`
 
-Only returns the properties passed as argument. To get a clear idea see the example below:
+* `property` -- The property by which you want to get in final results. To get a clear idea see the example below:
 
 **Example**
 
@@ -590,12 +590,14 @@ fmt.Printf("%#v\n", jq.Only("id", "price").Get())
 
 ### `Pluck(property)`
 
-Only returns a plain array of values for the property. To get a clear idea see the example below:
+* `property` -- The property by which you want to get an array.
+
+Only returns a plain array of values for the property, you can chain further method to `Pluck` like `Sort/Min/Max/Avg/Count` etc . To get a clear idea see the example below:
 
 **Example**
 ```go
 jq := gojsonq.New().File("./data.json").From("items")
-fmt.Printf("%#v\n", jq.Pluck("price"))
+fmt.Printf("%#v\n", jq.Pluck("price").Get())
 ```
 
 **Output**
@@ -603,22 +605,22 @@ fmt.Printf("%#v\n", jq.Pluck("price"))
 []interface {}{1350, 1700, 1200, 850, 850}
 ```
 
-### `Macro()`
+### `Macro(operator, QueryFunc)`
 
-Query matcher can be written as macro and used multiple time for further queries. Lets' say we don't have loose match for `WhereStartsWith`, we can write one. See the example below:
+Query matcher can be written as macro and used multiple time for further queries. Lets' say we don't have weak match for `WhereStartsWith`, we can write one. See the example below:
 
 ```go
 jq := gojsonq.New().File("./data.json").From("items")
-jq.Macro("LM", func(x, y interface{}) (bool, error) { // LM is our loose match operator
+jq.Macro("WM", func(x, y interface{}) (bool, error) { // WM is our weak match operator
     xs, okx := x.(string)
     ys, oky := y.(string)
     if !okx || !oky {
-        return false, fmt.Errorf("loose_match only support string")
+        return false, fmt.Errorf("weak match only support string")
     }
 
     return strings.HasPrefix(strings.ToLower(xs), strings.ToLower(ys)), nil
 })
-jq.Where("name", "LM", "mac")
+jq.Where("name", "WM", "mac")
 fmt.Printf("%#v\n", jq.Get())
 ```
 
