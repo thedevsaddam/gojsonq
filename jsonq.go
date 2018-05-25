@@ -439,6 +439,7 @@ func (j *JSONQ) Pluck(property string) *JSONQ {
 // reset resets the current state of JSONQ instance
 func (j *JSONQ) reset() *JSONQ {
 	j.jsonContent = j.rootJSONContent
+	j.node = ""
 	j.queries = make([][]query, 0)
 	j.queryIndex = 0
 	return j

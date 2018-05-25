@@ -206,7 +206,7 @@ func TestJSONQ_Reset(t *testing.T) {
 	node := "root.items"
 	jq := New().From(node).WhereEqual("price", "1900").WhereEqual("id", 1)
 	jq.Reset()
-	if len(jq.queries) != 0 || jq.queryIndex != 0 {
+	if len(jq.queries) != 0 || jq.queryIndex != 0 || jq.node != "" {
 		t.Error("reset failed")
 	}
 }
