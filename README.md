@@ -638,7 +638,7 @@ for i := 0; i < 10; i++ {
     }(jq.Copy())
 
     go func(j *gojsonq.JSONQ) {
-        fmt.Printf("Min: %#v\n", j.From("items").Min("price"))
+        fmt.Printf("Min: %#v\n", j.From("prices").Min())
     }(jq.Copy())
 }
 time.Sleep(time.Second)
