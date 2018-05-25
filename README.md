@@ -558,12 +558,12 @@ Reset the queries with the original data so that you can query again.
 See the example below:
 
 ```go
-jq := gojsonq.New().File("./data.json").From("items")
+jq := gojsonq.New().File("./data.json")
 
-res1 := jq.Where("price", ">", 900).Sum("price")
+res1 := jq.Where("price", ">", 900).From("items").Sum("price")
 
 // got our first result, now reset the instance and query again
-res2 := jq.Reset().SortBy("price").Get()
+res2 := jq.Reset().From("prices").Max()
 fmt.Printf("Res1: %#v\nRes2: %#v\n", res1, res2)
 ```
 
