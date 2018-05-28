@@ -547,7 +547,13 @@ func (j *JSONQ) getFloatValFromArray(arr []interface{}, property ...string) []fl
 			if fi, ok := mv[property[0]]; ok {
 				if flt, ok := fi.(float64); ok {
 					ff = append(ff, flt)
+				} else {
+					j.addError(fmt.Errorf("property '%v' is not numeric", fi))
+					return nil
 				}
+			} else {
+				j.addError(fmt.Errorf("property '%s' does not exist", property[0]))
+				return nil
 			}
 		}
 	}
@@ -572,7 +578,13 @@ func (j *JSONQ) getAggregationValues(property ...string) []float64 {
 		if fi, ok := mv[property[0]]; ok {
 			if flt, ok := fi.(float64); ok {
 				ff = append(ff, flt)
+			} else {
+				j.addError(fmt.Errorf("property '%v' is not numeric", fi))
+				return nil
 			}
+		} else {
+			j.addError(fmt.Errorf("property '%s' does not exist", property[0]))
+			return nil
 		}
 	}
 	return ff

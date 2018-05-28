@@ -793,6 +793,42 @@ func TestJSONQ_Sum_expecting_error_for_not_providing_property_of_object(t *testi
 	}
 }
 
+func TestJSONQ_Sum_expecting_error_for_providing_invalid_property_of_array_of_objects(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items")
+	jq.Sum("invalid_property")
+	if jq.Error() == nil {
+		t.Error("expecting: property 'invalid_property' does not exist")
+	}
+}
+
+func TestJSONQ_Sum_expecting_error_for_providing_invalid_property_of_object(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor")
+	jq.Sum("invalid_property")
+	if jq.Error() == nil {
+		t.Error("expecting: property 'invalid_property' does not exist")
+	}
+}
+
+func TestJSONQ_Sum_expecting_error_for_providing_non_numeric_property_of_array_of_objects(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items")
+	jq.Sum("name")
+	if jq.Error() == nil {
+		t.Error("expecting: property 'MacBook Pro 13 inch retina' is not numeric")
+	}
+}
+
+func TestJSONQ_Sum_expecting_error_for_providing_non_numeric_property_of_object(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor")
+	jq.Sum("name")
+	if jq.Error() == nil {
+		t.Error("expecting: property 'invalid_property' does not exist")
+	}
+}
+
 func TestJSONQ_Sum_expecting_result_from_nested_object(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items.[0]")
