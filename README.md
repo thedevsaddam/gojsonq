@@ -89,13 +89,14 @@ Let's say we want to get the Summation of price of the Queried result. We can do
 ```go
 jq := gojsonq.New().
     File("./data.json").
-    From("prices")
-fmt.Printf("%#v\n", jq.Sum())
+    From("items").
+    Where("price", ">", 1200)
+fmt.Printf("%#v\n", jq.Sum("price"))
 ```
 
 **Output**
 ```json
-(float64) 6340.87
+(float64) 3050
 ```
 
 
@@ -142,6 +143,8 @@ Following API examples are shown based on the sample JSON data given above. To g
 * [Pluck](#pluckproperty)
 * [Macro](#macrooperator-queryfunc)
 * [Copy](#copy)
+* [Errors](#errors)
+* [Error](#error)
 
 ### `File(path)`
 
@@ -228,13 +231,13 @@ fmt.Printf("%#v\n", jq.Get())
 
 * `val` -- value to be matched with. It can be a _int_, _string_, _bool_ or _slice_ - depending on the `op`.
 
-* `op` -- operand to be used for matching. The following operands are available to use:
+* `op` -- operator to be used for matching. The following operators are available to use:
 
     * `=` : For equality matching
 
     * `eq` : Same as `=`
 
-    * `!=` : For 4not equality matching
+    * `!=` : For not equality matching
 
     * `neq` : Same as `!=`
 
@@ -575,7 +578,7 @@ fmt.Printf("Res1: %#v\nRes2: %#v\n", res1, res2)
 
 ```go
 jq := gojsonq.New().File("./data.json").From("items").WhereNotNil("id")
-fmt.Printf("%#v\n", jq.Only("id", "price").Get())
+fmt.Printf("%#v\n", jq.Only("id", "price"))
 ```
 
 **Output**
@@ -592,12 +595,12 @@ fmt.Printf("%#v\n", jq.Only("id", "price").Get())
 
 * `property` -- The property by which you want to get an array.
 
-Only returns a plain array of values for the property, you can chain further method to `Pluck` like `Sort/Min/Max/Avg/Count` etc . To get a clear idea see the example below:
+Only returns a plain array of values for the property, you can't chain further method to `Pluck`. To get a clear idea see the example below:
 
 **Example**
 ```go
 jq := gojsonq.New().File("./data.json").From("items")
-fmt.Printf("%#v\n", jq.Pluck("price").Get())
+fmt.Printf("%#v\n", jq.Pluck("price"))
 ```
 
 **Output**
@@ -643,6 +646,25 @@ for i := 0; i < 10; i++ {
 }
 time.Sleep(time.Second)
 ```
+
+### `Errors()`
+
+Return a list of errors occurred when processing the queries, it may helpful to debug or understand what is happening.
+
+
+### `Error()`
+
+Return the last occurred error, you can check any error occurred when processing the queries.
+
+**Example**
+
+```go
+jq := gojsonq.New().File("./invalid-file.xson")
+res := jq.Get()
+err := jq.Error() // if err != nil do something, may show the error list using jq.Errors() method
+fmt.Printf("Error: %v\nResult: %#v\n", err, res)
+```
+
 
 ## Bugs and Issues
 

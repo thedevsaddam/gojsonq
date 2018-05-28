@@ -395,7 +395,7 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 }
 
 // Only collects the properties from a list of object
-func (j *JSONQ) Only(properties ...string) *JSONQ {
+func (j *JSONQ) Only(properties ...string) interface{} {
 	j.prepare()
 	result := []interface{}{}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
@@ -413,13 +413,11 @@ func (j *JSONQ) Only(properties ...string) *JSONQ {
 			}
 		}
 	}
-	// replace the new result with the previous result
-	j.jsonContent = result
-	return j
+	return result
 }
 
 // Pluck build an array of vlaues form a property of a list of objects
-func (j *JSONQ) Pluck(property string) *JSONQ {
+func (j *JSONQ) Pluck(property string) interface{} {
 	j.prepare()
 	result := []interface{}{}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
@@ -431,9 +429,7 @@ func (j *JSONQ) Pluck(property string) *JSONQ {
 			}
 		}
 	}
-	// replace the new result with the previous result
-	j.jsonContent = result
-	return j
+	return result
 }
 
 // reset resets the current state of JSONQ instance
@@ -548,7 +544,7 @@ func (j *JSONQ) getFloatValFromArray(arr []interface{}, property ...string) []fl
 				if flt, ok := fi.(float64); ok {
 					ff = append(ff, flt)
 				} else {
-					j.addError(fmt.Errorf("property '%v' is not numeric", fi))
+					j.addError(fmt.Errorf("property %s's value '%v' is not numeric", property[0], fi))
 					return nil
 				}
 			} else {
@@ -579,7 +575,7 @@ func (j *JSONQ) getAggregationValues(property ...string) []float64 {
 			if flt, ok := fi.(float64); ok {
 				ff = append(ff, flt)
 			} else {
-				j.addError(fmt.Errorf("property '%v' is not numeric", fi))
+				j.addError(fmt.Errorf("property %s's value '%v' is not numeric", property[0], fi))
 				return nil
 			}
 		} else {

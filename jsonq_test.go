@@ -300,6 +300,17 @@ func TestJSONQ_Where_multiple_where_with_invalid_operator_expecting_error(t *tes
 	}
 }
 
+func TestJSONQ_Where_multiple_where_with_invalid_operand_expecting_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Where("price", "contains", 1700)
+	jq.Get()
+
+	if jq.Error() == nil {
+		t.Error("expecting: invalid operator invalid_op")
+	}
+}
+
 func TestJSONQ_single_WhereEqual(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").
@@ -596,10 +607,9 @@ func TestJSONQ_SortBy_expecting_empty_as_provided_node_is_not_list(t *testing.T)
 
 func TestJSONQ_Only(t *testing.T) {
 	jq := New().JSONString(jsonStr).
-		From("vendor.items").
-		Only("id", "price")
+		From("vendor.items")
 	expected := `[{"id":1,"price":1350},{"id":2,"price":1700},{"id":3,"price":1200},{"id":4,"price":850},{"id":5,"price":850},{"id":6,"price":950},{"id":null,"price":850}]`
-	out := jq.Get()
+	out := jq.Only("id", "price")
 	assertJSON(t, out, expected)
 }
 
@@ -712,7 +722,7 @@ func TestJSONQ_Find_nested_property(t *testing.T) {
 func TestJSONQ_Pluck_expecting_list_of_float64(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
-	out := jq.Pluck("price").Get()
+	out := jq.Pluck("price")
 	expected := `[1350,1700,1200,850,850,950,850]`
 	assertJSON(t, out, expected, "Pluck expecting prices from list of objects")
 }
@@ -720,7 +730,7 @@ func TestJSONQ_Pluck_expecting_list_of_float64(t *testing.T) {
 func TestJSONQ_Pluck_expecting_empty_list_of_float64(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
-	out := jq.Pluck("invalid_prop").Get()
+	out := jq.Pluck("invalid_prop")
 	expected := `[]`
 	assertJSON(t, out, expected, "Pluck expecting empty list from list of objects, because of invalid property name")
 }
