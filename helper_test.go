@@ -6,6 +6,31 @@ import (
 	"testing"
 )
 
+func Test_abs(t *testing.T) {
+	testCases := []struct {
+		data     int
+		expected int
+	}{
+		{
+			data:     15,
+			expected: 15,
+		},
+		{
+			data:     -25,
+			expected: 25,
+		},
+		{
+			data:     0,
+			expected: 0,
+		},
+	}
+	for _, tc := range testCases {
+		if o := abs(tc.data); o != tc.expected {
+			t.Errorf("expected: %v got: %v", tc.expected, o)
+		}
+	}
+}
+
 func Test_isIndex(t *testing.T) {
 	testCases := []struct {
 		node     string
