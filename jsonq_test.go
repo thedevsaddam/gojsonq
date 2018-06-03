@@ -705,6 +705,15 @@ func TestJSONQ_Nth_expecting_empty_result_as_node_is_map(t *testing.T) {
 	expected := `null`
 	assertJSON(t, out, expected, "Nth expecting empty result if the node is a map")
 }
+
+func TestJSONQ_Nth_expecting_empty_result_as_node_is_object(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items.[0]")
+	out := jq.Nth(1)
+	expected := `null`
+	assertJSON(t, out, expected, "Nth expecting empty result if the node is a object")
+}
+
 func TestJSONQ_Find_simple_property(t *testing.T) {
 	jq := New().JSONString(jsonStr)
 	out := jq.Find("name")
