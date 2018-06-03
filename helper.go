@@ -8,6 +8,13 @@ import (
 	"strings"
 )
 
+func abs(i int) int {
+	if i < 0 {
+		i = -1 * i
+	}
+	return i
+}
+
 func isIndex(in string) bool {
 	return strings.HasPrefix(in, "[") && strings.HasSuffix(in, "]")
 }

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"math"
 	"strings"
 )
 
@@ -475,18 +474,19 @@ func (j *JSONQ) Last() interface{} {
 
 // Nth returns the nth element of a list
 func (j *JSONQ) Nth(index int) interface{} {
+	if index == 0 {
+		j.addError(fmt.Errorf("index is not zero based"))
+		return empty
+	}
+
 	res := j.prepare().jsonContent
 	if arr, ok := res.([]interface{}); ok {
 		alen := len(arr)
-		if index == 0 {
-			j.addError(fmt.Errorf("index is not zero based"))
-			return empty
-		}
 		if alen == 0 {
 			j.addError(fmt.Errorf("list is empty"))
 			return empty
 		}
-		if math.Abs(float64(index)) > float64(alen) {
+		if abs(index) > alen {
 			j.addError(fmt.Errorf("index out of range"))
 			return empty
 		}
