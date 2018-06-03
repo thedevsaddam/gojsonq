@@ -1,7 +1,7 @@
 gojsonq
 ===============
 [![Build Status](https://travis-ci.org/thedevsaddam/gojsonq.svg?branch=master)](https://travis-ci.org/thedevsaddam/gojsonq)
-[![Project status](https://img.shields.io/badge/version-beta-yellow.svg)](https://github.com/thedevsaddam/gojsonq/releases)
+[![Project status](https://img.shields.io/badge/version-v1.0.0-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thedevsaddam/gojsonq)](https://goreportcard.com/report/github.com/thedevsaddam/gojsonq)
 [![Coverage Status](https://coveralls.io/repos/github/thedevsaddam/gojsonq/badge.svg?branch=master)](https://coveralls.io/github/thedevsaddam/gojsonq?branch=master)
 [![GoDoc](https://godoc.org/github.com/thedevsaddam/gojsonq?status.svg)](https://godoc.org/github.com/thedevsaddam/gojsonq)
@@ -301,7 +301,7 @@ fmt.Printf("%#v\n", jq.Get())
 * `key` -- the property name of the data
 * `val` -- it should be a **Slice** of `int/float64/string`
 
-This method will behave like `where(key, 'in', val)` method call.
+This method will behave like `where(key, "in", val)` method call.
 
 ### `WhereNotIn(key, val)`
 
@@ -309,7 +309,7 @@ This method will behave like `where(key, 'in', val)` method call.
 * `val` -- it should be a **Slice** of `int/float64/string`
 
 
-This method will behave like `Where(key, 'notIn', val)` method call.
+This method will behave like `Where(key, "notIn", val)` method call.
 
 ### `WhereNil(key)`
 
@@ -321,49 +321,49 @@ This method will behave like `Where(key, "=", nil)` method call.
 
 * `key` -- the property name of the data
 
-This method will behave like `Where(key, '!=', nil)` method call.
+This method will behave like `Where(key, "!=", nil)` method call.
 
 ### `WhereEqual(key, val)`
 
 * `key` -- the property name of the data
 * `val` -- it should be a `int/float64/string`
 
-This method will behave like `Where(key, '=', val)` method call.
+This method will behave like `Where(key, "=", val)` method call.
 
 ### `WhereNotEqual(key, val)`
 
 * `key` -- the property name of the data
 * `val` -- it should be a `int/float64/string`
 
-This method will behave like `Where(key, '!=', val)` method call.
+This method will behave like `Where(key, "!=", val)` method call.
 
 ### `WhereStartsWith(key, val)`
 
 * `key` -- the property name of the data
 * `val` -- it should be a String
 
-This method will behave like `Where(key, 'startsWith', val)` method call.
+This method will behave like `Where(key, "startsWith", val)` method call.
 
 ### `WhereEndsWith(key, val)`
 
 * `key` -- the property name of the data
 * `val` -- it should be a String
 
-This method will behave like `where(key, 'endsWith', val)` method call.
+This method will behave like `where(key, "endsWith", val)` method call.
 
 ### `WhereContains(key, val)`
 
 * `key` -- the property name of the data
 * `val` -- it should be a String
 
-This method will behave like `Where(key, 'contains', val)` method call.
+This method will behave like `Where(key, "contains", val)` method call.
 
 ### `WhereStrictContains(key, val)`
 
 * `key` -- the property name of the data
 * `val` -- it should be a String
 
-This method will behave like `Where(key, 'strictContains', val)` method call.
+This method will behave like `Where(key, "strictContains", val)` method call.
 
 ### `Sum(property)`
 
@@ -676,7 +676,11 @@ Also, you can shoot me an email to
 
 ## Credit
 
-Special thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiration and guidance for the package.
+Special thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiration and guidance for the package. Thanks to [Ahmed Shamim Hasan Shaon](https://github.com/me-shaon) for his support from the very beginning.
+
+## Contributors
+* [Lenin Hasda](https://github.com/leninhasda)
+* [Sadlil Rhythom](https://github.com/sadlil)
 
 ## Contribution
 If you are interested to make the package better please send pull requests or create an issue so that others can fix.
