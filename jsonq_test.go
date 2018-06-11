@@ -193,11 +193,20 @@ func TestJSONQ_From(t *testing.T) {
 	}
 }
 
+func TestJSONQ_Select(t *testing.T) {
+	jq := New().Select("id", "name")
+	if len(jq.attributes) != 2 {
+		t.Error("failed to set properties")
+	}
+}
+
 func TestJSONQ_reset(t *testing.T) {
 	node := "root.items"
-	jq := New().From(node).WhereEqual("price", "1900").WhereEqual("id", 1)
+	jq := New().From(node).Select("name", "age").WhereEqual("price", "1900").WhereEqual("id", 1)
 	jq.reset()
-	if len(jq.queries) != 0 || jq.queryIndex != 0 {
+	if len(jq.queries) != 0 ||
+		len(jq.attributes) != 0 ||
+		jq.queryIndex != 0 {
 		t.Error("reset failed")
 	}
 }
@@ -923,5 +932,15 @@ func TestJSONQ_CombinedWhereOrWhere_invalid_key(t *testing.T) {
 		OrWhere("invalid_key", "=", "Sony VAIO")
 	out := jq.Get()
 	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina","price":1350}]`
+	assertJSON(t, out, expected, "combined Where with orWhere containing invalid key")
+}
+
+func TestJSONQ_Get_with_Select_method(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Select("id", "name").
+		Where("price", "=", 1350)
+	out := jq.Get()
+	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina"}]`
 	assertJSON(t, out, expected, "combined Where with orWhere containing invalid key")
 }
