@@ -34,9 +34,11 @@ type JSONQ struct {
 	jsonContent     interface{}     // copy of original decoded json data for further processing
 	queryIndex      int
 	queries         []([]query) // nested queries
+	attributes      []string    // select attributes
 	errors          []error     // contains all the errors when processing
 }
 
+// String statisfy stringer interface
 func (j *JSONQ) String() string {
 	return fmt.Sprintf("\nContent: %s\nQueries:%v\n", string(j.raw), j.queries)
 }
@@ -161,6 +163,12 @@ func (j *JSONQ) findNode(node string) *JSONQ {
 			}
 		}
 	}
+	return j
+}
+
+// Select select the properties from query result
+func (j *JSONQ) Select(properties ...string) *JSONQ {
+	j.attributes = append(j.attributes, properties...)
 	return j
 }
 
@@ -436,6 +444,7 @@ func (j *JSONQ) reset() *JSONQ {
 	j.jsonContent = j.rootJSONContent
 	j.node = ""
 	j.queries = make([][]query, 0)
+	j.attributes = make([]string, 0)
 	j.queryIndex = 0
 	return j
 }
@@ -447,6 +456,9 @@ func (j *JSONQ) Reset() *JSONQ {
 
 // Get return the result
 func (j *JSONQ) Get() interface{} {
+	if len(j.attributes) > 0 {
+		return j.prepare().Only(j.attributes...)
+	}
 	return j.prepare().jsonContent
 }
 

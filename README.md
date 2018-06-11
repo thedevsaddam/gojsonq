@@ -1,7 +1,7 @@
 gojsonq
 ===============
 [![Build Status](https://travis-ci.org/thedevsaddam/gojsonq.svg?branch=master)](https://travis-ci.org/thedevsaddam/gojsonq)
-[![Project status](https://img.shields.io/badge/version-v1.0.0-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
+[![Project status](https://img.shields.io/badge/version-v1.1.0-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thedevsaddam/gojsonq)](https://goreportcard.com/report/github.com/thedevsaddam/gojsonq)
 [![Coverage Status](https://coveralls.io/repos/github/thedevsaddam/gojsonq/badge.svg?branch=master)](https://coveralls.io/github/thedevsaddam/gojsonq?branch=master)
 [![GoDoc](https://godoc.org/github.com/thedevsaddam/gojsonq?status.svg)](https://godoc.org/github.com/thedevsaddam/gojsonq)
@@ -115,6 +115,7 @@ Following API examples are shown based on the sample JSON data given above. To g
 * [Get](#get)
 * [Find](#findpath)
 * [From](#frompath)
+* [Select](#selectproperties)
 * [Where](#wherekey-op-val)
 * [OrWhere](#orwherekey-op-val)
 * [WhereIn](#whereinkey-val)
@@ -223,6 +224,27 @@ If you want to traverse to more deep in hierarchy, you can do it like:
 ```go
 jq := gojsonq.New().File("./data.json").From("vendor.items").Where("price", ">", 1200)
 fmt.Printf("%#v\n", jq.Get())
+```
+
+### `Select(properties)`
+
+* `properties` -- The properties which you want to get in final results. It is similar to `Only` but the only difference is you can chain `Select` in any where. To get a clear idea see the example below:
+
+**Example**
+
+```go
+jq := gojsonq.New().File("./data.json").From("items").Select("id", "name").WhereNotNil("id")
+fmt.Printf("%#v\n", jq.Get())
+```
+
+**Output**
+```go
+[]interface {}{
+    map[string]interface {}{"id":1, "name":"MacBook Pro 13 inch retina"},
+    map[string]interface {}{"id":2, "name":"MacBook Pro 15 inch retina"},
+    map[string]interface {}{"id":3, "name":"Sony VAIO"},
+    map[string]interface {}{"id":4,"name":"Fujitsu"},
+}
 ```
 
 ### `where(key, op, val)`
@@ -572,7 +594,7 @@ fmt.Printf("Res1: %#v\nRes2: %#v\n", res1, res2)
 
 ### `Only(properties)`
 
-* `property` -- The property by which you want to get in final results. To get a clear idea see the example below:
+* `properties` -- The properties which you want to get in final results. To get a clear idea see the example below:
 
 **Example**
 
