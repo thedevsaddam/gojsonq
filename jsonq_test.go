@@ -944,3 +944,89 @@ func TestJSONQ_Get_with_Select_method(t *testing.T) {
 	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina"}]`
 	assertJSON(t, out, expected, "combined Where with orWhere containing invalid key")
 }
+
+// ======================== Benchmark ======================== //
+
+func Benchmark_Copy(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.Copy()
+	}
+}
+
+func Benchmark_Find(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.Find("name")
+	}
+}
+
+func Benchmark_Get(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.Get()
+	}
+}
+
+func Benchmark_From_Get(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").Get()
+	}
+}
+
+func Benchmark_From_Where_Get(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").Where("id", "=", 1).Get()
+	}
+}
+
+func Benchmark_From_Where_Select_Get(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").Where("id", "=", 1).Select("id", "name").Get()
+	}
+}
+
+func Benchmark_From_Sum(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").Sum("price")
+	}
+}
+
+func Benchmark_From_Avg(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").Avg("price")
+	}
+}
+
+func Benchmark_From_Count(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").Count()
+	}
+}
+
+func Benchmark_From_First(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").First()
+	}
+}
+
+func Benchmark_From_GroupBy(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").GroupBy("price")
+	}
+}
+
+func Benchmark_From_SortBy(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").SortBy("price")
+	}
+}
