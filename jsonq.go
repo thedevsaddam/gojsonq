@@ -112,6 +112,7 @@ func (j *JSONQ) addError(err error) *JSONQ {
 func (j *JSONQ) Macro(operator string, fn QueryFunc) *JSONQ {
 	if _, ok := j.queryMap[operator]; ok {
 		j.addError(fmt.Errorf("%s is already registered in query map", operator))
+		return j
 	}
 	j.queryMap[operator] = fn
 	return j
