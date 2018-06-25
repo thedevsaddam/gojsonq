@@ -1,4 +1,4 @@
-// This work is covered by the CC0 1.0 Universal-License.
+// This work is covered by the MIT License.
 
 // Package gojsonq lets you quickly query over JSON Data.
 // This package provides very expressive queries with method chaining.
