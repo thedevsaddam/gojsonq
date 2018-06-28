@@ -193,22 +193,22 @@ func (j *JSONQ) Where(key, cond string, val interface{}) *JSONQ {
 
 // WhereEqual is an alias of Where("key", "=", val)
 func (j *JSONQ) WhereEqual(key string, val interface{}) *JSONQ {
-	return j.Where(key, "=", val)
+	return j.Where(key, signEq, val)
 }
 
 // WhereNotEqual is an alias of Where("key", "!=", val)
 func (j *JSONQ) WhereNotEqual(key string, val interface{}) *JSONQ {
-	return j.Where(key, "!=", val)
+	return j.Where(key, signNotEq, val)
 }
 
 // WhereNil is an alias of Where("key", "=", nil)
 func (j *JSONQ) WhereNil(key string) *JSONQ {
-	return j.Where(key, "=", nil)
+	return j.Where(key, signEq, nil)
 }
 
 // WhereNotNil is an alias of Where("key", "!=", nil)
 func (j *JSONQ) WhereNotNil(key string) *JSONQ {
-	return j.Where(key, "!=", nil)
+	return j.Where(key, signNotEq, nil)
 }
 
 // WhereIn is an alias for where('key', 'in', []string{"a", "b"})
