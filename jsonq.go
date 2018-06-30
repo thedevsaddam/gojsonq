@@ -360,6 +360,10 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	}
 	sm.Sort(sortResult)
 
+	for _, e := range sm.errs {
+		j.addError(e)
+	}
+
 	// replace the new result with the previous result
 	j.jsonContent = sortResult
 	return j

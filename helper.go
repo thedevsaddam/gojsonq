@@ -106,6 +106,7 @@ type sortMap struct {
 	data interface{}
 	key  string
 	desc bool
+	errs []error
 }
 
 // Sort sorts the slice of maps
@@ -140,8 +141,14 @@ func (s *sortMap) Less(i, j int) (res bool) {
 
 	// compare nested values
 	if strings.Contains(s.key, ".") {
-		xv, _ := getNestedValue(x, s.key)
-		yv, _ := getNestedValue(y, s.key)
+		xv, errX := getNestedValue(x, s.key)
+		if errX != nil {
+			s.errs = append(s.errs, errX)
+		}
+		yv, errY := getNestedValue(y, s.key)
+		if errY != nil {
+			s.errs = append(s.errs, errY)
+		}
 		res = s.compare(xv, yv)
 	}
 

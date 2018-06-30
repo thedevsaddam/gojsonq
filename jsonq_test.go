@@ -594,6 +594,18 @@ func TestJSONQ_SortBy_deep_nested_string_ascending_order(t *testing.T) {
 	assertJSON(t, out, expected, "sorting array of object by its key (name-string) in descending desc")
 }
 
+func TestJSONQ_SortBy_deep_nested_string_invalid_key_should_return_error(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		SortBy("name.middle")
+	expected := `[{"id":1,"name":{"first":"John","last":"Ramboo"}},{"id":2,"name":{"first":"Ethan","last":"Hunt"}},{"id":3,"name":{"first":"John","last":"Doe"}}]` // no ordering, remain same
+	out := jq.Get()
+	assertJSON(t, out, expected, "sorting array of object by its key (name-string) in descending desc")
+	if len(jq.errors) == 0 {
+		t.Error("invalid path should return error/errors in SortBy")
+	}
+}
+
 func TestJSONQ_SortBy_no_argument_expecting_error(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").
