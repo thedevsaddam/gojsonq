@@ -87,13 +87,13 @@ func (j *JSONQ) Reader(r io.Reader) *JSONQ {
 	return j.decode()
 }
 
-// Error returns last error
+// Error returns first occurred error
 func (j *JSONQ) Error() error {
 	errsln := len(j.errors)
 	if errsln == 0 {
 		return nil
 	}
-	return j.errors[errsln-1]
+	return j.errors[0]
 }
 
 // Errors returns list of all errors
