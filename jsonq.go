@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"strings"
 )
 
 // New returns a new instance of JSONQ
@@ -121,49 +120,11 @@ func (j *JSONQ) Macro(operator string, fn QueryFunc) *JSONQ {
 // From seeks the json content to provided node. e.g: "users.[0]"  or "users.[0].name"
 func (j *JSONQ) From(node string) *JSONQ {
 	j.node = node
-	return j.findNode(node)
-}
-
-// findNode seeks the json content to provided node and assign it to the jsonContent property
-func (j *JSONQ) findNode(node string) *JSONQ {
-	pp := strings.Split(node, ".")
-	for _, n := range pp {
-		if isIndex(n) {
-			// find slice/array
-			if arr, ok := j.jsonContent.([]interface{}); ok {
-				indx, err := getIndex(n)
-				if err != nil {
-					return j.addError(err)
-				}
-				arrLen := len(arr)
-				if arrLen == 0 ||
-					indx > arrLen-1 {
-					j.jsonContent = empty
-					// TODO: need to send error
-					return j
-				}
-				j.jsonContent = arr[indx]
-			}
-		} else {
-			// find in map
-			invalidNode := true
-			if mp, ok := j.jsonContent.(map[string]interface{}); ok {
-				j.jsonContent = mp[n]
-				invalidNode = false
-			}
-
-			// find in group data
-			if mp, ok := j.jsonContent.(map[string][]interface{}); ok {
-				j.jsonContent = mp[n]
-				invalidNode = false
-			}
-
-			if invalidNode {
-				j.jsonContent = empty
-				j.addError(fmt.Errorf("invalid node name %s", n))
-			}
-		}
+	v, err := getNestedValue(j.jsonContent, node)
+	if err != nil {
+		j.addError(err)
 	}
+	j.jsonContent = v
 	return j
 }
 
@@ -277,19 +238,21 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 	for _, qList := range j.queries {
 		andPassed := true
 		for _, q := range qList {
-			if mv, o := vm[q.key]; o {
-				cf, ok := j.queryMap[q.operator]
-				if !ok {
-					j.addError(fmt.Errorf("invalid operator %s", q.operator))
-					return result
-				}
-				qb, err := cf(mv, q.value)
+			cf, ok := j.queryMap[q.operator]
+			if !ok {
+				j.addError(fmt.Errorf("invalid operator %s", q.operator))
+				return result
+			}
+			nv, errnv := getNestedValue(vm, q.key)
+			if errnv != nil {
+				j.addError(errnv)
+				andPassed = false
+			} else {
+				qb, err := cf(nv, q.value)
 				if err != nil {
 					j.addError(err)
 				}
 				andPassed = andPassed && qb
-			} else {
-				andPassed = false
 			}
 		}
 		orPassed = orPassed || andPassed

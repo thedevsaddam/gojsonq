@@ -226,12 +226,14 @@ func Test_sorter(t *testing.T) {
 
 func Test_sortMap(t *testing.T) {
 	testCases := []struct {
+		tag     string
 		inObjs  interface{}
 		outObjs interface{}
 		key     string
 		asc     bool
 	}{
 		{
+			tag: "should return in ascending order of string value name",
 			key: "name",
 			asc: true,
 			inObjs: []map[string]interface{}{
@@ -248,6 +250,7 @@ func Test_sortMap(t *testing.T) {
 			},
 		},
 		{
+			tag: "should return in descending order of string value name",
 			key: "name",
 			asc: false,
 			inObjs: []map[string]interface{}{
@@ -264,6 +267,7 @@ func Test_sortMap(t *testing.T) {
 			},
 		},
 		{
+			tag: "should return in ascending order of float value height",
 			key: "height",
 			asc: true,
 			inObjs: []map[string]interface{}{
@@ -280,6 +284,7 @@ func Test_sortMap(t *testing.T) {
 			},
 		},
 		{
+			tag: "should return in descending order of float value height",
 			key: "height",
 			asc: false,
 			inObjs: []map[string]interface{}{
@@ -315,6 +320,67 @@ func Test_sortMap(t *testing.T) {
 		sm.key = tc.key
 		sm.desc = !tc.asc
 		sm.Sort(inObjs)
-		assertInterface(t, inObjs, tc.outObjs)
+		assertInterface(t, inObjs, tc.outObjs, tc.tag)
+	}
+}
+
+func Test_getNestedValue(t *testing.T) {
+	var content interface{}
+	if err := json.Unmarshal([]byte(jsonStr), &content); err != nil {
+		t.Error("failed to decode json:", err)
+	}
+
+	testCases := []struct {
+		tag         string
+		query       string
+		expected    interface{}
+		expectError bool
+	}{
+		{
+			tag:         "accessing node",
+			query:       "vendor.name",
+			expected:    `Star Trek`,
+			expectError: false,
+		},
+		{
+			tag:         "should return nil",
+			query:       "vendor.xox",
+			expected:    nil,
+			expectError: true,
+		},
+		{
+			tag:         "should return a map",
+			query:       "vendor.items.[0]",
+			expected:    map[string]interface{}{"id": 1, "name": "MacBook Pro 13 inch retina", "price": 1350},
+			expectError: false,
+		},
+		{
+			tag:         "accessing not existed index",
+			query:       "vendor.items.[10]",
+			expected:    nil,
+			expectError: true,
+		},
+		{
+			tag:         "accessing invalid index error",
+			query:       "vendor.items.[x]",
+			expected:    nil,
+			expectError: true,
+		},
+		{
+			tag:         "should receive valid float value",
+			query:       "vendor.items.[0].price",
+			expected:    1350,
+			expectError: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		out, err := getNestedValue(content, tc.query)
+		if tc.expectError && err == nil {
+			t.Error("failed to catch error")
+		}
+		if !tc.expectError {
+			assertInterface(t, tc.expected, out, tc.tag)
+		}
 	}
 }

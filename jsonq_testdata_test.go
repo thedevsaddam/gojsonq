@@ -12,7 +12,8 @@ import (
 
 // ==================== Test Data===================
 // ==================== DO NOT EDIT===================
-var jsonStr = `
+var (
+	jsonStr = `
 {
    "name":"computers",
    "description":"List of computer products",
@@ -77,6 +78,32 @@ var jsonStr = `
    }
 }
 `
+	jsonStrUsers = `{
+  "users":[
+    {
+      "id":1,
+      "name":{
+        "first":"John",
+        "last":"Ramboo"
+      }
+    },
+    {
+      "id":2,
+      "name":{
+        "first":"Ethan",
+        "last":"Hunt"
+      }
+    },
+    {
+      "id":3,
+      "name":{
+        "first":"John",
+        "last":"Doe"
+      }
+    }
+  ]
+}`
+)
 
 //================= Test Helpers===========================
 
@@ -121,9 +148,9 @@ func assertInterface(t *testing.T, x, y interface{}, tag ...string) {
 
 	if !bytes.Equal(bbX, bbY) {
 		if len(tag) > 0 {
-			t.Errorf("Tag: %s\nExpected: %v\nGot: %v", tag[0], string(bbX), string(bbY))
+			t.Errorf("Tag: %s\nExpected: %v\nGot: %v", tag[0], x, y)
 		} else {
-			t.Errorf("Expected: %v\nGot: %v", string(bbX), string(bbY))
+			t.Errorf("Expected: %v\nGot: %v", x, y)
 		}
 	}
 }

@@ -185,7 +185,7 @@ func TestJSONQ_Macro(t *testing.T) {
 	}
 }
 
-func TestJSONQ_From(t *testing.T) {
+func TestJSONQ_From_Set(t *testing.T) {
 	node := "root.items.[0].name"
 	jq := New().From(node)
 	if jq.node != node {
@@ -220,7 +220,7 @@ func TestJSONQ_Reset(t *testing.T) {
 	}
 }
 
-func TestJSONQ_findNode(t *testing.T) {
+func TestJSONQ_From(t *testing.T) {
 	testCases := []struct {
 		tag         string
 		query       string
@@ -276,6 +276,15 @@ func TestJSONQ_Where_single_where(t *testing.T) {
 	expected := `[{"id":2,"name":"MacBook Pro 15 inch retina","price":1700}]`
 	out := jq.Get()
 	assertJSON(t, out, expected, "single Where")
+}
+
+func TestJSONQ_Where_deep_nested_value(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		Where("name.first", "=", "John")
+	expected := `[{"id":1,"name":{"first":"John","last":"Ramboo"}},{"id":3,"name":{"first":"John","last":"Doe"}}]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "single Where with nested value")
 }
 
 func TestJSONQ_Where_multiple_where_expecting_result(t *testing.T) {
@@ -572,6 +581,15 @@ func TestJSONQ_SortBy_string_descending_order(t *testing.T) {
 		From("vendor.items").
 		SortBy("name", "desc")
 	expected := `[{"id":3,"name":"Sony VAIO","price":1200},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700},{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":6,"name":"HP core i7","price":950},{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":null,"name":"HP core i3 SSD","price":850},{"id":4,"name":"Fujitsu","price":850}]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "sorting array of object by its key (name-string) in descending desc")
+}
+
+func TestJSONQ_SortBy_deep_nested_string_ascending_order(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		SortBy("name.first")
+	expected := `[{"id":2,"name":{"first":"Ethan","last":"Hunt"}},{"id":1,"name":{"first":"John","last":"Ramboo"}},{"id":3,"name":{"first":"John","last":"Doe"}}]`
 	out := jq.Get()
 	assertJSON(t, out, expected, "sorting array of object by its key (name-string) in descending desc")
 }

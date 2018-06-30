@@ -1,6 +1,7 @@
 package gojsonq
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"sort"
@@ -132,38 +133,91 @@ func (s *sortMap) Swap(i, j int) {
 // TODO: need improvement
 // Less satisfies the sort.Interface
 // This will work for string/float64 only
-func (s *sortMap) Less(i, j int) bool {
+func (s *sortMap) Less(i, j int) (res bool) {
 	list := reflect.ValueOf(s.data)
 	x := list.Index(i).Interface()
 	y := list.Index(j).Interface()
 
+	// compare nested values
+	if strings.Contains(s.key, ".") {
+		xv, _ := getNestedValue(x, s.key)
+		yv, _ := getNestedValue(y, s.key)
+		res = s.compare(xv, yv)
+	}
+
 	xv, okX := x.(map[string]interface{})
 	if !okX {
-		return false
+		return
 	}
-
 	yv := y.(map[string]interface{})
-
 	if mvx, ok := xv[s.key]; ok {
 		mvy := yv[s.key]
-		if mfv, ok := mvx.(float64); ok {
-			if mvy, oky := mvy.(float64); oky {
-				if s.desc {
-					return mfv > mvy
-				}
-				return mfv < mvy
-			}
-		}
+		res = s.compare(mvx, mvy)
+	}
 
-		if mfv, ok := mvx.(string); ok {
-			if mvy, oky := mvy.(string); oky {
-				if s.desc {
-					return mfv > mvy
+	return
+}
+
+// compare compare two values
+func (s *sortMap) compare(x, y interface{}) (res bool) {
+	if mfv, ok := x.(float64); ok {
+		if mvy, oky := y.(float64); oky {
+			if s.desc {
+				return mfv > mvy
+			}
+			res = mfv < mvy
+		}
+	}
+
+	if mfv, ok := x.(string); ok {
+		if mvy, oky := y.(string); oky {
+			if s.desc {
+				return mfv > mvy
+			}
+			res = mfv < mvy
+		}
+	}
+
+	return
+}
+
+// getNestedValue fetch nested value from node
+func getNestedValue(input interface{}, node string) (interface{}, error) {
+	pp := strings.Split(node, ".")
+	for _, n := range pp {
+		if isIndex(n) {
+			// find slice/array
+			if arr, ok := input.([]interface{}); ok {
+				indx, err := getIndex(n)
+				if err != nil {
+					return input, err
 				}
-				return mfv < mvy
+				arrLen := len(arr)
+				if arrLen == 0 ||
+					indx > arrLen-1 {
+					return empty, errors.New("empty array")
+				}
+				input = arr[indx]
+			}
+		} else {
+			// find in map
+			validNode := false
+			if mp, ok := input.(map[string]interface{}); ok {
+				input, ok = mp[n]
+				validNode = ok
+			}
+
+			// find in group data
+			if mp, ok := input.(map[string][]interface{}); ok {
+				input, ok = mp[n]
+				validNode = ok
+			}
+
+			if !validNode {
+				return empty, fmt.Errorf("invalid node name %s", n)
 			}
 		}
 	}
 
-	return false
+	return input, nil
 }
