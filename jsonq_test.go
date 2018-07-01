@@ -518,7 +518,40 @@ func TestJSONQ_GroupBy(t *testing.T) {
 		GroupBy("price")
 	expected := `{"1200":[{"id":3,"name":"Sony VAIO","price":1200}],"1350":[{"id":1,"name":"MacBook Pro 13 inch retina","price":1350}],"1700":[{"id":2,"name":"MacBook Pro 15 inch retina","price":1700}],"850":[{"id":4,"name":"Fujitsu","price":850},{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":null,"name":"HP core i3 SSD","price":850}],"950":[{"id":6,"name":"HP core i7","price":950}]}`
 	out := jq.Get()
-	assertJSON(t, out, expected, "WhereContains expecting result")
+	assertJSON(t, out, expected, "GroupBy expecting result")
+}
+
+func TestJSONQ_GroupBy_expecting_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		GroupBy("invalid_key")
+	expected := `{}`
+	out := jq.Get()
+	assertJSON(t, out, expected, "GroupBy expecting empty result")
+	if len(jq.Errors()) == 0 {
+		t.Error("failed to catch GroupBy error")
+	}
+}
+
+func TestJSONQ_GroupBy_nested_property(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		GroupBy("name.first")
+	expected := `{"Ethan":[{"id":2,"name":{"first":"Ethan","last":"Hunt"}}],"John":[{"id":1,"name":{"first":"John","last":"Ramboo"}},{"id":3,"name":{"first":"John","last":"Doe"}}]}`
+	out := jq.Get()
+	assertJSON(t, out, expected, "GroupBy nested expecting result")
+}
+
+func TestJSONQ_GroupBy_nested_property_expecting_error(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		GroupBy("name.invalid_key")
+	out := jq.Get()
+	expected := `{}`
+	assertJSON(t, out, expected, "Nsested GroupBy expecting empty result")
+	if len(jq.errors) == 0 {
+		t.Error("failed to catch GroupBy nested property error")
+	}
 }
 
 func TestJSONQ_Sort_string_ascending_order(t *testing.T) {

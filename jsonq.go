@@ -291,12 +291,11 @@ func (j *JSONQ) GroupBy(property string) *JSONQ {
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, a := range aa {
 			if vm, ok := a.(map[string]interface{}); ok {
-				if v, o := vm[property]; o {
-					if _, ok := dt[toString(v)]; ok {
-						dt[toString(v)] = append(dt[toString(v)], vm)
-					} else {
-						dt[toString(v)] = []interface{}{vm}
-					}
+				v, err := getNestedValue(vm, property)
+				if err != nil {
+					j.addError(err)
+				} else {
+					dt[toString(v)] = append(dt[toString(v)], vm)
 				}
 			}
 		}
