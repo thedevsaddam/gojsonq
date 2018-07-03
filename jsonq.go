@@ -33,7 +33,8 @@ type JSONQ struct {
 	jsonContent     interface{}     // copy of original decoded json data for further processing
 	queryIndex      int
 	queries         []([]query) // nested queries
-	attributes      []string    // select attributes
+	attributes      []string    // select attributes that will be available in final resuls
+	limitRecords    int         // number of records that willbe available in final result
 	errors          []error     // contains all the errors when processing
 }
 
@@ -131,6 +132,26 @@ func (j *JSONQ) From(node string) *JSONQ {
 // Select select the properties from query result
 func (j *JSONQ) Select(properties ...string) *JSONQ {
 	j.attributes = append(j.attributes, properties...)
+	return j
+}
+
+// Limit limit the number of records in result
+func (j *JSONQ) Limit(limit int) *JSONQ {
+	j.limitRecords = limit
+	return j
+}
+
+// limit return the number of records in result set depending on the limit value
+func (j *JSONQ) limit() *JSONQ {
+	if list, ok := j.jsonContent.([]interface{}); ok {
+		if j.limitRecords <= 0 {
+			j.addError(fmt.Errorf("%d is invalid limit", j.limitRecords))
+			return j
+		}
+		if len(list) > j.limitRecords {
+			j.jsonContent = list[:j.limitRecords]
+		}
+	}
 	return j
 }
 
@@ -413,6 +434,7 @@ func (j *JSONQ) reset() *JSONQ {
 	j.queries = make([][]query, 0)
 	j.attributes = make([]string, 0)
 	j.queryIndex = 0
+	j.limitRecords = 0
 	return j
 }
 
@@ -423,10 +445,14 @@ func (j *JSONQ) Reset() *JSONQ {
 
 // Get return the result
 func (j *JSONQ) Get() interface{} {
-	if len(j.attributes) > 0 {
-		return j.prepare().Only(j.attributes...)
+	j.prepare()
+	if j.limitRecords != 0 {
+		j.limit()
 	}
-	return j.prepare().jsonContent
+	if len(j.attributes) > 0 {
+		return j.Only(j.attributes...)
+	}
+	return j.jsonContent
 }
 
 // First returns the first element of a list

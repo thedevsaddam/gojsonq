@@ -200,6 +200,13 @@ func TestJSONQ_Select(t *testing.T) {
 	}
 }
 
+func TestJSONQ_Limit(t *testing.T) {
+	jq := New().Limit(12)
+	if jq.limitRecords != 12 {
+		t.Error("failed to set limit records value")
+	}
+}
+
 func TestJSONQ_reset(t *testing.T) {
 	node := "root.items"
 	jq := New().From(node).Select("name", "age").WhereEqual("price", "1900").WhereEqual("id", 1)
@@ -1006,6 +1013,34 @@ func TestJSONQ_Get_with_Select_method(t *testing.T) {
 	out := jq.Get()
 	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina"}]`
 	assertJSON(t, out, expected, "combined Where with orWhere containing invalid key")
+}
+
+func TestJSONQ_Limit_method(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Limit(2)
+	out := jq.Get()
+	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700}]`
+	assertJSON(t, out, expected, "failed to limit records")
+}
+
+func TestJSONQ_Limit_Where_method(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Limit(2).WhereNotNil("id")
+	out := jq.Get()
+	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700}]`
+	assertJSON(t, out, expected, "failed to limit records")
+}
+
+func TestJSONQ_Limit_invalid_number_should_return_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Limit(-2)
+	jq.Get()
+	if jq.Error() == nil {
+		t.Error("failed to catch invalid limit error")
+	}
 }
 
 // ======================== Benchmark ======================== //
