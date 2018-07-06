@@ -43,10 +43,6 @@ func eq(x, y interface{}) (bool, error) {
 
 // neq checks whether x, y are deeply not equal
 func neq(x, y interface{}) (bool, error) {
-	// if the y value is numeric (int/int8-int64/float32/float64) then convert to float64
-	if fv, ok := toFloat64(y); ok {
-		y = fv
-	}
 	b, err := eq(x, y)
 	return !b, err
 }
@@ -185,28 +181,8 @@ func in(x, y interface{}) (bool, error) {
 
 // notIn checks if x doesn't exists in y e.g: in("id", []int{1,3,5,8})
 func notIn(x, y interface{}) (bool, error) {
-	if yv, ok := y.([]string); ok {
-		for _, v := range yv {
-			if ok, _ := eq(x, v); ok {
-				return false, nil
-			}
-		}
-	}
-	if yv, ok := y.([]int); ok {
-		for _, v := range yv {
-			if ok, _ := eq(x, v); ok {
-				return false, nil
-			}
-		}
-	}
-	if yv, ok := y.([]float64); ok {
-		for _, v := range yv {
-			if ok, _ := eq(x, v); ok {
-				return false, nil
-			}
-		}
-	}
-	return true, nil
+	b, err := in(x, y)
+	return !b, err
 }
 
 func loadDefaultQueryMap() map[string]QueryFunc {
