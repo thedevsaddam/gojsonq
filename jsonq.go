@@ -38,7 +38,7 @@ type JSONQ struct {
 	errors          []error     // contains all the errors when processing
 }
 
-// String statisfy stringer interface
+// String satisfies stringer interface
 func (j *JSONQ) String() string {
 	return fmt.Sprintf("\nContent: %s\nQueries:%v\n", string(j.raw), j.queries)
 }
