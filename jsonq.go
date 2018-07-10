@@ -386,26 +386,32 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	return j
 }
 
-// Only collects the properties from a list of object
-func (j *JSONQ) Only(properties ...string) interface{} {
-	j.prepare()
+// only return selected properties in result
+func (j *JSONQ) only(properties ...string) interface{} {
 	result := []interface{}{}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, am := range aa {
-			if mv, ok := am.(map[string]interface{}); ok {
-				tmap := map[string]interface{}{}
-				for _, prop := range properties {
-					if v, ok := mv[prop]; ok {
-						tmap[prop] = v
-					}
+			tmap := map[string]interface{}{}
+			for _, prop := range properties {
+				node, alias := makeAlias(prop)
+				rv, errV := getNestedValue(am, node)
+				if errV != nil {
+					j.addError(errV)
+					continue
 				}
-				if len(tmap) > 0 {
-					result = append(result, tmap)
-				}
+				tmap[alias] = rv
+			}
+			if len(tmap) > 0 {
+				result = append(result, tmap)
 			}
 		}
 	}
 	return result
+}
+
+// Only collects the properties from a list of object
+func (j *JSONQ) Only(properties ...string) interface{} {
+	return j.prepare().only(properties...)
 }
 
 // Pluck build an array of vlaues form a property of a list of objects
@@ -447,7 +453,7 @@ func (j *JSONQ) Get() interface{} {
 		j.limit()
 	}
 	if len(j.attributes) > 0 {
-		return j.Only(j.attributes...)
+		return j.only(j.attributes...)
 	}
 	return j.jsonContent
 }

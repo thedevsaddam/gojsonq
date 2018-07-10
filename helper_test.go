@@ -384,3 +384,38 @@ func Test_getNestedValue(t *testing.T) {
 		}
 	}
 }
+
+func Test_makeAlias(t *testing.T) {
+	testCases := []struct {
+		tag   string
+		input string
+		node  string
+		alias string
+	}{
+		{
+			tag:   "scenario 1",
+			input: "user.name as uname",
+			node:  "user.name",
+			alias: "uname",
+		},
+		{
+			tag:   "scenario 2",
+			input: "post.title",
+			node:  "post.title",
+			alias: "title",
+		},
+		{
+			tag:   "scenario 3",
+			input: "name",
+			node:  "name",
+			alias: "name",
+		},
+	}
+
+	for _, tc := range testCases {
+		n, a := makeAlias(tc.input)
+		if tc.node != n || tc.alias != a {
+			t.Errorf("Tag: %v\nExpected: %v %v \nGot: %v %v\n", tc.tag, tc.node, tc.alias, n, a)
+		}
+	}
+}

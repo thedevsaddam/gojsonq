@@ -2,6 +2,7 @@ package gojsonq
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -142,6 +143,19 @@ func TestJSONQ_Reader(t *testing.T) {
 		if err := New().Reader(rdr).Error(); err != nil && !tc.errExpect {
 			t.Errorf("failed %s", tc.tag)
 		}
+	}
+}
+
+type invalidReader string
+
+func (invalidReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("this reader always return an error")
+}
+
+func TestJSONQ_Reader_expecting_error(t *testing.T) {
+	var rdr invalidReader
+	if err := New().Reader(rdr).Error(); err == nil {
+		t.Errorf("failed to catch Reader error")
 	}
 }
 
@@ -1012,7 +1026,28 @@ func TestJSONQ_Get_with_Select_method(t *testing.T) {
 		Where("price", "=", 1350)
 	out := jq.Get()
 	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina"}]`
-	assertJSON(t, out, expected, "combined Where with orWhere containing invalid key")
+	assertJSON(t, out, expected, "Select method Using Get")
+}
+
+func TestJSONQ_Get_with_nested_Select_method(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		Select("id as uid", "name.first as fname", "name.last")
+	out := jq.Get()
+	expected := `[{"fname":"John","last":"Ramboo","uid":1},{"fname":"Ethan","last":"Hunt","uid":2},{"fname":"John","last":"Doe","uid":3}]`
+	assertJSON(t, out, expected, "nested Select method using alias")
+}
+
+func TestJSONQ_Get_with_nested_invalid_property_in_Select_method_expecting_error(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		Select("id as uid", "name.middle")
+	out := jq.Get()
+	if jq.Error() == nil {
+		t.Error("nested property in Select method failed to catch error")
+	}
+	expected := `[{"uid":1},{"uid":2},{"uid":3}]`
+	assertJSON(t, out, expected, "nested Select method using alias")
 }
 
 func TestJSONQ_Limit_method(t *testing.T) {

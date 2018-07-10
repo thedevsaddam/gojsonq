@@ -228,3 +228,23 @@ func getNestedValue(input interface{}, node string) (interface{}, error) {
 
 	return input, nil
 }
+
+// makeAlias provide syntactic suger. when provide Property name as "user.name as userName"
+// it return userName as output and pure node name like: "user.name". If "user.name" does not use "as" clause then it'll return "user.name", "user.name"
+func makeAlias(in string) (string, string) {
+	const alias = " as "
+	in = strings.Replace(in, " As ", alias, -1)
+	in = strings.Replace(in, " AS ", alias, -1)
+
+	if strings.Contains(in, alias) {
+		ss := strings.Split(in, alias)
+		return strings.TrimSpace(ss[0]), strings.TrimSpace(ss[1])
+	}
+
+	if strings.Contains(in, ".") {
+		ss := strings.Split(in, ".")
+		return in, ss[len(ss)-1]
+	}
+
+	return in, in
+}
