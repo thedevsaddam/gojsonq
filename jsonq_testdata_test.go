@@ -154,3 +154,11 @@ func assertInterface(t *testing.T, x, y interface{}, tag ...string) {
 		}
 	}
 }
+
+// cDecoder will be used as a custom decoder for testing// though it use std lib
+type cDecoder struct {
+}
+
+func (c *cDecoder) Decode(data []byte, v interface{}) error {
+	return json.Unmarshal(data, &v) // let's assume this is a custom unmarshaler
+}

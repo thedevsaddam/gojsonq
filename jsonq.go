@@ -9,10 +9,19 @@ import (
 )
 
 // New returns a new instance of JSONQ
-func New() *JSONQ {
-	return &JSONQ{
+func New(options ...OptionFunc) *JSONQ {
+	jq := &JSONQ{
 		queryMap: loadDefaultQueryMap(),
+		option: option{
+			decoder: &DefaultDecoder{},
+		},
 	}
+	for _, option := range options {
+		if err := option(jq); err != nil {
+			jq.addError(err)
+		}
+	}
+	return jq
 }
 
 // empty represents an empty result
@@ -26,16 +35,17 @@ type query struct {
 
 // JSONQ describes a JSONQ type which contains all the state
 type JSONQ struct {
-	queryMap        map[string]QueryFunc
-	node            string
-	raw             json.RawMessage // raw message from source (reader, string or file)
-	rootJSONContent interface{}     // original decoded json data
-	jsonContent     interface{}     // copy of original decoded json data for further processing
-	queryIndex      int
-	queries         []([]query) // nested queries
-	attributes      []string    // select attributes that will be available in final resuls
-	limitRecords    int         // number of records that willbe available in final result
-	errors          []error     // contains all the errors when processing
+	option          option               // contains options for JSONQ
+	queryMap        map[string]QueryFunc // contains query functions
+	node            string               // contains node name
+	raw             json.RawMessage      // raw message from source (reader, string or file)
+	rootJSONContent interface{}          // original decoded json data
+	jsonContent     interface{}          // copy of original decoded json data for further processing
+	queryIndex      int                  // contains number of orWhere query call
+	queries         []([]query)          // nested queries
+	attributes      []string             // select attributes that will be available in final resuls
+	limitRecords    int                  // number of records that willbe available in final result
+	errors          []error              // contains all the errors when processing
 }
 
 // String satisfies stringer interface
@@ -45,8 +55,8 @@ func (j *JSONQ) String() string {
 
 // decode decodes the raw message to Go data structure
 func (j *JSONQ) decode() *JSONQ {
-	err := json.Unmarshal(j.raw, &j.rootJSONContent)
-	if err != nil {
+	if err := j.option.decoder.
+		Decode(j.raw, &j.rootJSONContent); err != nil {
 		return j.addError(err)
 	}
 	j.jsonContent = j.rootJSONContent
@@ -129,13 +139,13 @@ func (j *JSONQ) From(node string) *JSONQ {
 	return j
 }
 
-// Select select the properties from query result
+// Select use for selection of the properties from query result
 func (j *JSONQ) Select(properties ...string) *JSONQ {
 	j.attributes = append(j.attributes, properties...)
 	return j
 }
 
-// Limit limit the number of records in result
+// Limit limits the number of records in result
 func (j *JSONQ) Limit(limit int) *JSONQ {
 	j.limitRecords = limit
 	return j
