@@ -42,7 +42,7 @@ type JSONQ struct {
 	rootJSONContent interface{}          // original decoded json data
 	jsonContent     interface{}          // copy of original decoded json data for further processing
 	queryIndex      int                  // contains number of orWhere query call
-	queries         []([]query)          // nested queries
+	queries         [][]query            // nested queries
 	attributes      []string             // select attributes that will be available in final resuls
 	limitRecords    int                  // number of records that willbe available in final result
 	errors          []error              // contains all the errors when processing
@@ -268,7 +268,8 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 	orPassed := false
 	for _, qList := range j.queries {
 		andPassed := true
-		for _, q := range qList {
+		for idx := 0; idx < len(qList); idx++ {
+			q := qList[idx]
 			cf, ok := j.queryMap[q.operator]
 			if !ok {
 				j.addError(fmt.Errorf("invalid operator %s", q.operator))

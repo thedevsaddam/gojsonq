@@ -42,21 +42,21 @@ func toFloat64(v interface{}) (float64, bool) {
 	var f float64
 	flag := true
 	// as Go convert the json Numeric value to float64
-	switch v.(type) {
+	switch u := v.(type) {
 	case int:
-		f = float64(v.(int))
+		f = float64(u)
 	case int8:
-		f = float64(v.(int8))
+		f = float64(u)
 	case int16:
-		f = float64(v.(int16))
+		f = float64(u)
 	case int32:
-		f = float64(v.(int32))
+		f = float64(u)
 	case int64:
-		f = float64(v.(int64))
+		f = float64(u)
 	case float32:
-		f = float64(v.(float32))
+		f = float64(u)
 	case float64:
-		f = v.(float64)
+		f = u
 	default:
 		flag = false
 	}
