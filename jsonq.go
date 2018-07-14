@@ -42,7 +42,7 @@ type JSONQ struct {
 	rootJSONContent interface{}          // original decoded json data
 	jsonContent     interface{}          // copy of original decoded json data for further processing
 	queryIndex      int                  // contains number of orWhere query call
-	queries         []([]query)          // nested queries
+	queries         [][]query            // nested queries
 	attributes      []string             // select attributes that will be available in final resuls
 	limitRecords    int                  // number of records that willbe available in final result
 	errors          []error              // contains all the errors when processing
