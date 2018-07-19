@@ -7,14 +7,15 @@ gojsonq
 [![GoDoc](https://godoc.org/github.com/thedevsaddam/gojsonq?status.svg)](https://godoc.org/github.com/thedevsaddam/gojsonq)
 [![License](https://img.shields.io/dub/l/vibe-d.svg)](LICENSE.md)
 
-A simple Go package to Query over JSON Data
-
+A simple Go package to Query over JSON Data. It provides [simple](https://github.com/thedevsaddam/gojsonq/wiki/Queries#jsonstringjson), [elegant](https://github.com/thedevsaddam/gojsonq/wiki/Queries#selectproperties) and [fast](https://github.com/thedevsaddam/gojsonq/wiki/Benchmark) [ODM](https://github.com/thedevsaddam/gojsonq/wiki/Queries#frompath) like API to access, query JSON document
 
 ### Installation
 
 Install the package using
 ```go
 $ go get github.com/thedevsaddam/gojsonq
+// or
+$ go get gopkg.in/thedevsaddam/gojsonq.v1
 ```
 
 ### Usage
@@ -22,6 +23,8 @@ $ go get github.com/thedevsaddam/gojsonq
 To use the package import it in your `*.go` code
 ```go
 import "github.com/thedevsaddam/gojsonq"
+// or
+import "gopkg.in/thedevsaddam/gojsonq.v1"
 ```
 
 Let's see a quick example:
@@ -60,7 +63,7 @@ func main() {
 
 ```
 
-You can Query your data using the various query methods such as **[Find](https://github.com/thedevsaddam/gojsonq/wiki/Queries#findpath)**, **[First](https://github.com/thedevsaddam/gojsonq/wiki/Queries#first)**, **[Nth](https://github.com/thedevsaddam/gojsonq/wiki/Queries#nthindex)**, **[Pluck](https://github.com/thedevsaddam/gojsonq/wiki/Queries#pluckproperty)**,  **[Where](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherekey-op-val)**, **[OrWhere](https://github.com/thedevsaddam/gojsonq/wiki/Queries#orwherekey-op-val)**, **[WhereIn](https://github.com/thedevsaddam/gojsonq/wiki/Queries#whereinkey-val)**, **[WhereStartsWith](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherestartswithkey-val)**, **[WhereEndsWith](https://github.com/thedevsaddam/gojsonq/wiki/Queries#whereendswithkey-val)**, **[WhereContains](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherecontainskey-val)**, **[Sort](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sortorder)**,  **[GroupBy](https://github.com/thedevsaddam/gojsonq/wiki/Queries#groupbyproperty)**,  **[SortBy](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sortbyproperty-order)** and so on. Also you can aggregate your data after query using **[Avg](https://github.com/thedevsaddam/gojsonq/wiki/Queries#avgproperty)**,  **[Count](https://github.com/thedevsaddam/gojsonq/wiki/Queries#count)**, **[Max](https://github.com/thedevsaddam/gojsonq/wiki/Queries#maxproperty)**, **[Min](https://github.com/thedevsaddam/gojsonq/wiki/Queries#minproperty)**, **[Sum](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sumproperty)** etc.
+You can query your document using the various query methods such as **[Find](https://github.com/thedevsaddam/gojsonq/wiki/Queries#findpath)**, **[First](https://github.com/thedevsaddam/gojsonq/wiki/Queries#first)**, **[Nth](https://github.com/thedevsaddam/gojsonq/wiki/Queries#nthindex)**, **[Pluck](https://github.com/thedevsaddam/gojsonq/wiki/Queries#pluckproperty)**,  **[Where](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherekey-op-val)**, **[OrWhere](https://github.com/thedevsaddam/gojsonq/wiki/Queries#orwherekey-op-val)**, **[WhereIn](https://github.com/thedevsaddam/gojsonq/wiki/Queries#whereinkey-val)**, **[WhereStartsWith](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherestartswithkey-val)**, **[WhereEndsWith](https://github.com/thedevsaddam/gojsonq/wiki/Queries#whereendswithkey-val)**, **[WhereContains](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherecontainskey-val)**, **[Sort](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sortorder)**,  **[GroupBy](https://github.com/thedevsaddam/gojsonq/wiki/Queries#groupbyproperty)**,  **[SortBy](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sortbyproperty-order)** and so on. Also you can aggregate data after query using **[Avg](https://github.com/thedevsaddam/gojsonq/wiki/Queries#avgproperty)**,  **[Count](https://github.com/thedevsaddam/gojsonq/wiki/Queries#count)**, **[Max](https://github.com/thedevsaddam/gojsonq/wiki/Queries#maxproperty)**, **[Min](https://github.com/thedevsaddam/gojsonq/wiki/Queries#minproperty)**, **[Sum](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sumproperty)** etc.
 
 ## Find more query API in [Wiki page](https://github.com/thedevsaddam/gojsonq/wiki/Queries)
 
@@ -79,9 +82,11 @@ Special thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiratio
 ## Contributors
 * [Lenin Hasda](https://github.com/leninhasda)
 * [Sadlil Rhythom](https://github.com/sadlil)
+* [See contributors list here](https://github.com/thedevsaddam/gojsonq/graphs/contributors)
 
 ## Contribution
 If you are interested to make the package better please send pull requests or create an issue so that others can fix.
 [Read the contribution guide here](CONTRIBUTING.md)
 
-## See all [contributors](https://github.com/thedevsaddam/gojsonq/graphs/contributors)
+## License
+The **gojsonq** is an open-source software licensed under the [MIT License](LICENSE.md).
