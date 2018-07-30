@@ -1078,6 +1078,24 @@ func TestJSONQ_Limit_invalid_number_should_return_error(t *testing.T) {
 	}
 }
 
+func TestJSONQ_WhereLenEqual(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		WhereLenEqual("name.first", 4)
+	expected := `[{"id":1,"name":{"first":"John","last":"Ramboo"}},{"id":3,"name":{"first":"John","last":"Doe"}}]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "single WhereLenEqual")
+}
+
+func TestJSONQ_WhereLenNotEqual(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).
+		From("users").
+		WhereLenNotEqual("name.first", 4)
+	expected := `[{"id":2,"name":{"first":"Ethan","last":"Hunt"}}]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "single WhereLenEqual")
+}
+
 // ======================== Benchmark ======================== //
 
 func Benchmark_Copy(b *testing.B) {
@@ -1161,5 +1179,19 @@ func Benchmark_From_SortBy(b *testing.B) {
 	jq := New().JSONString(jsonStr)
 	for n := 0; n < b.N; n++ {
 		jq.From("vendor.items").SortBy("price")
+	}
+}
+
+func Benchmark_From_Where_nested_element_Get(b *testing.B) {
+	jq := New().JSONString(jsonStrUsers)
+	for n := 0; n < b.N; n++ {
+		jq.From("users").WhereEqual("name.first", "John").Get()
+	}
+}
+
+func Benchmark_From_WhereLenEqual_Get(b *testing.B) {
+	jq := New().JSONString(jsonStr)
+	for n := 0; n < b.N; n++ {
+		jq.From("vendor.items").WhereLenEqual("name", 10).Get()
 	}
 }

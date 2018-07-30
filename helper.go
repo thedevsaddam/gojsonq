@@ -248,3 +248,15 @@ func makeAlias(in string) (string, string) {
 
 	return in, in
 }
+
+// length return length of strings/array/map
+func length(v interface{}) (int, error) {
+	if val, ok := v.(string); ok {
+		return len(val), nil
+	} else if val, ok := v.([]interface{}); ok {
+		return len(val), nil
+	} else if val, ok := v.(map[string]interface{}); ok {
+		return len(val), nil
+	}
+	return -1, errors.New("invalid type for length")
+}

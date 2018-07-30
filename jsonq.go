@@ -249,6 +249,16 @@ func (j *JSONQ) WhereStrictContains(key string, val interface{}) *JSONQ {
 	return j.Where(key, signStrictContains, val)
 }
 
+// WhereLenEqual is an alias of Where("key", "leneq", val)
+func (j *JSONQ) WhereLenEqual(key string, val interface{}) *JSONQ {
+	return j.Where(key, signLenEq, val)
+}
+
+// WhereLenNotEqual is an alias of Where("key", "lenneq", val)
+func (j *JSONQ) WhereLenNotEqual(key string, val interface{}) *JSONQ {
+	return j.Where(key, signLenNotEq, val)
+}
+
 // findInArray traverses through a list and returns the value list.
 // This helps to process Where/OrWhere queries
 func (j *JSONQ) findInArray(aa []interface{}) []interface{} {

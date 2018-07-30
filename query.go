@@ -27,6 +27,13 @@ const (
 	signStartsWith     = "startsWith"
 	signIn             = "in"
 	signNotIn          = "notIn"
+
+	signLenEq    = "leneq"
+	signLenNotEq = "lenneq"
+	signLenGt    = "lengt"
+	signLenGte   = "lengte"
+	signLenLt    = "lenlt"
+	signLenLte   = "lenlte"
 )
 
 // QueryFunc describes a conditional function which perform comparison
@@ -185,6 +192,90 @@ func notIn(x, y interface{}) (bool, error) {
 	return !b, err
 }
 
+// lenEq checks if the string/array/list value is equal
+func lenEq(x, y interface{}) (bool, error) {
+	yv, ok := y.(int)
+	if !ok {
+		return false, fmt.Errorf("%v must be integer", y)
+	}
+	xv, err := length(x)
+	if err != nil {
+		return false, err
+	}
+
+	return xv == yv, nil
+}
+
+// lenNotEq checks if the string/array/list value is not equal
+func lenNotEq(x, y interface{}) (bool, error) {
+	yv, ok := y.(int)
+	if !ok {
+		return false, fmt.Errorf("%v must be integer", y)
+	}
+	xv, err := length(x)
+	if err != nil {
+		return false, err
+	}
+
+	return xv != yv, nil
+}
+
+// lenGt checks if the string/array/list value is greater
+func lenGt(x, y interface{}) (bool, error) {
+	yv, ok := y.(int)
+	if !ok {
+		return false, fmt.Errorf("%v must be integer", y)
+	}
+	xv, err := length(x)
+	if err != nil {
+		return false, err
+	}
+
+	return xv > yv, nil
+}
+
+// lenLt checks if the string/array/list value is less
+func lenLt(x, y interface{}) (bool, error) {
+	yv, ok := y.(int)
+	if !ok {
+		return false, fmt.Errorf("%v must be integer", y)
+	}
+	xv, err := length(x)
+	if err != nil {
+		return false, err
+	}
+
+	return xv < yv, nil
+}
+
+// lenGte checks if the string/array/list value is greater than equal
+func lenGte(x, y interface{}) (bool, error) {
+	yv, ok := y.(int)
+	if !ok {
+		return false, fmt.Errorf("%v must be integer", y)
+	}
+	xv, err := length(x)
+	if err != nil {
+		return false, err
+	}
+
+	return xv >= yv, nil
+}
+
+// lenLte checks if the string/array/list value is less than equal
+func lenLte(x, y interface{}) (bool, error) {
+	yv, ok := y.(int)
+	if !ok {
+		return false, fmt.Errorf("%v must be integer", y)
+	}
+	xv, err := length(x)
+	if err != nil {
+		return false, err
+	}
+
+	return xv <= yv, nil
+}
+
 func loadDefaultQueryMap() map[string]QueryFunc {
 	// queryMap contains the registered conditional functions
 	var queryMap = make(map[string]QueryFunc)
@@ -215,6 +306,15 @@ func loadDefaultQueryMap() map[string]QueryFunc {
 
 	queryMap[signIn] = in
 	queryMap[signNotIn] = notIn
+
+	queryMap[signLenEq] = lenEq
+	queryMap[signLenNotEq] = lenNotEq
+
+	queryMap[signLenGt] = lenGt
+	queryMap[signLenGte] = lenGte
+
+	queryMap[signLenLt] = lenLt
+	queryMap[signLenLte] = lenLte
 
 	return queryMap
 }

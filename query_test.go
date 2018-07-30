@@ -549,8 +549,248 @@ func Test_notIn(t *testing.T) {
 	}
 }
 
+func Test_lenEq(t *testing.T) {
+	testCases := []struct {
+		x        interface{}
+		y        interface{}
+		expected bool
+	}{
+		{
+			x:        []interface{}{"river", "sun", "moon"},
+			y:        3,
+			expected: true,
+		},
+		{
+			x:        "sun",
+			y:        3,
+			expected: true,
+		},
+		{
+			x:        100,
+			y:        3,
+			expected: false,
+		},
+		{
+			x:        100,
+			y:        3,
+			expected: false,
+		},
+		{
+			x:        "moon",
+			y:        4.0,
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		if o, _ := lenEq(tc.x, tc.y); o != tc.expected {
+			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
+		}
+	}
+}
+
+func Test_lenNotEq(t *testing.T) {
+	testCases := []struct {
+		x        interface{}
+		y        interface{}
+		expected bool
+	}{
+		{
+			x:        []interface{}{"river", "sun", "moon"},
+			y:        6,
+			expected: true,
+		},
+		{
+			x:        "sun",
+			y:        8,
+			expected: true,
+		},
+		{
+			x:        "moon",
+			y:        4,
+			expected: false,
+		},
+		{
+			x:        100.6,
+			y:        4,
+			expected: false,
+		},
+		{
+			x:        "moon",
+			y:        4.0,
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		if o, _ := lenNotEq(tc.x, tc.y); o != tc.expected {
+			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
+		}
+	}
+}
+
+func Test_lenGt(t *testing.T) {
+	testCases := []struct {
+		x        interface{}
+		y        interface{}
+		expected bool
+	}{
+		{
+			x:        []interface{}{"river", "sun", "moon"},
+			y:        6,
+			expected: false,
+		},
+		{
+			x:        "sun",
+			y:        2,
+			expected: true,
+		},
+		{
+			x:        "moon",
+			y:        2,
+			expected: true,
+		},
+		{
+			x:        100.6,
+			y:        4,
+			expected: false,
+		},
+		{
+			x:        "moon",
+			y:        4.0,
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		if o, _ := lenGt(tc.x, tc.y); o != tc.expected {
+			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
+		}
+	}
+}
+
+func Test_lenLt(t *testing.T) {
+	testCases := []struct {
+		x        interface{}
+		y        interface{}
+		expected bool
+	}{
+		{
+			x:        []interface{}{"river", "sun", "moon"},
+			y:        6,
+			expected: true,
+		},
+		{
+			x:        "sun",
+			y:        20,
+			expected: true,
+		},
+		{
+			x:        "moon",
+			y:        3,
+			expected: false,
+		},
+		{
+			x:        100.6,
+			y:        4,
+			expected: false,
+		},
+		{
+			x:        "john",
+			y:        4.0,
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		if o, _ := lenLt(tc.x, tc.y); o != tc.expected {
+			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
+		}
+	}
+}
+
+func Test_lenGte(t *testing.T) {
+	testCases := []struct {
+		x        interface{}
+		y        interface{}
+		expected bool
+	}{
+		{
+			x:        []interface{}{"river", "sun", "moon"},
+			y:        3,
+			expected: true,
+		},
+		{
+			x:        "sun",
+			y:        2,
+			expected: true,
+		},
+		{
+			x:        "jane",
+			y:        5,
+			expected: false,
+		},
+		{
+			x:        100.6,
+			y:        4,
+			expected: false,
+		},
+		{
+			x:        "moon",
+			y:        4.0,
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		if o, _ := lenGte(tc.x, tc.y); o != tc.expected {
+			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
+		}
+	}
+}
+
+func Test_lenLte(t *testing.T) {
+	testCases := []struct {
+		x        interface{}
+		y        interface{}
+		expected bool
+	}{
+		{
+			x:        []interface{}{"river", "sun", "moon"},
+			y:        3,
+			expected: true,
+		},
+		{
+			x:        "sun",
+			y:        12,
+			expected: true,
+		},
+		{
+			x:        "jane",
+			y:        2,
+			expected: false,
+		},
+		{
+			x:        100.6,
+			y:        4,
+			expected: false,
+		},
+		{
+			x:        "moon",
+			y:        4.0,
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		if o, _ := lenLte(tc.x, tc.y); o != tc.expected {
+			t.Errorf("for %v expected: %v got: %v", tc.x, tc.expected, o)
+		}
+	}
+}
+
 func Test_loadDefaultQueryMap(t *testing.T) {
-	if len(loadDefaultQueryMap()) != 19 {
+	if len(loadDefaultQueryMap()) != 25 {
 		t.Error("mismatched default query map size")
 	}
 }

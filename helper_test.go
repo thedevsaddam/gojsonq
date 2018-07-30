@@ -419,3 +419,46 @@ func Test_makeAlias(t *testing.T) {
 		}
 	}
 }
+
+func Test_length(t *testing.T) {
+	testCases := []struct {
+		tag         string
+		input       interface{}
+		output      int
+		errExpected bool
+	}{
+		{
+			tag:         "scenario 1: should return 5 with no error",
+			input:       "Hello",
+			output:      5,
+			errExpected: false,
+		},
+		{
+			tag:         "scenario 2: must return error with -1",
+			input:       45,
+			output:      -1,
+			errExpected: true,
+		},
+		{
+			tag:         "scenario 3: must return length of array",
+			input:       []interface{}{"john", "31", false},
+			output:      3,
+			errExpected: false,
+		},
+		{
+			tag:         "scenario 4: must return length of map",
+			input:       map[string]interface{}{"name": "john", "age": 31, "is_designer": false},
+			output:      3,
+			errExpected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		out, outErr := length(tc.input)
+		if out != tc.output {
+			if tc.errExpected && outErr == nil {
+				t.Errorf("tag: %s\nExpected: %v\nGot: %v", tc.tag, tc.output, out)
+			}
+		}
+	}
+}
