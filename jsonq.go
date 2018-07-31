@@ -203,13 +203,13 @@ func (j *JSONQ) WhereNotNil(key string) *JSONQ {
 	return j.Where(key, signNotEq, nil)
 }
 
-// WhereIn is an alias for where('key', 'in', []string{"a", "b"})
+// WhereIn is an alias for where("key", "in", []string{"a", "b"})
 func (j *JSONQ) WhereIn(key string, val interface{}) *JSONQ {
 	j.Where(key, signIn, val)
 	return j
 }
 
-// WhereNotIn is an alias for where('key', 'notIn', []string{"a", "b"})
+// WhereNotIn is an alias for where("key", "notIn", []string{"a", "b"})
 func (j *JSONQ) WhereNotIn(key string, val interface{}) *JSONQ {
 	j.Where(key, signNotIn, val)
 	return j
