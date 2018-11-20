@@ -698,6 +698,27 @@ func TestJSONQ_SortBy_expecting_empty_as_provided_node_is_not_list(t *testing.T)
 	assertJSON(t, out, expJSON)
 }
 
+func TestJSONQ_Distinct(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Distinct("price")
+	expected := `[{"id":1,"name":"MacBook Pro 13 inch retina","price":1350},{"id":2,"name":"MacBook Pro 15 inch retina","price":1700},{"id":3,"name":"Sony VAIO","price":1200},{"id":4,"name":"Fujitsu","price":850},{"id":6,"name":"HP core i7","price":950}]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "Distinct expecting result")
+}
+
+func TestJSONQ_Distinct_expecting_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Distinct("invalid_key")
+	expected := `[]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "Distinct expecting empty result")
+	if len(jq.Errors()) == 0 {
+		t.Error("failed to catch Distinct error")
+	}
+}
+
 func TestJSONQ_Only(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
