@@ -380,6 +380,32 @@ func (j *JSONQ) SortBy(order ...string) *JSONQ {
 	return j.sortBy(order[0], asc)
 }
 
+// Distinct builds distinct value using provided attribute/column/property
+func (j *JSONQ) Distinct(property string) *JSONQ {
+	j.prepare()
+
+	m := map[string]bool{}
+	dt := []interface{}{}
+	if aa, ok := j.jsonContent.([]interface{}); ok {
+		for _, a := range aa {
+			if vm, ok := a.(map[string]interface{}); ok {
+				v, err := getNestedValue(vm, property)
+				if err != nil {
+					j.addError(err)
+				} else {
+					if _, exist := m[toString(v)]; !exist {
+						dt = append(dt, vm)
+						m[toString(v)] = true
+					}
+				}
+			}
+		}
+	}
+	// replace the new result with the previous result
+	j.jsonContent = dt
+	return j
+}
+
 // sortBy sorts list of map
 func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	sortResult, ok := j.jsonContent.([]interface{})
