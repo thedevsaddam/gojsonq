@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"reflect"
 	"strings"
 	"testing"
@@ -881,6 +882,54 @@ func TestJSONQ_Count_expecting_int_from_objects(t *testing.T) {
 	out := jq.Count()
 	expected := `5`
 	assertJSON(t, out, expected, "Count expecting a int number of total item of an array of grouped objects")
+}
+
+func TestJSONQ_Out_expecting_result(t *testing.T) {
+	type item struct {
+		ID    int    `json:"id"`
+		Name  string `json:"name"`
+		Price int    `json:"price"`
+	}
+	exptItm := item{
+		ID:    1,
+		Name:  "MacBook Pro 13 inch retina",
+		Price: 1350,
+	}
+	itm := item{}
+	jq := New().JSONString(jsonStr).
+		From("vendor.items.[0]")
+	jq.Out(&itm)
+	assertInterface(t, exptItm, itm, "failed to get Out result")
+}
+
+func TestJSONQ_Out_expecting_decoding_error(t *testing.T) {
+	type item struct {
+		ID    bool   `json:"id"`
+		Name  string `json:"name"`
+		Price int    `json:"price"`
+	}
+	itm := item{}
+	jq := New().JSONString(jsonStr).
+		From("vendor.items.[0]")
+	jq.Out(&itm)
+	if jq.Error() == nil {
+		t.Errorf("failed to get Out decoding error: %v", jq.Error())
+	}
+}
+
+func TestJSONQ_Out_expecting_encoding_error(t *testing.T) {
+	type item struct {
+		ID    bool   `json:"id"`
+		Name  string `json:"name"`
+		Price int    `json:"price"`
+	}
+	itm := item{}
+	jq := New()
+	jq.jsonContent = math.Inf(1)
+	jq.Out(&itm)
+	if jq.Error() == nil {
+		t.Errorf("failed to get Out encoding error: %v", jq.Error())
+	}
 }
 
 func TestJSONQ_Sum_of_array_numeric_values(t *testing.T) {
