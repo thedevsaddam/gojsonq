@@ -578,6 +578,18 @@ func (j *JSONQ) Count() int {
 	return lnth
 }
 
+// Out write the queried data to defined custom type
+func (j *JSONQ) Out(v interface{}) {
+	data, err := json.Marshal(j.jsonContent)
+	if err != nil {
+		j.addError(err)
+		return
+	}
+	if err := json.Unmarshal(data, &v); err != nil {
+		j.addError(err)
+	}
+}
+
 // getFloatValFromArray returns a list of float64 values from array/map for aggregation
 func (j *JSONQ) getFloatValFromArray(arr []interface{}, property ...string) []float64 {
 	ff := []float64{}
