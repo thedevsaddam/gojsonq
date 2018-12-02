@@ -728,6 +728,14 @@ func TestJSONQ_Only(t *testing.T) {
 	assertJSON(t, out, expected)
 }
 
+func TestJSONQ_Only_with_distinct(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price")
+	expected := `[{"id":1,"price":1350},{"id":2,"price":1700},{"id":3,"price":1200},{"id":4,"price":850},{"id":6,"price":950}]`
+	out := jq.Only("id", "price")
+	assertJSON(t, out, expected)
+}
+
 func TestJSONQ_First_expecting_result(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
@@ -745,6 +753,14 @@ func TestJSONQ_First_expecting_empty_result(t *testing.T) {
 	assertJSON(t, out, expected, "First expecting empty result")
 }
 
+func TestJSONQ_First_distinct_expecting_result(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Where("price", "=", 850)
+	expected := `{"id":4,"name":"Fujitsu","price":850}`
+	out := jq.First()
+	assertJSON(t, out, expected, "First with distinct & where expecting result result")
+}
+
 func TestJSONQ_Last_expecting_result(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
@@ -760,6 +776,14 @@ func TestJSONQ_Last_expecting_empty_result(t *testing.T) {
 	expected := `null`
 	out := jq.Last()
 	assertJSON(t, out, expected, "Last expecting empty result")
+}
+
+func TestJSONQ_Last_distinct_expecting_result(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Where("price", "=", 850)
+	expected := `{"id":4,"name":"Fujitsu","price":850}`
+	out := jq.Last()
+	assertJSON(t, out, expected, "Last with distinct & where expecting result result")
 }
 
 func TestJSONQ_Nth_expecting_result(t *testing.T) {
@@ -829,6 +853,14 @@ func TestJSONQ_Nth_expecting_empty_result_as_node_is_object(t *testing.T) {
 	assertJSON(t, out, expected, "Nth expecting empty result if the node is a object")
 }
 
+func TestJSONQ_Nth_distinct_expecting_result(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price")
+	expected := `{"id":1,"name":"MacBook Pro 13 inch retina","price":1350}`
+	out := jq.Nth(1)
+	assertJSON(t, out, expected, "Last with distinct & where expecting result result")
+}
+
 func TestJSONQ_Find_simple_property(t *testing.T) {
 	jq := New().JSONString(jsonStr)
 	out := jq.Find("name")
@@ -859,6 +891,14 @@ func TestJSONQ_Pluck_expecting_empty_list_of_float64(t *testing.T) {
 	assertJSON(t, out, expected, "Pluck expecting empty list from list of objects, because of invalid property name")
 }
 
+func TestJSONQ_Pluck_expecting_with_distinct(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Limit(3)
+	out := jq.Pluck("price")
+	expected := `[1350,1700,1200]`
+	assertJSON(t, out, expected, "Expecting distinct price with limit 3")
+}
+
 func TestJSONQ_Count_expecting_int_from_list(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
@@ -882,6 +922,14 @@ func TestJSONQ_Count_expecting_int_from_objects(t *testing.T) {
 	out := jq.Count()
 	expected := `5`
 	assertJSON(t, out, expected, "Count expecting a int number of total item of an array of grouped objects")
+}
+
+func TestJSONQ_Count_with_Distinct_expecting_int_from_objects(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price")
+	out := jq.Count()
+	expected := `5`
+	assertJSON(t, out, expected, "Count expecting a int number of total item of an array of distinct priced objects")
 }
 
 func TestJSONQ_Out_expecting_result(t *testing.T) {
@@ -1017,6 +1065,14 @@ func TestJSONQ_Sum_expecting_result_from_nested_object(t *testing.T) {
 	out := jq.Sum("price")
 	expected := `1350`
 	assertJSON(t, out, expected, "Sum expecting result from nested object")
+}
+
+func TestJSONQ_Sum_of_distinct_array_numeric_values(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Limit(3)
+	out := jq.Sum("price")
+	expected := `4250`
+	assertJSON(t, out, expected, "Sum expecting sum a distinct & limited array")
 }
 
 func TestJSONQ_Avg_array(t *testing.T) {

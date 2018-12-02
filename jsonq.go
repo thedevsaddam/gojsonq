@@ -35,17 +35,18 @@ type query struct {
 
 // JSONQ describes a JSONQ type which contains all the state
 type JSONQ struct {
-	option          option               // contains options for JSONQ
-	queryMap        map[string]QueryFunc // contains query functions
-	node            string               // contains node name
-	raw             json.RawMessage      // raw message from source (reader, string or file)
-	rootJSONContent interface{}          // original decoded json data
-	jsonContent     interface{}          // copy of original decoded json data for further processing
-	queryIndex      int                  // contains number of orWhere query call
-	queries         [][]query            // nested queries
-	attributes      []string             // select attributes that will be available in final resuls
-	limitRecords    int                  // number of records that willbe available in final result
-	errors          []error              // contains all the errors when processing
+	option           option               // contains options for JSONQ
+	queryMap         map[string]QueryFunc // contains query functions
+	node             string               // contains node name
+	raw              json.RawMessage      // raw message from source (reader, string or file)
+	rootJSONContent  interface{}          // original decoded json data
+	jsonContent      interface{}          // copy of original decoded json data for further processing
+	queryIndex       int                  // contains number of orWhere query call
+	queries          [][]query            // nested queries
+	attributes       []string             // select attributes that will be available in final resuls
+	limitRecords     int                  // number of records that willbe available in final result
+	distinctProperty string               // contain the distinct attribute name
+	errors           []error              // contains all the errors when processing
 }
 
 // String satisfies stringer interface
@@ -382,14 +383,18 @@ func (j *JSONQ) SortBy(order ...string) *JSONQ {
 
 // Distinct builds distinct value using provided attribute/column/property
 func (j *JSONQ) Distinct(property string) *JSONQ {
-	j.prepare()
+	j.distinctProperty = property
+	return j
+}
 
+// distinct builds distinct value using provided attribute/column/property
+func (j *JSONQ) distinct() *JSONQ {
 	m := map[string]bool{}
 	dt := []interface{}{}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, a := range aa {
 			if vm, ok := a.(map[string]interface{}); ok {
-				v, err := getNestedValue(vm, property)
+				v, err := getNestedValue(vm, j.distinctProperty)
 				if err != nil {
 					j.addError(err)
 				} else {
@@ -435,6 +440,9 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 // only return selected properties in result
 func (j *JSONQ) only(properties ...string) interface{} {
 	result := []interface{}{}
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, am := range aa {
 			tmap := map[string]interface{}{}
@@ -463,6 +471,12 @@ func (j *JSONQ) Only(properties ...string) interface{} {
 // Pluck build an array of vlaues form a property of a list of objects
 func (j *JSONQ) Pluck(property string) interface{} {
 	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
+	if j.limitRecords != 0 {
+		j.limit()
+	}
 	result := []interface{}{}
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, am := range aa {
@@ -484,6 +498,7 @@ func (j *JSONQ) reset() *JSONQ {
 	j.attributes = make([]string, 0)
 	j.queryIndex = 0
 	j.limitRecords = 0
+	j.distinctProperty = ""
 	return j
 }
 
@@ -495,6 +510,9 @@ func (j *JSONQ) Reset() *JSONQ {
 // Get return the result
 func (j *JSONQ) Get() interface{} {
 	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
 	if j.limitRecords != 0 {
 		j.limit()
 	}
@@ -506,8 +524,11 @@ func (j *JSONQ) Get() interface{} {
 
 // First returns the first element of a list
 func (j *JSONQ) First() interface{} {
-	res := j.prepare().jsonContent
-	if arr, ok := res.([]interface{}); ok {
+	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
+	if arr, ok := j.jsonContent.([]interface{}); ok {
 		if len(arr) > 0 {
 			return arr[0]
 		}
@@ -517,8 +538,11 @@ func (j *JSONQ) First() interface{} {
 
 // Last returns the last element of a list
 func (j *JSONQ) Last() interface{} {
-	res := j.prepare().jsonContent
-	if arr, ok := res.([]interface{}); ok {
+	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
+	if arr, ok := j.jsonContent.([]interface{}); ok {
 		if l := len(arr); l > 0 {
 			return arr[l-1]
 		}
@@ -533,8 +557,11 @@ func (j *JSONQ) Nth(index int) interface{} {
 		return empty
 	}
 
-	res := j.prepare().jsonContent
-	if arr, ok := res.([]interface{}); ok {
+	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
+	if arr, ok := j.jsonContent.([]interface{}); ok {
 		alen := len(arr)
 		if alen == 0 {
 			j.addError(fmt.Errorf("list is empty"))
@@ -561,6 +588,9 @@ func (j *JSONQ) Find(path string) interface{} {
 // This could be a length of list/array/map
 func (j *JSONQ) Count() int {
 	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
 	lnth := 0
 	// list of items
 	if list, ok := j.jsonContent.([]interface{}); ok {
@@ -580,7 +610,7 @@ func (j *JSONQ) Count() int {
 
 // Out write the queried data to defined custom type
 func (j *JSONQ) Out(v interface{}) {
-	data, err := json.Marshal(j.jsonContent)
+	data, err := json.Marshal(j.Get())
 	if err != nil {
 		j.addError(err)
 		return
@@ -626,6 +656,12 @@ func (j *JSONQ) getFloatValFromArray(arr []interface{}, property ...string) []fl
 // getAggregationValues returns a list of float64 values for aggregation
 func (j *JSONQ) getAggregationValues(property ...string) []float64 {
 	j.prepare()
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
+	if j.limitRecords != 0 {
+		j.limit()
+	}
 
 	ff := []float64{}
 	if arr, ok := j.jsonContent.([]interface{}); ok {
