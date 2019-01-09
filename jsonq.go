@@ -492,6 +492,7 @@ func (j *JSONQ) Pluck(property string) interface{} {
 
 // reset resets the current state of JSONQ instance
 func (j *JSONQ) reset() *JSONQ {
+	j.raw = nil
 	j.jsonContent = j.rootJSONContent
 	j.node = ""
 	j.queries = make([][]query, 0)
@@ -618,6 +619,19 @@ func (j *JSONQ) Out(v interface{}) {
 	if err := json.Unmarshal(data, &v); err != nil {
 		j.addError(err)
 	}
+}
+
+// More provides the functionalities to query over the resultant data. See https://github.com/thedevsaddam/gojsonq/wiki/Queries#More
+func (j *JSONQ) More() *JSONQ {
+	j.raw = nil
+	j.rootJSONContent = j.Get()
+	j.node = ""
+	j.queries = make([][]query, 0)
+	j.attributes = make([]string, 0)
+	j.queryIndex = 0
+	j.limitRecords = 0
+	j.distinctProperty = ""
+	return j
 }
 
 // getFloatValFromArray returns a list of float64 values from array/map for aggregation

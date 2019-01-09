@@ -1222,6 +1222,16 @@ func TestJSONQ_WhereLenNotEqual(t *testing.T) {
 	assertJSON(t, out, expected, "single WhereLenEqual")
 }
 
+func TestJSONQ_More(t *testing.T) {
+	jq := New().JSONString(jsonStrUsers).From("users")
+	jq.Where("id", "<", 3)
+	jq.More() // start query again
+	jq.Where("id", ">", 1)
+	expected := `[{"id":2,"name":{"first":"Ethan","last":"Hunt"}}]`
+	out := jq.Get()
+	assertJSON(t, out, expected, "More")
+}
+
 // ======================== Benchmark ======================== //
 
 func Benchmark_Copy(b *testing.B) {
