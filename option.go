@@ -26,7 +26,7 @@ func SetDecoder(u Decoder) OptionFunc {
 func SetSeparator(s string) OptionFunc {
 	return func(j *JSONQ) error {
 		if s == "" {
-			return errors.New("seperator can not be empty")
+			return errors.New("separator can not be empty")
 		}
 		j.option.separator = s
 		return nil
