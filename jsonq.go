@@ -13,7 +13,8 @@ func New(options ...OptionFunc) *JSONQ {
 	jq := &JSONQ{
 		queryMap: loadDefaultQueryMap(),
 		option: option{
-			decoder: &DefaultDecoder{},
+			decoder:   &DefaultDecoder{},
+			separator: defaultSeperator,
 		},
 	}
 	for _, option := range options {
@@ -26,6 +27,8 @@ func New(options ...OptionFunc) *JSONQ {
 
 // empty represents an empty result
 var empty interface{}
+
+const defaultSeperator = "."
 
 // query describes a query
 type query struct {
@@ -132,7 +135,7 @@ func (j *JSONQ) Macro(operator string, fn QueryFunc) *JSONQ {
 // From seeks the json content to provided node. e.g: "users.[0]"  or "users.[0].name"
 func (j *JSONQ) From(node string) *JSONQ {
 	j.node = node
-	v, err := getNestedValue(j.jsonContent, node)
+	v, err := getNestedValue(j.jsonContent, node, j.option.separator)
 	if err != nil {
 		j.addError(err)
 	}
@@ -285,7 +288,7 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 				j.addError(fmt.Errorf("invalid operator %s", q.operator))
 				return result
 			}
-			nv, errnv := getNestedValue(vm, q.key)
+			nv, errnv := getNestedValue(vm, q.key, j.option.separator)
 			if errnv != nil {
 				j.addError(errnv)
 				andPassed = false
@@ -330,7 +333,7 @@ func (j *JSONQ) GroupBy(property string) *JSONQ {
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, a := range aa {
 			if vm, ok := a.(map[string]interface{}); ok {
-				v, err := getNestedValue(vm, property)
+				v, err := getNestedValue(vm, property, j.option.separator)
 				if err != nil {
 					j.addError(err)
 				} else {
@@ -394,7 +397,7 @@ func (j *JSONQ) distinct() *JSONQ {
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, a := range aa {
 			if vm, ok := a.(map[string]interface{}); ok {
-				v, err := getNestedValue(vm, j.distinctProperty)
+				v, err := getNestedValue(vm, j.distinctProperty, j.option.separator)
 				if err != nil {
 					j.addError(err)
 				} else {
@@ -422,6 +425,7 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	}
 
 	sm := &sortMap{}
+	sm.seperator = j.option.separator
 	sm.key = property
 	if !asc {
 		sm.desc = true
@@ -448,7 +452,7 @@ func (j *JSONQ) only(properties ...string) interface{} {
 			tmap := map[string]interface{}{}
 			for _, prop := range properties {
 				node, alias := makeAlias(prop)
-				rv, errV := getNestedValue(am, node)
+				rv, errV := getNestedValue(am, node, j.option.separator)
 				if errV != nil {
 					j.addError(errV)
 					continue

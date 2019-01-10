@@ -103,10 +103,11 @@ func sortList(list []interface{}, asc bool) []interface{} {
 }
 
 type sortMap struct {
-	data interface{}
-	key  string
-	desc bool
-	errs []error
+	data      interface{}
+	key       string
+	desc      bool
+	seperator string
+	errs      []error
 }
 
 // Sort sorts the slice of maps
@@ -141,11 +142,11 @@ func (s *sortMap) Less(i, j int) (res bool) {
 
 	// compare nested values
 	if strings.Contains(s.key, ".") {
-		xv, errX := getNestedValue(x, s.key)
+		xv, errX := getNestedValue(x, s.key, s.seperator)
 		if errX != nil {
 			s.errs = append(s.errs, errX)
 		}
-		yv, errY := getNestedValue(y, s.key)
+		yv, errY := getNestedValue(y, s.key, s.seperator)
 		if errY != nil {
 			s.errs = append(s.errs, errY)
 		}
@@ -189,8 +190,8 @@ func (s *sortMap) compare(x, y interface{}) (res bool) {
 }
 
 // getNestedValue fetch nested value from node
-func getNestedValue(input interface{}, node string) (interface{}, error) {
-	pp := strings.Split(node, ".")
+func getNestedValue(input interface{}, node, seperator string) (interface{}, error) {
+	pp := strings.Split(node, seperator)
 	for _, n := range pp {
 		if isIndex(n) {
 			// find slice/array

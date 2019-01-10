@@ -375,7 +375,7 @@ func Test_getNestedValue(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out, err := getNestedValue(content, tc.query)
+		out, err := getNestedValue(content, tc.query, defaultSeperator)
 		if tc.expectError && err == nil {
 			t.Error("failed to catch error")
 		}
