@@ -1,7 +1,7 @@
 gojsonq
 ===============
 [![Build Status](https://travis-ci.org/thedevsaddam/gojsonq.svg?branch=master)](https://travis-ci.org/thedevsaddam/gojsonq)
-[![Project status](https://img.shields.io/badge/version-v1.9-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
+[![Project status](https://img.shields.io/badge/version-v2.0-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thedevsaddam/gojsonq)](https://goreportcard.com/report/github.com/thedevsaddam/gojsonq)
 [![Coverage Status](https://coveralls.io/repos/github/thedevsaddam/gojsonq/badge.svg?branch=master)](https://coveralls.io/github/thedevsaddam/gojsonq?branch=master)
 [![GoDoc](https://godoc.org/github.com/thedevsaddam/gojsonq?status.svg)](https://godoc.org/github.com/thedevsaddam/gojsonq)
@@ -15,7 +15,7 @@ Install the package using
 ```go
 $ go get github.com/thedevsaddam/gojsonq
 // or
-$ go get gopkg.in/thedevsaddam/gojsonq.v1
+$ go get gopkg.in/thedevsaddam/gojsonq.v2
 ```
 
 ### Usage
@@ -24,7 +24,7 @@ To use the package import it in your `*.go` code
 ```go
 import "github.com/thedevsaddam/gojsonq"
 // or
-import "gopkg.in/thedevsaddam/gojsonq.v1"
+import "gopkg.in/thedevsaddam/gojsonq.v2"
 ```
 
 Let's see a quick example:
