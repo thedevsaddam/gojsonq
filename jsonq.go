@@ -425,7 +425,7 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 	}
 
 	sm := &sortMap{}
-	sm.seperator = j.option.separator
+	sm.separator = j.option.separator
 	sm.key = property
 	if !asc {
 		sm.desc = true

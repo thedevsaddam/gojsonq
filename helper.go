@@ -106,7 +106,7 @@ type sortMap struct {
 	data      interface{}
 	key       string
 	desc      bool
-	seperator string
+	separator string
 	errs      []error
 }
 
@@ -142,11 +142,11 @@ func (s *sortMap) Less(i, j int) (res bool) {
 
 	// compare nested values
 	if strings.Contains(s.key, ".") {
-		xv, errX := getNestedValue(x, s.key, s.seperator)
+		xv, errX := getNestedValue(x, s.key, s.separator)
 		if errX != nil {
 			s.errs = append(s.errs, errX)
 		}
-		yv, errY := getNestedValue(y, s.key, s.seperator)
+		yv, errY := getNestedValue(y, s.key, s.separator)
 		if errY != nil {
 			s.errs = append(s.errs, errY)
 		}
@@ -190,8 +190,8 @@ func (s *sortMap) compare(x, y interface{}) (res bool) {
 }
 
 // getNestedValue fetch nested value from node
-func getNestedValue(input interface{}, node, seperator string) (interface{}, error) {
-	pp := strings.Split(node, seperator)
+func getNestedValue(input interface{}, node, separator string) (interface{}, error) {
+	pp := strings.Split(node, separator)
 	for _, n := range pp {
 		if isIndex(n) {
 			// find slice/array

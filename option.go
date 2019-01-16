@@ -22,7 +22,7 @@ func SetDecoder(u Decoder) OptionFunc {
 	}
 }
 
-// SetSeparator set custom seperator for traversing child node, default seperator is DOT (.)
+// SetSeparator set custom separator for traversing child node, default separator is DOT (.)
 func SetSeparator(s string) OptionFunc {
 	return func(j *JSONQ) error {
 		if s == "" {
