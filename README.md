@@ -1,5 +1,7 @@
 gojsonq
 ===============
+![gojsonq-logo](gojsonq.png)
+
 [![Build Status](https://travis-ci.org/thedevsaddam/gojsonq.svg?branch=master)](https://travis-ci.org/thedevsaddam/gojsonq)
 [![Project status](https://img.shields.io/badge/version-v2.0-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thedevsaddam/gojsonq)](https://goreportcard.com/report/github.com/thedevsaddam/gojsonq)
