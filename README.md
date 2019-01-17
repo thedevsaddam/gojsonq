@@ -1,5 +1,3 @@
-gojsonq
-===============
 ![gojsonq-logo](gojsonq.png)
 
 [![Build Status](https://travis-ci.org/thedevsaddam/gojsonq.svg?branch=master)](https://travis-ci.org/thedevsaddam/gojsonq)
