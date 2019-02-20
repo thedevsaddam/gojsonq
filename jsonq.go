@@ -451,7 +451,7 @@ func (j *JSONQ) only(properties ...string) interface{} {
 		for _, am := range aa {
 			tmap := map[string]interface{}{}
 			for _, prop := range properties {
-				node, alias := makeAlias(prop)
+				node, alias := makeAlias(prop, j.option.separator)
 				rv, errV := getNestedValue(am, node, j.option.separator)
 				if errV != nil {
 					j.addError(errV)
