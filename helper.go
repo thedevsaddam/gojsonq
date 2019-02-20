@@ -141,7 +141,7 @@ func (s *sortMap) Less(i, j int) (res bool) {
 	y := list.Index(j).Interface()
 
 	// compare nested values
-	if strings.Contains(s.key, ".") {
+	if strings.Contains(s.key, s.separator) {
 		xv, errX := getNestedValue(x, s.key, s.separator)
 		if errX != nil {
 			s.errs = append(s.errs, errX)
@@ -232,7 +232,7 @@ func getNestedValue(input interface{}, node, separator string) (interface{}, err
 
 // makeAlias provide syntactic suger. when provide Property name as "user.name as userName"
 // it return userName as output and pure node name like: "user.name". If "user.name" does not use "as" clause then it'll return "user.name", "user.name"
-func makeAlias(in string) (string, string) {
+func makeAlias(in, separator string) (string, string) {
 	const alias = " as "
 	in = strings.Replace(in, " As ", alias, -1)
 	in = strings.Replace(in, " AS ", alias, -1)
@@ -242,8 +242,8 @@ func makeAlias(in string) (string, string) {
 		return strings.TrimSpace(ss[0]), strings.TrimSpace(ss[1])
 	}
 
-	if strings.Contains(in, ".") {
-		ss := strings.Split(in, ".")
+	if strings.Contains(in, separator) {
+		ss := strings.Split(in, separator)
 		return in, ss[len(ss)-1]
 	}
 
