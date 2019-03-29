@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"reflect"
 )
 
 // New returns a new instance of JSONQ
@@ -622,6 +623,31 @@ func (j *JSONQ) Out(v interface{}) {
 	}
 	if err := json.Unmarshal(data, &v); err != nil {
 		j.addError(err)
+	}
+}
+
+// OutPaginate is a wrapper for Out but cuts the slice as per the pagination parameters (only works with pointer of slice/array).
+func (j *JSONQ) OutPaginated(v interface{}, page, perPage int) {
+	j.Out(v)
+	end := perPage * page
+	init := perPage * (page - 1)
+	if init < 0 || end < 0 {
+		return
+	}
+	vType := reflect.TypeOf(v)
+	if vType.Kind() == reflect.Ptr {
+		if vType.Elem().Kind() == reflect.Slice || vType.Elem().Kind() == reflect.Array {
+			genSlice := reflect.ValueOf(v).Elem()
+			if init > genSlice.Len() {
+				init = genSlice.Len()
+			}
+			if end > genSlice.Len() {
+				end = genSlice.Len()
+			}
+			value := reflect.ValueOf(v)
+			direct := reflect.Indirect(value)
+			direct.Set(genSlice.Slice(init, end))
+		}
 	}
 }
 
