@@ -121,6 +121,31 @@ func TestJSONQ_JSONString(t *testing.T) {
 	}
 }
 
+func TestJSONQ_Fromtring(t *testing.T) {
+	testCases := []struct {
+		tag       string
+		inputStr  string
+		errExpect bool
+	}{ // TODO: Doesn't need to test decoder for input content
+		{
+			tag:       "valid json",
+			inputStr:  `{"name": "John Doe", "age": 30}`,
+			errExpect: false,
+		},
+		{
+			tag:       "invalid json should return error",
+			inputStr:  `{"name": "John Doe", "age": 30, "only_key"}`,
+			errExpect: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		if err := New().FromString(tc.inputStr).Error(); err != nil && !tc.errExpect {
+			t.Errorf("failed %s", tc.tag)
+		}
+	}
+}
+
 func TestJSONQ_Reader(t *testing.T) {
 	testCases := []struct {
 		tag       string

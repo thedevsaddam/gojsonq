@@ -84,9 +84,15 @@ func (j *JSONQ) File(filename string) *JSONQ {
 	return j.decode() // handle error
 }
 
-// JSONString reads the json content from valid json string
+// JSONString reads the json content from valid json string // Deprecated: this method will remove in next major release
 func (j *JSONQ) JSONString(json string) *JSONQ {
 	j.raw = []byte(json)
+	return j.decode() // handle error
+}
+
+// FromString reads the content from valid json/xml/csv/yml string
+func (j *JSONQ) FromString(str string) *JSONQ {
+	j.raw = []byte(str)
 	return j.decode() // handle error
 }
 
