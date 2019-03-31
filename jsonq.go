@@ -631,6 +631,15 @@ func (j *JSONQ) Out(v interface{}) {
 	}
 }
 
+// Writer write the queried data to a io.Writer
+func (j *JSONQ) Writer(w io.Writer) {
+	err := json.NewEncoder(w).Encode(j.Get())
+	if err != nil {
+		j.addError(err)
+		return
+	}
+}
+
 // More provides the functionalities to query over the resultant data. See https://github.com/thedevsaddam/gojsonq/wiki/Queries#More
 func (j *JSONQ) More() *JSONQ {
 	j.raw = nil

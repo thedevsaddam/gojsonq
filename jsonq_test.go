@@ -1,6 +1,7 @@
 package gojsonq
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -1002,6 +1003,23 @@ func TestJSONQ_Out_expecting_encoding_error(t *testing.T) {
 	jq.Out(&itm)
 	if jq.Error() == nil {
 		t.Errorf("failed to get Out encoding error: %v", jq.Error())
+	}
+}
+
+func TestJSONQ_Writer_expecting_result(t *testing.T) {
+	var b bytes.Buffer
+	New().JSONString(jsonStr).From("vendor.prices").Writer(&b)
+	expected := "[2400,2100,1200,400.87,89.9,150.1]\n"
+	assertInterface(t, expected, b.String(), "failed to get Writer result")
+}
+
+func TestJSONQ_Writer_encoding_error(t *testing.T) {
+	var b bytes.Buffer
+	jq := New().JSONString(jsonStr)
+	jq.jsonContent = math.Inf(1)
+	jq.Writer(&b)
+	if jq.Error() == nil {
+		t.Errorf("failed to get Writer encoding error: %v", jq.Error())
 	}
 }
 
