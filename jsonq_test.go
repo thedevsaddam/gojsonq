@@ -241,6 +241,13 @@ func TestJSONQ_Select(t *testing.T) {
 	}
 }
 
+func TestJSONQ_Offset(t *testing.T) {
+	jq := New().Offset(3)
+	if jq.offsetRecords != 3 {
+		t.Error("failed to set offset records value")
+	}
+}
+
 func TestJSONQ_Limit(t *testing.T) {
 	jq := New().Limit(12)
 	if jq.limitRecords != 12 {
@@ -1219,6 +1226,33 @@ func TestJSONQ_Get_with_nested_invalid_property_in_Select_method_expecting_error
 	assertJSON(t, out, expected, "nested Select method using alias")
 }
 
+func TestJSONQ_Offset_method(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Offset(4)
+	out := jq.Get()
+	expected := `[{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":6,"name":"HP core i7","price":950},{"id":null,"name":"HP core i3 SSD","price":850}]`
+	assertJSON(t, out, expected, "failed to offset records")
+}
+
+func TestJSONQ_Offset_Where_method(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Offset(4).WhereNotNil("id")
+	out := jq.Get()
+	expected := `[{"id":5,"key":2300,"name":"HP core i5","price":850},{"id":6,"name":"HP core i7","price":950}]`
+	assertJSON(t, out, expected, "failed to limit records")
+}
+
+func TestJSONQ_Offset_greater_than_the_original_value_with_Where_method(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Offset(40).WhereNotNil("id")
+	out := jq.Get()
+	expected := `[]`
+	assertJSON(t, out, expected, "failed to offset records when offset value is greater than the length of orignal result")
+}
+
 func TestJSONQ_Limit_method(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").
@@ -1237,6 +1271,15 @@ func TestJSONQ_Limit_Where_method(t *testing.T) {
 	assertJSON(t, out, expected, "failed to limit records")
 }
 
+func TestJSONQ_Offset_invalid_number_should_return_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").
+		Offset(-2)
+	jq.Get()
+	if jq.Error() == nil {
+		t.Error("failed to catch invalid offset error")
+	}
+}
 func TestJSONQ_Limit_invalid_number_should_return_error(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").

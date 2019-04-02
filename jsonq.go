@@ -47,7 +47,8 @@ type JSONQ struct {
 	queryIndex       int                  // contains number of orWhere query call
 	queries          [][]query            // nested queries
 	attributes       []string             // select attributes that will be available in final resuls
-	limitRecords     int                  // number of records that willbe available in final result
+	offsetRecords    int                  // number of records that will be skipped in final result
+	limitRecords     int                  // number of records that will be available in final result
 	distinctProperty string               // contain the distinct attribute name
 	errors           []error              // contains all the errors when processing
 }
@@ -152,6 +153,28 @@ func (j *JSONQ) From(node string) *JSONQ {
 // Select use for selection of the properties from query result
 func (j *JSONQ) Select(properties ...string) *JSONQ {
 	j.attributes = append(j.attributes, properties...)
+	return j
+}
+
+// Offset skips the number of records in result
+func (j *JSONQ) Offset(offset int) *JSONQ {
+	j.offsetRecords = offset
+	return j
+}
+
+// offset skips the records from result
+func (j *JSONQ) offset() *JSONQ {
+	if list, ok := j.jsonContent.([]interface{}); ok {
+		if j.offsetRecords <= 0 {
+			j.addError(fmt.Errorf("%d is invalid offset", j.offsetRecords))
+			return j
+		}
+		if len(list) > j.offsetRecords {
+			j.jsonContent = list[j.offsetRecords:]
+		} else {
+			j.jsonContent = make([]interface{}, 0)
+		}
+	}
 	return j
 }
 
@@ -508,6 +531,7 @@ func (j *JSONQ) reset() *JSONQ {
 	j.queries = make([][]query, 0)
 	j.attributes = make([]string, 0)
 	j.queryIndex = 0
+	j.offsetRecords = 0
 	j.limitRecords = 0
 	j.distinctProperty = ""
 	return j
@@ -523,6 +547,9 @@ func (j *JSONQ) Get() interface{} {
 	j.prepare()
 	if j.distinctProperty != "" {
 		j.distinct()
+	}
+	if j.offsetRecords != 0 {
+		j.offset()
 	}
 	if j.limitRecords != 0 {
 		j.limit()
