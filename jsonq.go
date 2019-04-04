@@ -165,11 +165,11 @@ func (j *JSONQ) Offset(offset int) *JSONQ {
 // offset skips the records from result
 func (j *JSONQ) offset() *JSONQ {
 	if list, ok := j.jsonContent.([]interface{}); ok {
-		if j.offsetRecords <= 0 {
+		if j.offsetRecords < 0 {
 			j.addError(fmt.Errorf("%d is invalid offset", j.offsetRecords))
 			return j
 		}
-		if len(list) > j.offsetRecords {
+		if len(list) >= j.offsetRecords {
 			j.jsonContent = list[j.offsetRecords:]
 		} else {
 			j.jsonContent = make([]interface{}, 0)
