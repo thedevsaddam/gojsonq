@@ -350,6 +350,12 @@ func (j *JSONQ) prepare() *JSONQ {
 	if len(j.queries) > 0 {
 		j.processQuery()
 	}
+	if j.distinctProperty != "" {
+		j.distinct()
+	}
+	if len(j.attributes) > 0 {
+		j.jsonContent = j.only(j.attributes...)
+	}
 	j.queryIndex = 0
 	return j
 }
@@ -545,17 +551,11 @@ func (j *JSONQ) Reset() *JSONQ {
 // Get return the result
 func (j *JSONQ) Get() interface{} {
 	j.prepare()
-	if j.distinctProperty != "" {
-		j.distinct()
-	}
 	if j.offsetRecords != 0 {
 		j.offset()
 	}
 	if j.limitRecords != 0 {
 		j.limit()
-	}
-	if len(j.attributes) > 0 {
-		return j.only(j.attributes...)
 	}
 	return j.jsonContent
 }
@@ -563,9 +563,6 @@ func (j *JSONQ) Get() interface{} {
 // First returns the first element of a list
 func (j *JSONQ) First() interface{} {
 	j.prepare()
-	if j.distinctProperty != "" {
-		j.distinct()
-	}
 	if arr, ok := j.jsonContent.([]interface{}); ok {
 		if len(arr) > 0 {
 			return arr[0]
@@ -577,9 +574,6 @@ func (j *JSONQ) First() interface{} {
 // Last returns the last element of a list
 func (j *JSONQ) Last() interface{} {
 	j.prepare()
-	if j.distinctProperty != "" {
-		j.distinct()
-	}
 	if arr, ok := j.jsonContent.([]interface{}); ok {
 		if l := len(arr); l > 0 {
 			return arr[l-1]
@@ -596,9 +590,6 @@ func (j *JSONQ) Nth(index int) interface{} {
 	}
 
 	j.prepare()
-	if j.distinctProperty != "" {
-		j.distinct()
-	}
 	if arr, ok := j.jsonContent.([]interface{}); ok {
 		alen := len(arr)
 		if alen == 0 {
@@ -626,9 +617,6 @@ func (j *JSONQ) Find(path string) interface{} {
 // This could be a length of list/array/map
 func (j *JSONQ) Count() int {
 	j.prepare()
-	if j.distinctProperty != "" {
-		j.distinct()
-	}
 	lnth := 0
 	// list of items
 	if list, ok := j.jsonContent.([]interface{}); ok {
