@@ -29,21 +29,23 @@ import "gopkg.in/thedevsaddam/gojsonq.v2"
 
 Let's see a quick example:
 
+[See in playground](https://play.golang.org/p/UiqyllP2vkn)
+
 ```go
 package main
 
 import "github.com/thedevsaddam/gojsonq"
 
-const json = `{"name":{"first":"Tom","last":"Hanks"},"age":61}`
-
 func main() {
+	const json = `{"name":{"first":"Tom","last":"Hanks"},"age":61}`
 	name := gojsonq.New().JSONString(json).Find("name.first")
 	println(name.(string)) // Tom
 }
-
 ```
 
 Another example:
+
+[See in playground](https://play.golang.org/p/QLVxpi6nVbi)
 
 ```go
 package main
@@ -54,13 +56,11 @@ import (
 	"github.com/thedevsaddam/gojsonq"
 )
 
-const json = `{"city":"dhaka","type":"weekly","temperatures":[30,39.9,35.4,33.5,31.6,33.2,30.7]}`
-
 func main() {
+	const json = `{"city":"dhaka","type":"weekly","temperatures":[30,39.9,35.4,33.5,31.6,33.2,30.7]}`
 	avg := gojsonq.New().JSONString(json).From("temperatures").Avg()
-	fmt.Println(avg) // 33.471428571428575
+	fmt.Printf("Average temperature: %.2f", avg) // 33.471428571428575
 }
-
 ```
 
 You can query your document using the various query methods such as **[Find](https://github.com/thedevsaddam/gojsonq/wiki/Queries#findpath)**, **[First](https://github.com/thedevsaddam/gojsonq/wiki/Queries#first)**, **[Nth](https://github.com/thedevsaddam/gojsonq/wiki/Queries#nthindex)**, **[Pluck](https://github.com/thedevsaddam/gojsonq/wiki/Queries#pluckproperty)**,  **[Where](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherekey-op-val)**, **[OrWhere](https://github.com/thedevsaddam/gojsonq/wiki/Queries#orwherekey-op-val)**, **[WhereIn](https://github.com/thedevsaddam/gojsonq/wiki/Queries#whereinkey-val)**, **[WhereStartsWith](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherestartswithkey-val)**, **[WhereEndsWith](https://github.com/thedevsaddam/gojsonq/wiki/Queries#whereendswithkey-val)**, **[WhereContains](https://github.com/thedevsaddam/gojsonq/wiki/Queries#wherecontainskey-val)**, **[Sort](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sortorder)**,  **[GroupBy](https://github.com/thedevsaddam/gojsonq/wiki/Queries#groupbyproperty)**,  **[SortBy](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sortbyproperty-order)** and so on. Also you can aggregate data after query using **[Avg](https://github.com/thedevsaddam/gojsonq/wiki/Queries#avgproperty)**,  **[Count](https://github.com/thedevsaddam/gojsonq/wiki/Queries#count)**, **[Max](https://github.com/thedevsaddam/gojsonq/wiki/Queries#maxproperty)**, **[Min](https://github.com/thedevsaddam/gojsonq/wiki/Queries#minproperty)**, **[Sum](https://github.com/thedevsaddam/gojsonq/wiki/Queries#sumproperty)** etc.
