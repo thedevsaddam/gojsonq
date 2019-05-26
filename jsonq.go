@@ -479,9 +479,7 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 // only return selected properties in result
 func (j *JSONQ) only(properties ...string) interface{} {
 	result := []interface{}{}
-	if j.distinctProperty != "" {
-		j.distinct()
-	}
+
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, am := range aa {
 			tmap := map[string]interface{}{}
