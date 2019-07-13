@@ -342,6 +342,9 @@ func (j *JSONQ) processQuery() *JSONQ {
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		j.jsonContent = j.findInArray(aa)
 	}
+	if obj, ok := j.jsonContent.(map[string]interface{}); ok {
+		j.jsonContent = j.findInMap(obj)
+	}
 	return j
 }
 

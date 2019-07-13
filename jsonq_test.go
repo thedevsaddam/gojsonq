@@ -384,6 +384,16 @@ func TestJSONQ_Where_multiple_where_with_invalid_operand_expecting_error(t *test
 	}
 }
 
+func TestJSONQ_Where_standalone_object(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		Where("name", "eq", "computers").
+		Where("vendor.website", "eq", "www.example.com")
+	expected := `[{"name":"Star Trek"}]`
+	out := jq.Select("vendor.name").Get()
+	assertJSON(t, out, expected, "multiple Where on object")
+}
+
+
 func TestJSONQ_single_WhereEqual(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").
