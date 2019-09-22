@@ -13,6 +13,34 @@ func TestNewResult(t *testing.T) {
 	}
 }
 
+func TestNil(t *testing.T) {
+	result := NewResult(nil)
+	if result.Nil() == false {
+		t.Error("failed to check Nil")
+	}
+}
+func TestBool(t *testing.T) {
+	testCases := []struct {
+		tag       string
+		value     interface{}
+		valExpect bool
+		errExpect bool
+	}{
+		{tag: "bool value as expected", value: true, valExpect: true, errExpect: false},
+		{tag: "invalid bool, error expected", value: 123, valExpect: false, errExpect: true},
+	}
+
+	for _, tc := range testCases {
+		v, err := NewResult(tc.value).Bool()
+		if err != nil && !tc.errExpect {
+			t.Error("bool:", err)
+		}
+		if v != tc.valExpect && !tc.errExpect {
+			t.Errorf("tag: %s\nexpected: %v got %v", tc.tag, tc.valExpect, v)
+		}
+	}
+}
+
 func TestTime(t *testing.T) {
 	layout := "2006-01-02T15:04:05.000Z"
 	str := "2014-11-12T11:45:26.371Z"
@@ -62,28 +90,6 @@ func TestDuration(t *testing.T) {
 			t.Error("duration:", err)
 		}
 		if !reflect.DeepEqual(v, tc.valExpect) && !tc.errExpect {
-			t.Errorf("tag: %s\nexpected: %v got %v", tc.tag, tc.valExpect, v)
-		}
-	}
-}
-
-func TestBool(t *testing.T) {
-	testCases := []struct {
-		tag       string
-		value     interface{}
-		valExpect bool
-		errExpect bool
-	}{
-		{tag: "bool value as expected", value: true, valExpect: true, errExpect: false},
-		{tag: "invalid bool, error expected", value: 123, valExpect: false, errExpect: true},
-	}
-
-	for _, tc := range testCases {
-		v, err := NewResult(tc.value).Bool()
-		if err != nil && !tc.errExpect {
-			t.Error("bool:", err)
-		}
-		if v != tc.valExpect && !tc.errExpect {
 			t.Errorf("tag: %s\nexpected: %v got %v", tc.tag, tc.valExpect, v)
 		}
 	}

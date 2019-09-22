@@ -17,6 +17,11 @@ type Result struct {
 	value interface{}
 }
 
+// Nil check the query has result or not
+func (r *Result) Nil() bool {
+	return r.value == nil
+}
+
 // Bool assert the result to boolean value
 func (r *Result) Bool() (bool, error) {
 	switch v := r.value.(type) {
@@ -52,7 +57,7 @@ func (r *Result) Duration() (time.Duration, error) {
 	}
 }
 
-// String ...
+// String assert the result to String
 func (r *Result) String() (string, error) {
 	switch v := r.value.(type) {
 	case string:
@@ -62,7 +67,7 @@ func (r *Result) String() (string, error) {
 	}
 }
 
-// Int ...
+// Int assert the result to int
 func (r *Result) Int() (int, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -72,7 +77,7 @@ func (r *Result) Int() (int, error) {
 	}
 }
 
-// Int8 ...
+// Int8 assert the result to int8
 func (r *Result) Int8() (int8, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -82,7 +87,7 @@ func (r *Result) Int8() (int8, error) {
 	}
 }
 
-// Int16 ...
+// Int16 assert the result to int16
 func (r *Result) Int16() (int16, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -92,7 +97,7 @@ func (r *Result) Int16() (int16, error) {
 	}
 }
 
-// Int32 ...
+// Int32 assert the result to int32
 func (r *Result) Int32() (int32, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -102,7 +107,7 @@ func (r *Result) Int32() (int32, error) {
 	}
 }
 
-// Int64 ...
+// Int64 assert the result to int64
 func (r *Result) Int64() (int64, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -112,7 +117,7 @@ func (r *Result) Int64() (int64, error) {
 	}
 }
 
-// Uint ...
+// Uint assert the result to uint
 func (r *Result) Uint() (uint, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -122,7 +127,7 @@ func (r *Result) Uint() (uint, error) {
 	}
 }
 
-// Uint8 ...
+// Uint8 assert the result to uint8
 func (r *Result) Uint8() (uint8, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -132,7 +137,7 @@ func (r *Result) Uint8() (uint8, error) {
 	}
 }
 
-// Uint16 ...
+// Uint16 assert the result to uint16
 func (r *Result) Uint16() (uint16, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -142,7 +147,7 @@ func (r *Result) Uint16() (uint16, error) {
 	}
 }
 
-// Uint32 ...
+// Uint32 assert the result to uint32
 func (r *Result) Uint32() (uint32, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -152,7 +157,7 @@ func (r *Result) Uint32() (uint32, error) {
 	}
 }
 
-// Uint64 ...
+// Uint64 assert the result to uint64
 func (r *Result) Uint64() (uint64, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -162,7 +167,7 @@ func (r *Result) Uint64() (uint64, error) {
 	}
 }
 
-// Float32 ...
+// Float32 assert the result to float32
 func (r *Result) Float32() (float32, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -172,7 +177,7 @@ func (r *Result) Float32() (float32, error) {
 	}
 }
 
-// Float64 ...
+// Float64 assert the result to 64
 func (r *Result) Float64() (float64, error) {
 	switch v := r.value.(type) {
 	case float64:
@@ -184,7 +189,7 @@ func (r *Result) Float64() (float64, error) {
 
 // === slcie ===
 
-// BoolSlice ...
+// BoolSlice assert the result to []bool
 func (r *Result) BoolSlice() ([]bool, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -200,7 +205,7 @@ func (r *Result) BoolSlice() ([]bool, error) {
 	}
 }
 
-// TimeSlice ...
+// TimeSlice assert the result to []time.Time
 func (r *Result) TimeSlice(layout string) ([]time.Time, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -220,7 +225,7 @@ func (r *Result) TimeSlice(layout string) ([]time.Time, error) {
 	}
 }
 
-// DurationSlice ...
+// DurationSlice assert the result to []time.Duration
 func (r *Result) DurationSlice() ([]time.Duration, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -250,7 +255,7 @@ func (r *Result) DurationSlice() ([]time.Duration, error) {
 	}
 }
 
-// StringSlice ...
+// StringSlice assert the result to []string
 func (r *Result) StringSlice() ([]string, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -266,7 +271,7 @@ func (r *Result) StringSlice() ([]string, error) {
 	}
 }
 
-// IntSlice ...
+// IntSlice assert the result to []int
 func (r *Result) IntSlice() ([]int, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -282,7 +287,7 @@ func (r *Result) IntSlice() ([]int, error) {
 	}
 }
 
-// Int8Slice ...
+// Int8Slice assert the result to []int8
 func (r *Result) Int8Slice() ([]int8, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -298,7 +303,7 @@ func (r *Result) Int8Slice() ([]int8, error) {
 	}
 }
 
-// Int16Slice ...
+// Int16Slice assert the result to []int16
 func (r *Result) Int16Slice() ([]int16, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -314,7 +319,7 @@ func (r *Result) Int16Slice() ([]int16, error) {
 	}
 }
 
-// Int32Slice ...
+// Int32Slice assert the result to []int32
 func (r *Result) Int32Slice() ([]int32, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -330,7 +335,7 @@ func (r *Result) Int32Slice() ([]int32, error) {
 	}
 }
 
-// Int64Slice ...
+// Int64Slice assert the result to []int64
 func (r *Result) Int64Slice() ([]int64, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -346,7 +351,7 @@ func (r *Result) Int64Slice() ([]int64, error) {
 	}
 }
 
-// UintSlice ...
+// UintSlice assert the result to []uint
 func (r *Result) UintSlice() ([]uint, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -362,7 +367,7 @@ func (r *Result) UintSlice() ([]uint, error) {
 	}
 }
 
-// Uint8Slice ...
+// Uint8Slice assert the result to []uint8
 func (r *Result) Uint8Slice() ([]uint8, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -378,7 +383,7 @@ func (r *Result) Uint8Slice() ([]uint8, error) {
 	}
 }
 
-// Uint16Slice ...
+// Uint16Slice assert the result to []uint16
 func (r *Result) Uint16Slice() ([]uint16, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -394,7 +399,7 @@ func (r *Result) Uint16Slice() ([]uint16, error) {
 	}
 }
 
-// Uint32Slice ...
+// Uint32Slice assert the result to []uint32
 func (r *Result) Uint32Slice() ([]uint32, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -410,7 +415,7 @@ func (r *Result) Uint32Slice() ([]uint32, error) {
 	}
 }
 
-// Uint64Slice ...
+// Uint64Slice assert the result to []uint64
 func (r *Result) Uint64Slice() ([]uint64, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -426,7 +431,7 @@ func (r *Result) Uint64Slice() ([]uint64, error) {
 	}
 }
 
-// Float32Slice ...
+// Float32Slice assert the result to []float32
 func (r *Result) Float32Slice() ([]float32, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
@@ -442,7 +447,7 @@ func (r *Result) Float32Slice() ([]float32, error) {
 	}
 }
 
-// Float64Slice ...
+// Float64Slice assert the result to []float64
 func (r *Result) Float64Slice() ([]float64, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
