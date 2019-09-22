@@ -769,6 +769,15 @@ func TestJSONQ_Only_with_distinct(t *testing.T) {
 	assertJSON(t, out, expected)
 }
 
+func TestJSONQ_OnlyR(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items")
+	result := jq.OnlyR("name", "price")
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
+}
+
 func TestJSONQ_First_expecting_result(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
@@ -794,6 +803,15 @@ func TestJSONQ_First_distinct_expecting_result(t *testing.T) {
 	assertJSON(t, out, expected, "First with distinct & where expecting result result")
 }
 
+func TestJSONQ_FirstR(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Where("price", "=", 850)
+	result := jq.FirstR()
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
+}
+
 func TestJSONQ_Last_expecting_result(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
@@ -817,6 +835,15 @@ func TestJSONQ_Last_distinct_expecting_result(t *testing.T) {
 	expected := `{"id":4,"name":"Fujitsu","price":850}`
 	out := jq.Last()
 	assertJSON(t, out, expected, "Last with distinct & where expecting result result")
+}
+
+func TestJSONQ_LastR(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Where("price", "=", 850)
+	result := jq.LastR()
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
 }
 
 func TestJSONQ_Nth_expecting_result(t *testing.T) {
@@ -894,6 +921,15 @@ func TestJSONQ_Nth_distinct_expecting_result(t *testing.T) {
 	assertJSON(t, out, expected, "Last with distinct & where expecting result result")
 }
 
+func TestJSONQ_NthR(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Distinct("price").Where("price", "=", 850)
+	result := jq.NthR(1)
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
+}
+
 func TestJSONQ_Find_simple_property(t *testing.T) {
 	jq := New().JSONString(jsonStr)
 	out := jq.Find("name")
@@ -906,6 +942,14 @@ func TestJSONQ_Find_nested_property(t *testing.T) {
 	out := jq.Find("vendor.items.[0]")
 	expected := `{"id":1,"name":"MacBook Pro 13 inch retina","price":1350}`
 	assertJSON(t, out, expected, "Find expecting a nested object")
+}
+
+func TestJSONQ_FindR(t *testing.T) {
+	jq := New().JSONString(jsonStr)
+	result := jq.FindR("vendor.items.[0]")
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
 }
 
 func TestJSONQ_Pluck_expecting_list_of_float64(t *testing.T) {
@@ -930,6 +974,14 @@ func TestJSONQ_Pluck_expecting_with_distinct(t *testing.T) {
 	out := jq.Pluck("price")
 	expected := `[1350,1700,1200]`
 	assertJSON(t, out, expected, "Expecting distinct price with limit 3")
+}
+
+func TestJSONQ_PluckR(t *testing.T) {
+	jq := New().JSONString(jsonStr).From("vendor.items")
+	result := jq.PluckR("price")
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
 }
 
 func TestJSONQ_Count_expecting_int_from_list(t *testing.T) {
@@ -1224,6 +1276,15 @@ func TestJSONQ_Get_with_nested_invalid_property_in_Select_method_expecting_error
 	}
 	expected := `[{"uid":1},{"uid":2},{"uid":3}]`
 	assertJSON(t, out, expected, "nested Select method using alias")
+}
+
+func TestJSONQ_GetR(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("vendor.items").Select("name")
+	result := jq.GetR()
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+		t.Error("failed to match Result type")
+	}
 }
 
 func TestJSONQ_Offset_method(t *testing.T) {

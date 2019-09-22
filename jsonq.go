@@ -505,6 +505,11 @@ func (j *JSONQ) Only(properties ...string) interface{} {
 	return j.prepare().only(properties...)
 }
 
+// OnlyR collects the properties from a list of object and return as Result instance
+func (j *JSONQ) OnlyR(properties ...string) *Result {
+	return NewResult(j.Only(properties...))
+}
+
 // Pluck build an array of vlaues form a property of a list of objects
 func (j *JSONQ) Pluck(property string) interface{} {
 	j.prepare()
@@ -525,6 +530,11 @@ func (j *JSONQ) Pluck(property string) interface{} {
 		}
 	}
 	return result
+}
+
+// PluckR build an array of vlaues form a property of a list of objects and return as Result instance
+func (j *JSONQ) PluckR(property string) *Result {
+	return NewResult(j.Pluck(property))
 }
 
 // reset resets the current state of JSONQ instance
@@ -558,6 +568,11 @@ func (j *JSONQ) Get() interface{} {
 	return j.jsonContent
 }
 
+// GetR return the query results as Result instance
+func (j *JSONQ) GetR() *Result {
+	return NewResult(j.Get())
+}
+
 // First returns the first element of a list
 func (j *JSONQ) First() interface{} {
 	j.prepare()
@@ -569,6 +584,11 @@ func (j *JSONQ) First() interface{} {
 	return empty
 }
 
+// FirstR returns the first element of a list as Result instance
+func (j *JSONQ) FirstR() *Result {
+	return NewResult(j.First())
+}
+
 // Last returns the last element of a list
 func (j *JSONQ) Last() interface{} {
 	j.prepare()
@@ -578,6 +598,11 @@ func (j *JSONQ) Last() interface{} {
 		}
 	}
 	return empty
+}
+
+// LastR returns the last element of a list as Result instance
+func (j *JSONQ) LastR() *Result {
+	return NewResult(j.Last())
 }
 
 // Nth returns the nth element of a list
@@ -606,9 +631,19 @@ func (j *JSONQ) Nth(index int) interface{} {
 	return empty
 }
 
+// NthR returns the nth element of a list as Result instance
+func (j *JSONQ) NthR(index int) *Result {
+	return NewResult(j.Nth(index))
+}
+
 // Find returns the result of a exact matching path
 func (j *JSONQ) Find(path string) interface{} {
 	return j.From(path).Get()
+}
+
+// FindR returns the result as Result instance from the exact matching path
+func (j *JSONQ) FindR(path string) *Result {
+	return NewResult(j.From(path).Get())
 }
 
 // Count returns the number of total items.
