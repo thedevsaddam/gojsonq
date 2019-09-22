@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const errMessage = "gojsonq: invalid method call for %v"
+
 // NewResult return an instance of Result
 func NewResult(v interface{}) *Result {
 	return &Result{value: v}
@@ -28,7 +30,7 @@ func (r *Result) Bool() (bool, error) {
 	case bool:
 		return v, nil
 	default:
-		return false, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return false, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -38,7 +40,7 @@ func (r *Result) Time(layout string) (time.Time, error) {
 	case string:
 		return time.Parse(layout, v)
 	default:
-		return time.Time{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return time.Time{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -53,7 +55,7 @@ func (r *Result) Duration() (time.Duration, error) {
 		}
 		return time.ParseDuration(v + "ns")
 	default:
-		return time.Duration(0), fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return time.Duration(0), fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -63,7 +65,7 @@ func (r *Result) String() (string, error) {
 	case string:
 		return v, nil
 	default:
-		return "", fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return "", fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -73,7 +75,7 @@ func (r *Result) Int() (int, error) {
 	case float64:
 		return int(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -83,7 +85,7 @@ func (r *Result) Int8() (int8, error) {
 	case float64:
 		return int8(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -93,7 +95,7 @@ func (r *Result) Int16() (int16, error) {
 	case float64:
 		return int16(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -103,7 +105,7 @@ func (r *Result) Int32() (int32, error) {
 	case float64:
 		return int32(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -113,7 +115,7 @@ func (r *Result) Int64() (int64, error) {
 	case float64:
 		return int64(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -123,7 +125,7 @@ func (r *Result) Uint() (uint, error) {
 	case float64:
 		return uint(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -133,7 +135,7 @@ func (r *Result) Uint8() (uint8, error) {
 	case float64:
 		return uint8(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -143,7 +145,7 @@ func (r *Result) Uint16() (uint16, error) {
 	case float64:
 		return uint16(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -153,7 +155,7 @@ func (r *Result) Uint32() (uint32, error) {
 	case float64:
 		return uint32(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -163,7 +165,7 @@ func (r *Result) Uint64() (uint64, error) {
 	case float64:
 		return uint64(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -173,7 +175,7 @@ func (r *Result) Float32() (float32, error) {
 	case float64:
 		return float32(v), nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -183,7 +185,7 @@ func (r *Result) Float64() (float64, error) {
 	case float64:
 		return v, nil
 	default:
-		return 0, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return 0, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -201,7 +203,7 @@ func (r *Result) BoolSlice() ([]bool, error) {
 		}
 		return bb, nil
 	default:
-		return []bool{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []bool{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -221,7 +223,7 @@ func (r *Result) TimeSlice(layout string) ([]time.Time, error) {
 		}
 		return tt, nil
 	default:
-		return []time.Time{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []time.Time{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -251,7 +253,7 @@ func (r *Result) DurationSlice() ([]time.Duration, error) {
 		}
 		return dd, nil
 	default:
-		return []time.Duration{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []time.Duration{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -267,7 +269,7 @@ func (r *Result) StringSlice() ([]string, error) {
 		}
 		return ss, nil
 	default:
-		return []string{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []string{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -283,7 +285,7 @@ func (r *Result) IntSlice() ([]int, error) {
 		}
 		return ii, nil
 	default:
-		return []int{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []int{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -299,7 +301,7 @@ func (r *Result) Int8Slice() ([]int8, error) {
 		}
 		return ii, nil
 	default:
-		return []int8{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []int8{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -315,7 +317,7 @@ func (r *Result) Int16Slice() ([]int16, error) {
 		}
 		return ii, nil
 	default:
-		return []int16{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []int16{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -331,7 +333,7 @@ func (r *Result) Int32Slice() ([]int32, error) {
 		}
 		return ii, nil
 	default:
-		return []int32{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []int32{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -347,7 +349,7 @@ func (r *Result) Int64Slice() ([]int64, error) {
 		}
 		return ii, nil
 	default:
-		return []int64{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []int64{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -363,7 +365,7 @@ func (r *Result) UintSlice() ([]uint, error) {
 		}
 		return uu, nil
 	default:
-		return []uint{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []uint{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -379,7 +381,7 @@ func (r *Result) Uint8Slice() ([]uint8, error) {
 		}
 		return uu, nil
 	default:
-		return []uint8{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []uint8{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -395,7 +397,7 @@ func (r *Result) Uint16Slice() ([]uint16, error) {
 		}
 		return uu, nil
 	default:
-		return []uint16{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []uint16{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -411,7 +413,7 @@ func (r *Result) Uint32Slice() ([]uint32, error) {
 		}
 		return uu, nil
 	default:
-		return []uint32{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []uint32{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -427,7 +429,7 @@ func (r *Result) Uint64Slice() ([]uint64, error) {
 		}
 		return uu, nil
 	default:
-		return []uint64{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []uint64{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -443,7 +445,7 @@ func (r *Result) Float32Slice() ([]float32, error) {
 		}
 		return ff, nil
 	default:
-		return []float32{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []float32{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
 
@@ -459,6 +461,6 @@ func (r *Result) Float64Slice() ([]float64, error) {
 		}
 		return ff, nil
 	default:
-		return []float64{}, fmt.Errorf("invalid method call for %v", reflect.ValueOf(r.value).Kind())
+		return []float64{}, fmt.Errorf(errMessage, reflect.ValueOf(r.value).Kind())
 	}
 }
