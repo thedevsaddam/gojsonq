@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const errMessage = "gojsonq: invalid method call for %v"
+const errMessage = "gojsonq: wrong method call for %v"
 
 // NewResult return an instance of Result
 func NewResult(v interface{}) *Result {
