@@ -505,6 +505,15 @@ func (j *JSONQ) Only(properties ...string) interface{} {
 	return j.prepare().only(properties...)
 }
 
+// OnlyR collects the properties from a list of object and return as Result instance
+func (j *JSONQ) OnlyR(properties ...string) (*Result, error) {
+	v := j.Only(properties...)
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
+}
+
 // Pluck build an array of vlaues form a property of a list of objects
 func (j *JSONQ) Pluck(property string) interface{} {
 	j.prepare()
@@ -525,6 +534,15 @@ func (j *JSONQ) Pluck(property string) interface{} {
 		}
 	}
 	return result
+}
+
+// PluckR build an array of vlaues form a property of a list of objects and return as Result instance
+func (j *JSONQ) PluckR(property string) (*Result, error) {
+	v := j.Pluck(property)
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
 }
 
 // reset resets the current state of JSONQ instance
@@ -558,6 +576,15 @@ func (j *JSONQ) Get() interface{} {
 	return j.jsonContent
 }
 
+// GetR return the query results as Result instance
+func (j *JSONQ) GetR() (*Result, error) {
+	v := j.Get()
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
+}
+
 // First returns the first element of a list
 func (j *JSONQ) First() interface{} {
 	j.prepare()
@@ -569,6 +596,15 @@ func (j *JSONQ) First() interface{} {
 	return empty
 }
 
+// FirstR returns the first element of a list as Result instance
+func (j *JSONQ) FirstR() (*Result, error) {
+	v := j.First()
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
+}
+
 // Last returns the last element of a list
 func (j *JSONQ) Last() interface{} {
 	j.prepare()
@@ -578,6 +614,15 @@ func (j *JSONQ) Last() interface{} {
 		}
 	}
 	return empty
+}
+
+// LastR returns the last element of a list as Result instance
+func (j *JSONQ) LastR() (*Result, error) {
+	v := j.Last()
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
 }
 
 // Nth returns the nth element of a list
@@ -606,9 +651,27 @@ func (j *JSONQ) Nth(index int) interface{} {
 	return empty
 }
 
+// NthR returns the nth element of a list as Result instance
+func (j *JSONQ) NthR(index int) (*Result, error) {
+	v := j.Nth(index)
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
+}
+
 // Find returns the result of a exact matching path
 func (j *JSONQ) Find(path string) interface{} {
 	return j.From(path).Get()
+}
+
+// FindR returns the result as Result instance from the exact matching path
+func (j *JSONQ) FindR(path string) (*Result, error) {
+	v := j.Find(path)
+	if err := j.Error(); err != nil {
+		return nil, err
+	}
+	return NewResult(v), nil
 }
 
 // Count returns the number of total items.
