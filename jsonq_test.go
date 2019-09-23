@@ -772,9 +772,18 @@ func TestJSONQ_Only_with_distinct(t *testing.T) {
 func TestJSONQ_OnlyR(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items")
-	result := jq.OnlyR("name", "price")
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.OnlyR("name", "price")
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_OnlyR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("invalid_path")
+	result, err := jq.OnlyR("name", "price")
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
@@ -806,9 +815,18 @@ func TestJSONQ_First_distinct_expecting_result(t *testing.T) {
 func TestJSONQ_FirstR(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").Distinct("price").Where("price", "=", 850)
-	result := jq.FirstR()
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.FirstR()
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_FirstR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("invalid").Distinct("price").Where("price", "=", 850)
+	result, err := jq.FirstR()
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
@@ -840,9 +858,18 @@ func TestJSONQ_Last_distinct_expecting_result(t *testing.T) {
 func TestJSONQ_LastR(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").Distinct("price").Where("price", "=", 850)
-	result := jq.LastR()
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.LastR()
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_LastR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("invalid_path").Distinct("price").Where("price", "=", 850)
+	result, err := jq.LastR()
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
@@ -924,9 +951,18 @@ func TestJSONQ_Nth_distinct_expecting_result(t *testing.T) {
 func TestJSONQ_NthR(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").Distinct("price").Where("price", "=", 850)
-	result := jq.NthR(1)
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.NthR(1)
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_NthR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("invalid_path").Distinct("price").Where("price", "=", 850)
+	result, err := jq.NthR(1)
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
@@ -946,9 +982,17 @@ func TestJSONQ_Find_nested_property(t *testing.T) {
 
 func TestJSONQ_FindR(t *testing.T) {
 	jq := New().JSONString(jsonStr)
-	result := jq.FindR("vendor.items.[0]")
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.FindR("vendor.items.[0]")
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_FindR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr)
+	result, err := jq.FindR("invalid_path")
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
@@ -978,9 +1022,17 @@ func TestJSONQ_Pluck_expecting_with_distinct(t *testing.T) {
 
 func TestJSONQ_PluckR(t *testing.T) {
 	jq := New().JSONString(jsonStr).From("vendor.items")
-	result := jq.PluckR("price")
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.PluckR("price")
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_PluckR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).From("invalid_path")
+	result, err := jq.PluckR("price")
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
@@ -1281,9 +1333,18 @@ func TestJSONQ_Get_with_nested_invalid_property_in_Select_method_expecting_error
 func TestJSONQ_GetR(t *testing.T) {
 	jq := New().JSONString(jsonStr).
 		From("vendor.items").Select("name")
-	result := jq.GetR()
-	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" {
+	result, err := jq.GetR()
+	if reflect.ValueOf(result).Type().String() != "*gojsonq.Result" && err != nil {
 		t.Error("failed to match Result type")
+	}
+}
+
+func TestJSONQ_GetR_error(t *testing.T) {
+	jq := New().JSONString(jsonStr).
+		From("invalid_path")
+	result, err := jq.GetR()
+	if result != nil && err == nil {
+		t.Error("failed to catch error")
 	}
 }
 
