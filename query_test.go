@@ -11,7 +11,8 @@ func Test_eq(t *testing.T) {
 		expected bool
 	}{
 		{
-			x:        9.0, // our expectation for json unmarshalar is little bit different. here 9 provided by user will be equal to float64 9
+			// our expectation for json unmarshaller is little bit different. here 9 provided by user will be equal to float64 9
+			x:        9.0,
 			y:        9,
 			expected: true,
 		},
@@ -790,7 +791,7 @@ func Test_lenLte(t *testing.T) {
 }
 
 func Test_loadDefaultQueryMap(t *testing.T) {
-	if len(loadDefaultQueryMap()) != 25 {
+	if len(defaultQueries()) != 25 {
 		t.Error("mismatched default query map size")
 	}
 }

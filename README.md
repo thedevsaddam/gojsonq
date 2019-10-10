@@ -38,7 +38,7 @@ import "github.com/thedevsaddam/gojsonq"
 
 func main() {
 	const json = `{"name":{"first":"Tom","last":"Hanks"},"age":61}`
-	name := gojsonq.New().JSONString(json).Find("name.first")
+	name := gojsonq.New().FromString(json).Find("name.first")
 	println(name.(string)) // Tom
 }
 ```
@@ -58,7 +58,7 @@ import (
 
 func main() {
 	const json = `{"city":"dhaka","type":"weekly","temperatures":[30,39.9,35.4,33.5,31.6,33.2,30.7]}`
-	avg := gojsonq.New().JSONString(json).From("temperatures").Avg()
+	avg := gojsonq.New().FromString(json).From("temperatures").Avg()
 	fmt.Printf("Average temperature: %.2f", avg) // 33.471428571428575
 }
 ```
