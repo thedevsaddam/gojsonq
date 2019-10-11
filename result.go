@@ -189,13 +189,15 @@ func (r *Result) Float64() (float64, error) {
 	}
 }
 
-// === slcie ===
+// TODO: Slice related methods - ideally they should return nil instead of empty struct
+// in case of any error or no result. To keep compatibility with older version refactored
+// to use make, in order to create slices.
 
 // BoolSlice assert the result to []bool
 func (r *Result) BoolSlice() ([]bool, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		bb := []bool{}
+		var bb = make([]bool, 0)
 		for _, si := range v {
 			if s, ok := si.(bool); ok {
 				bb = append(bb, s)
@@ -211,7 +213,7 @@ func (r *Result) BoolSlice() ([]bool, error) {
 func (r *Result) TimeSlice(layout string) ([]time.Time, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		tt := []time.Time{}
+		var tt = make([]time.Time, 0)
 		for _, si := range v {
 			if s, ok := si.(string); ok {
 				ts, err := time.Parse(layout, s)
@@ -231,7 +233,7 @@ func (r *Result) TimeSlice(layout string) ([]time.Time, error) {
 func (r *Result) DurationSlice() ([]time.Duration, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		dd := []time.Duration{}
+		var dd = make([]time.Duration, 0)
 		for _, si := range v {
 			if s, ok := si.(string); ok {
 				var d time.Duration
@@ -261,7 +263,7 @@ func (r *Result) DurationSlice() ([]time.Duration, error) {
 func (r *Result) StringSlice() ([]string, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ss := []string{}
+		var ss = make([]string, 0)
 		for _, si := range v {
 			if s, ok := si.(string); ok {
 				ss = append(ss, s)
@@ -277,7 +279,7 @@ func (r *Result) StringSlice() ([]string, error) {
 func (r *Result) IntSlice() ([]int, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ii := []int{}
+		var ii = make([]int, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ii = append(ii, int(s))
@@ -293,7 +295,7 @@ func (r *Result) IntSlice() ([]int, error) {
 func (r *Result) Int8Slice() ([]int8, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ii := []int8{}
+		var ii = make([]int8, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ii = append(ii, int8(s))
@@ -309,7 +311,7 @@ func (r *Result) Int8Slice() ([]int8, error) {
 func (r *Result) Int16Slice() ([]int16, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ii := []int16{}
+		var ii = make([]int16, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ii = append(ii, int16(s))
@@ -325,7 +327,7 @@ func (r *Result) Int16Slice() ([]int16, error) {
 func (r *Result) Int32Slice() ([]int32, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ii := []int32{}
+		var ii = make([]int32, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ii = append(ii, int32(s))
@@ -341,7 +343,7 @@ func (r *Result) Int32Slice() ([]int32, error) {
 func (r *Result) Int64Slice() ([]int64, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ii := []int64{}
+		var ii = make([]int64, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ii = append(ii, int64(s))
@@ -357,7 +359,7 @@ func (r *Result) Int64Slice() ([]int64, error) {
 func (r *Result) UintSlice() ([]uint, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		uu := []uint{}
+		var uu = make([]uint, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				uu = append(uu, uint(s))
@@ -373,7 +375,7 @@ func (r *Result) UintSlice() ([]uint, error) {
 func (r *Result) Uint8Slice() ([]uint8, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		uu := []uint8{}
+		var uu = make([]uint8, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				uu = append(uu, uint8(s))
@@ -389,7 +391,7 @@ func (r *Result) Uint8Slice() ([]uint8, error) {
 func (r *Result) Uint16Slice() ([]uint16, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		uu := []uint16{}
+		var uu = make([]uint16, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				uu = append(uu, uint16(s))
@@ -405,7 +407,7 @@ func (r *Result) Uint16Slice() ([]uint16, error) {
 func (r *Result) Uint32Slice() ([]uint32, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		uu := []uint32{}
+		var uu = make([]uint32, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				uu = append(uu, uint32(s))
@@ -421,7 +423,7 @@ func (r *Result) Uint32Slice() ([]uint32, error) {
 func (r *Result) Uint64Slice() ([]uint64, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		uu := []uint64{}
+		var uu = make([]uint64, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				uu = append(uu, uint64(s))
@@ -437,7 +439,7 @@ func (r *Result) Uint64Slice() ([]uint64, error) {
 func (r *Result) Float32Slice() ([]float32, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ff := []float32{}
+		var ff = make([]float32, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ff = append(ff, float32(s))
@@ -453,7 +455,7 @@ func (r *Result) Float32Slice() ([]float32, error) {
 func (r *Result) Float64Slice() ([]float64, error) {
 	switch v := r.value.(type) {
 	case []interface{}:
-		ff := []float64{}
+		var ff = make([]float64, 0)
 		for _, si := range v {
 			if s, ok := si.(float64); ok {
 				ff = append(ff, s)

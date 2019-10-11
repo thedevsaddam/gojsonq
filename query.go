@@ -7,34 +7,62 @@ import (
 )
 
 const (
-	signEq           = "="
-	signEqEng        = "eq"
-	signNotEq        = "!="
-	signNotEqEng     = "neq"
-	signNotEqAnother = "<>"
-	signGt           = ">"
-	signGtEng        = "gt"
-	signLt           = "<"
-	signLtEng        = "lt"
-	signGtE          = ">="
-	signGtEEng       = "gte"
-	signLtE          = "<="
-	signLtEEng       = "lte"
-
-	signStrictContains = "strictContains"
-	signContains       = "contains"
-	signEndsWith       = "endsWith"
-	signStartsWith     = "startsWith"
-	signIn             = "in"
-	signNotIn          = "notIn"
-
-	signLenEq    = "leneq"
-	signLenNotEq = "lenneq"
-	signLenGt    = "lengt"
-	signLenGte   = "lengte"
-	signLenLt    = "lenlt"
-	signLenLte   = "lenlte"
+	operatorEq             = "="
+	operatorEqEng          = "eq"
+	operatorNotEq          = "!="
+	operatorNotEqEng       = "neq"
+	operatorNotEqAnother   = "<>"
+	operatorGt             = ">"
+	operatorGtEng          = "gt"
+	operatorLt             = "<"
+	operatorLtEng          = "lt"
+	operatorGtE            = ">="
+	operatorGtEEng         = "gte"
+	operatorLtE            = "<="
+	operatorLtEEng         = "lte"
+	operatorStrictContains = "strictContains"
+	operatorContains       = "contains"
+	operatorEndsWith       = "endsWith"
+	operatorStartsWith     = "startsWith"
+	operatorIn             = "in"
+	operatorNotIn          = "notIn"
+	operatorLenEq          = "leneq"
+	operatorLenNotEq       = "lenneq"
+	operatorLenGt          = "lengt"
+	operatorLenGte         = "lengte"
+	operatorLenLt          = "lenlt"
+	operatorLenLte         = "lenlte"
 )
+
+func defaultQueries() map[string]QueryFunc {
+	return map[string]QueryFunc{
+		operatorEq:             eq,
+		operatorEqEng:          eq,
+		operatorNotEq:          neq,
+		operatorNotEqEng:       neq,
+		operatorNotEqAnother:   neq,
+		operatorGt:             gt,
+		operatorGtEng:          gt,
+		operatorLt:             lt,
+		operatorLtEng:          lt,
+		operatorGtE:            gte,
+		operatorGtEEng:         gte,
+		operatorLtE:            lte,
+		operatorLtEEng:         lte,
+		operatorStrictContains: strStrictContains,
+		operatorContains:       strContains,
+		operatorStartsWith:     strStartsWith,
+		operatorEndsWith:       strEndsWith,
+		operatorIn:             in,
+		operatorNotIn:          notIn,
+		operatorLenEq:          lenEq,
+		operatorLenNotEq:       lenNotEq,
+		operatorLenGt:          lenGt,
+		operatorLenGte:         lenGte,
+		operatorLenLt:          lenLt,
+		operatorLenLte:         lenLte,
+	}
+}
 
 // QueryFunc describes a conditional function which perform comparison
 type QueryFunc func(x, y interface{}) (bool, error)
@@ -274,47 +302,4 @@ func lenLte(x, y interface{}) (bool, error) {
 	}
 
 	return xv <= yv, nil
-}
-
-func loadDefaultQueryMap() map[string]QueryFunc {
-	// queryMap contains the registered conditional functions
-	var queryMap = make(map[string]QueryFunc)
-
-	queryMap[signEq] = eq
-	queryMap[signEqEng] = eq
-
-	queryMap[signNotEq] = neq
-	queryMap[signNotEqEng] = neq
-	queryMap[signNotEqAnother] = neq // also an alias of not equal
-
-	queryMap[signGt] = gt
-	queryMap[signGtEng] = gt
-
-	queryMap[signLt] = lt
-	queryMap[signLtEng] = lt
-
-	queryMap[signGtE] = gte
-	queryMap[signGtEEng] = gte
-
-	queryMap[signLtE] = lte
-	queryMap[signLtEEng] = lte
-
-	queryMap[signStrictContains] = strStrictContains
-	queryMap[signContains] = strContains
-	queryMap[signStartsWith] = strStartsWith
-	queryMap[signEndsWith] = strEndsWith
-
-	queryMap[signIn] = in
-	queryMap[signNotIn] = notIn
-
-	queryMap[signLenEq] = lenEq
-	queryMap[signLenNotEq] = lenNotEq
-
-	queryMap[signLenGt] = lenGt
-	queryMap[signLenGte] = lenGte
-
-	queryMap[signLenLt] = lenLt
-	queryMap[signLenLte] = lenLte
-
-	return queryMap
 }

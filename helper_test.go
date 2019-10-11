@@ -153,16 +153,18 @@ func Test_toFloat64(t *testing.T) {
 			expected: 898,
 		},
 		{
-			val:      float32(99.01),
-			expected: 99.01000213623047, // The nearest IEEE754 float32 value of 99.01 is 99.01000213623047; which are not equal (while using ==). Need suggestions for precision float value.
+			val: float32(99.01),
+			// The nearest IEEE754 float32 value of 99.01 is 99.01000213623047; which are not equal (while using ==).
+			// Need suggestions for precision float value.
 			// one way to solve the comparison using convertFloat(string with float precision)==float64
+			expected: 99.01000213623047,
 		},
 		{
 			val:      float32(-99),
 			expected: -99,
 		},
 		{
-			val:      float64(-99.91),
+			val:      -99.91,
 			expected: -99.91,
 		},
 		{
@@ -375,7 +377,7 @@ func Test_getNestedValue(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		out, err := getNestedValue(content, tc.query, defaultSeperator)
+		out, err := getNestedValue(content, tc.query, defaultSeparator)
 		if tc.expectError && err == nil {
 			t.Error("failed to catch error")
 		}

@@ -103,16 +103,21 @@ var (
 }`
 )
 
-//================= Test Helpers===========================
+// ================= Test Helpers===========================
 
-func createTestFile(t *testing.T, filename string) func() {
-	// create data.json file from the jsonStr above
-	if err := ioutil.WriteFile(filename, []byte(jsonStr), 0644); err != nil {
+func createTestFile(t *testing.T, filename string) (string, func()) {
+	file, err := ioutil.TempFile("", filename)
+	if err != nil {
 		t.Errorf("failed to create %s test file %v", filename, err)
 	}
 
-	return func() {
-		if err := os.Remove(filename); err != nil {
+	// create data.json file from the jsonStr above
+	if _, err := file.Write([]byte(jsonStr)); err != nil {
+		t.Errorf("failed to create %s test file %v", filename, err)
+	}
+
+	return file.Name(), func() {
+		if err := os.Remove(file.Name()); err != nil {
 			t.Errorf("failed to remove %s test file %v", filename, err)
 		}
 	}

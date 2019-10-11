@@ -11,10 +11,10 @@ import (
 // New returns a new instance of JSONQ
 func New(options ...OptionFunc) *JSONQ {
 	jq := &JSONQ{
-		queryMap: loadDefaultQueryMap(),
+		queryMap: defaultQueries(),
 		option: option{
 			decoder:   &DefaultDecoder{},
-			separator: defaultSeperator,
+			separator: defaultSeparator,
 		},
 	}
 	for _, option := range options {
@@ -28,7 +28,7 @@ func New(options ...OptionFunc) *JSONQ {
 // empty represents an empty result
 var empty interface{}
 
-const defaultSeperator = "."
+const defaultSeparator = "."
 
 // query describes a query
 type query struct {
@@ -60,8 +60,8 @@ func (j *JSONQ) String() string {
 
 // decode decodes the raw message to Go data structure
 func (j *JSONQ) decode() *JSONQ {
-	if err := j.option.decoder.
-		Decode(j.raw, &j.rootJSONContent); err != nil {
+	err := j.option.decoder.Decode(j.raw, &j.rootJSONContent)
+	if err != nil {
 		return j.addError(err)
 	}
 	j.jsonContent = j.rootJSONContent
@@ -85,10 +85,10 @@ func (j *JSONQ) File(filename string) *JSONQ {
 	return j.decode() // handle error
 }
 
-// JSONString reads the json content from valid json string // Deprecated: this method will remove in next major release
+// JSONString reads the json content from valid json string
+// Deprecated: this method will remove in next major release
 func (j *JSONQ) JSONString(json string) *JSONQ {
-	j.raw = []byte(json)
-	return j.decode() // handle error
+	return j.FromString(json)
 }
 
 // FromString reads the content from valid json/xml/csv/yml string
@@ -206,7 +206,7 @@ func (j *JSONQ) Where(key, cond string, val interface{}) *JSONQ {
 		value:    val,
 	}
 	if j.queryIndex == 0 && len(j.queries) == 0 {
-		qq := []query{}
+		var qq []query
 		qq = append(qq, q)
 		j.queries = append(j.queries, qq)
 	} else {
@@ -218,40 +218,40 @@ func (j *JSONQ) Where(key, cond string, val interface{}) *JSONQ {
 
 // WhereEqual is an alias of Where("key", "=", val)
 func (j *JSONQ) WhereEqual(key string, val interface{}) *JSONQ {
-	return j.Where(key, signEq, val)
+	return j.Where(key, operatorEq, val)
 }
 
 // WhereNotEqual is an alias of Where("key", "!=", val)
 func (j *JSONQ) WhereNotEqual(key string, val interface{}) *JSONQ {
-	return j.Where(key, signNotEq, val)
+	return j.Where(key, operatorNotEq, val)
 }
 
 // WhereNil is an alias of Where("key", "=", nil)
 func (j *JSONQ) WhereNil(key string) *JSONQ {
-	return j.Where(key, signEq, nil)
+	return j.Where(key, operatorEq, nil)
 }
 
 // WhereNotNil is an alias of Where("key", "!=", nil)
 func (j *JSONQ) WhereNotNil(key string) *JSONQ {
-	return j.Where(key, signNotEq, nil)
+	return j.Where(key, operatorNotEq, nil)
 }
 
 // WhereIn is an alias for where("key", "in", []string{"a", "b"})
 func (j *JSONQ) WhereIn(key string, val interface{}) *JSONQ {
-	j.Where(key, signIn, val)
+	j.Where(key, operatorIn, val)
 	return j
 }
 
 // WhereNotIn is an alias for where("key", "notIn", []string{"a", "b"})
 func (j *JSONQ) WhereNotIn(key string, val interface{}) *JSONQ {
-	j.Where(key, signNotIn, val)
+	j.Where(key, operatorNotIn, val)
 	return j
 }
 
 // OrWhere builds an OrWhere clause, basically it's a group of AND clauses
 func (j *JSONQ) OrWhere(key, cond string, val interface{}) *JSONQ {
 	j.queryIndex++
-	qq := []query{}
+	var qq []query
 	qq = append(qq, query{
 		key:      key,
 		operator: cond,
@@ -263,33 +263,33 @@ func (j *JSONQ) OrWhere(key, cond string, val interface{}) *JSONQ {
 
 // WhereStartsWith satisfies Where clause which starts with provided value(string)
 func (j *JSONQ) WhereStartsWith(key string, val interface{}) *JSONQ {
-	return j.Where(key, signStartsWith, val)
+	return j.Where(key, operatorStartsWith, val)
 }
 
 // WhereEndsWith satisfies Where clause which ends with provided value(string)
 func (j *JSONQ) WhereEndsWith(key string, val interface{}) *JSONQ {
-	return j.Where(key, signEndsWith, val)
+	return j.Where(key, operatorEndsWith, val)
 }
 
 // WhereContains satisfies Where clause which contains provided value(string)
 func (j *JSONQ) WhereContains(key string, val interface{}) *JSONQ {
-	return j.Where(key, signContains, val)
+	return j.Where(key, operatorContains, val)
 }
 
 // WhereStrictContains satisfies Where clause which contains provided value(string).
 // This is case sensitive
 func (j *JSONQ) WhereStrictContains(key string, val interface{}) *JSONQ {
-	return j.Where(key, signStrictContains, val)
+	return j.Where(key, operatorStrictContains, val)
 }
 
 // WhereLenEqual is an alias of Where("key", "leneq", val)
 func (j *JSONQ) WhereLenEqual(key string, val interface{}) *JSONQ {
-	return j.Where(key, signLenEq, val)
+	return j.Where(key, operatorLenEq, val)
 }
 
 // WhereLenNotEqual is an alias of Where("key", "lenneq", val)
 func (j *JSONQ) WhereLenNotEqual(key string, val interface{}) *JSONQ {
-	return j.Where(key, signLenNotEq, val)
+	return j.Where(key, operatorLenNotEq, val)
 }
 
 // findInArray traverses through a list and returns the value list.
@@ -428,7 +428,7 @@ func (j *JSONQ) Distinct(property string) *JSONQ {
 // distinct builds distinct value using provided attribute/column/property
 func (j *JSONQ) distinct() *JSONQ {
 	m := map[string]bool{}
-	dt := []interface{}{}
+	var dt = make([]interface{}, 0)
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, a := range aa {
 			if vm, ok := a.(map[string]interface{}); ok {
@@ -478,8 +478,7 @@ func (j *JSONQ) sortBy(property string, asc bool) *JSONQ {
 
 // only return selected properties in result
 func (j *JSONQ) only(properties ...string) interface{} {
-	result := []interface{}{}
-
+	var result = make([]interface{}, 0)
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, am := range aa {
 			tmap := map[string]interface{}{}
@@ -514,7 +513,7 @@ func (j *JSONQ) OnlyR(properties ...string) (*Result, error) {
 	return NewResult(v), nil
 }
 
-// Pluck build an array of vlaues form a property of a list of objects
+// Pluck build an array of values form a property of a list of objects
 func (j *JSONQ) Pluck(property string) interface{} {
 	j.prepare()
 	if j.distinctProperty != "" {
@@ -523,7 +522,7 @@ func (j *JSONQ) Pluck(property string) interface{} {
 	if j.limitRecords != 0 {
 		j.limit()
 	}
-	result := []interface{}{}
+	var result = make([]interface{}, 0)
 	if aa, ok := j.jsonContent.([]interface{}); ok {
 		for _, am := range aa {
 			if mv, ok := am.(map[string]interface{}); ok {
@@ -536,7 +535,7 @@ func (j *JSONQ) Pluck(property string) interface{} {
 	return result
 }
 
-// PluckR build an array of vlaues form a property of a list of objects and return as Result instance
+// PluckR build an array of values form a property of a list of objects and return as Result instance
 func (j *JSONQ) PluckR(property string) (*Result, error) {
 	v := j.Pluck(property)
 	if err := j.Error(); err != nil {
@@ -678,7 +677,7 @@ func (j *JSONQ) FindR(path string) (*Result, error) {
 // This could be a length of list/array/map
 func (j *JSONQ) Count() int {
 	j.prepare()
-	lnth := 0
+	var lnth int
 	// list of items
 	if list, ok := j.jsonContent.([]interface{}); ok {
 		lnth = len(list)
@@ -716,7 +715,7 @@ func (j *JSONQ) Writer(w io.Writer) {
 	}
 }
 
-// More provides the functionalities to query over the resultant data. See https://github.com/thedevsaddam/gojsonq/wiki/Queries#More
+// More provides the functionality to query over the resultant data. See https://github.com/thedevsaddam/gojsonq/wiki/Queries#More
 func (j *JSONQ) More() *JSONQ {
 	j.raw = nil
 	j.rootJSONContent = j.Get()
@@ -731,7 +730,7 @@ func (j *JSONQ) More() *JSONQ {
 
 // getFloatValFromArray returns a list of float64 values from array/map for aggregation
 func (j *JSONQ) getFloatValFromArray(arr []interface{}, property ...string) []float64 {
-	ff := []float64{}
+	var ff []float64
 	for _, a := range arr {
 		if av, ok := a.(float64); ok {
 			if len(property) > 0 {
@@ -772,7 +771,7 @@ func (j *JSONQ) getAggregationValues(property ...string) []float64 {
 		j.limit()
 	}
 
-	ff := []float64{}
+	var ff []float64
 	if arr, ok := j.jsonContent.([]interface{}); ok {
 		ff = j.getFloatValFromArray(arr, property...)
 	}
