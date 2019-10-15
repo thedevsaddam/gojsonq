@@ -19,6 +19,92 @@ func TestNil(t *testing.T) {
 		t.Error("failed to check Nil")
 	}
 }
+
+func TestAs(t *testing.T) {
+	testCases := []struct {
+		tag              string
+		value            interface{}
+		newExpectedValue func() interface{}
+		expect           func(value, i interface{}) bool
+		errExpect        bool
+	}{
+		{
+			tag:   "as int32",
+			value: int32(1),
+			newExpectedValue: func() interface{} {
+				var a int32
+				return &a
+			},
+			expect: func(value, i interface{}) bool {
+				val, ok := i.(int32)
+				if !ok {
+					return false
+				}
+
+				return val == (value.(int32))
+			},
+			errExpect: false,
+		},
+		{
+			tag:   "int32 as string",
+			value: int32(1),
+			newExpectedValue: func() interface{} {
+				var a string
+				return &a
+			},
+			expect: func(value, i interface{}) bool {
+				return false
+			},
+			errExpect: true,
+		},
+		{
+			tag:   "int32 as int64",
+			value: int32(1),
+			newExpectedValue: func() interface{} {
+				var a int64
+				return &a
+			},
+			expect: func(value, i interface{}) bool {
+				val, ok := i.(int64)
+				if !ok {
+					return false
+				}
+
+				return val == (value.(int64))
+			},
+			errExpect: true,
+		},
+		{
+			tag:   "int32 as int16",
+			value: int32(1),
+			newExpectedValue: func() interface{} {
+				var a int16
+				return &a
+			},
+			expect: func(value, i interface{}) bool {
+				val, ok := i.(int16)
+				if !ok {
+					return false
+				}
+
+				return val == (value.(int16))
+			},
+			errExpect: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		expected := tc.newExpectedValue()
+		err := NewResult(tc.value).As(expected)
+		if err != nil && !tc.errExpect {
+			t.Error(tc.tag, err)
+		}
+		if tc.expect(tc.value, expected) && !tc.errExpect {
+			t.Errorf("tag: %s\nexpected: %v got %v", tc.tag, tc.value, reflect.ValueOf(expected).Elem())
+		}
+	}
+}
+
 func TestBool(t *testing.T) {
 	testCases := []struct {
 		tag       string
@@ -26,6 +112,7 @@ func TestBool(t *testing.T) {
 		valExpect bool
 		errExpect bool
 	}{
+
 		{tag: "bool value as expected", value: true, valExpect: true, errExpect: false},
 		{tag: "invalid bool, error expected", value: 123, valExpect: false, errExpect: true},
 	}

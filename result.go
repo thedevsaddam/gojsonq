@@ -9,6 +9,12 @@ import (
 
 const errMessage = "gojsonq: wrong method call for %v"
 
+var (
+	ErrExpectsPointer = fmt.Errorf("gojsonq: failed to unmarshal, expects pointer")
+	ErrImmutable      = fmt.Errorf("gojsonq: failed to unmarshal, target is not mutable")
+	ErrTypeMismatch   = fmt.Errorf("gojsonq: failed to unmarshal, target type misatched")
+)
+
 // NewResult return an instance of Result
 func NewResult(v interface{}) *Result {
 	return &Result{value: v}
@@ -22,6 +28,28 @@ type Result struct {
 // Nil check the query has result or not
 func (r *Result) Nil() bool {
 	return r.value == nil
+}
+
+// As sets the value of Result to v
+func (r *Result) As(v interface{}) error {
+	if r.value != nil {
+		rv := reflect.ValueOf(v)
+		if rv.Kind() != reflect.Ptr || rv.IsNil() {
+			return ErrExpectsPointer
+		}
+
+		elm := rv.Elem()
+		if !elm.CanSet() {
+			return ErrImmutable
+		}
+
+		value := reflect.ValueOf(r.value)
+		if !reflect.TypeOf(r.value).AssignableTo(reflect.TypeOf(v).Elem()) {
+			return ErrTypeMismatch
+		}
+		rv.Elem().Set(value)
+	}
+	return nil
 }
 
 // Bool assert the result to boolean value
