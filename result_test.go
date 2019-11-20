@@ -29,65 +29,70 @@ func TestAs(t *testing.T) {
 		errExpect        bool
 	}{
 		{
-			tag:   "as int32",
-			value: int32(1),
+			tag:   "float64 as int", // golang unmarshal number to float64
+			value: float64(1),
 			newExpectedValue: func() interface{} {
-				var a int32
+				var a int
 				return &a
 			},
 			expect: func(value, i interface{}) bool {
-				val, ok := i.(int32)
+				val, ok := i.(int)
 				if !ok {
 					return false
 				}
 
-				return val == (value.(int32))
+				return val == (value.(int))
 			},
 			errExpect: false,
 		},
 		{
-			tag:   "int32 as string",
-			value: int32(1),
+			tag:   "float64 as uint",
+			value: float64(1),
 			newExpectedValue: func() interface{} {
-				var a string
+				var a uint
 				return &a
 			},
 			expect: func(value, i interface{}) bool {
-				return false
-			},
-			errExpect: true,
-		},
-		{
-			tag:   "int32 as int64",
-			value: int32(1),
-			newExpectedValue: func() interface{} {
-				var a int64
-				return &a
-			},
-			expect: func(value, i interface{}) bool {
-				val, ok := i.(int64)
+				val, ok := i.(uint)
 				if !ok {
 					return false
 				}
 
-				return val == (value.(int64))
+				return val == (value.(uint))
 			},
-			errExpect: true,
+			errExpect: false,
 		},
 		{
-			tag:   "int32 as int16",
-			value: int32(1),
+			tag:   "float64 assign to non ptr",
+			value: float64(1),
 			newExpectedValue: func() interface{} {
-				var a int16
-				return &a
+				var a float64
+				return a
 			},
 			expect: func(value, i interface{}) bool {
-				val, ok := i.(int16)
+				val, ok := i.(float64)
 				if !ok {
 					return false
 				}
 
-				return val == (value.(int16))
+				return val == (value.(float64))
+			},
+			errExpect: true,
+		},
+		{
+			tag:   "string assign to int",
+			value: string("*nop"),
+			newExpectedValue: func() interface{} {
+				var a float64
+				return &a
+			},
+			expect: func(value, i interface{}) bool {
+				val, ok := i.(string)
+				if !ok {
+					return false
+				}
+
+				return val == (value.(string))
 			},
 			errExpect: true,
 		},

@@ -9,6 +9,7 @@ import (
 
 const errMessage = "gojsonq: wrong method call for %v"
 
+// Available named error values
 var (
 	ErrExpectsPointer = fmt.Errorf("gojsonq: failed to unmarshal, expects pointer")
 	ErrImmutable      = fmt.Errorf("gojsonq: failed to unmarshal, target is not mutable")
@@ -30,7 +31,7 @@ func (r *Result) Nil() bool {
 	return r.value == nil
 }
 
-// As sets the value of Result to v
+// As sets the value of Result to v; It does not support methods with argument available in Result
 func (r *Result) As(v interface{}) error {
 	if r.value != nil {
 		rv := reflect.ValueOf(v)
@@ -43,11 +44,26 @@ func (r *Result) As(v interface{}) error {
 			return ErrImmutable
 		}
 
-		value := reflect.ValueOf(r.value)
-		if !reflect.TypeOf(r.value).AssignableTo(reflect.TypeOf(v).Elem()) {
-			return ErrTypeMismatch
+		method := rv.Type().String()
+		methodMap := map[string]string{
+			"*string": "String", "*bool": "Bool", "*time.Duration": "Duration",
+			"*int": "Int", "*int8": "Int8", "*int16": "Int16", "*int32": "Int32",
+			"*uint": "Uint", "*uint8": "Uint8", "*uint16": "Uint16", "*uint32": "Uint32",
+			"*float32": "Float32", "*float64": "Float64",
+
+			"*[]string": "StringSlice", "*[]bool": "BoolSlice", "*[]time.Duration": "DurationSlice",
+			"*[]int": "IntSlice", "*[]int8": "Int8Slice", "*[]int16": "Int16Slice", "*[]int32": "Int32Slice",
+			"*[]uint": "UintSlice", "*[]uint8": "Uint8Slice", "*[]uint16": "Uint16Slice", "*[]uint32": "Uint32Slice",
+			"*[]float32": "Float32Slice", "*[]float64": "Float64Slice",
 		}
-		rv.Elem().Set(value)
+
+		vv := reflect.ValueOf(r).MethodByName(methodMap[method]).Call(nil)
+		if vv != nil {
+			if vv[1].Interface() != nil {
+				return ErrTypeMismatch
+			}
+			rv.Elem().Set(vv[0])
+		}
 	}
 	return nil
 }
