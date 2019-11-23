@@ -150,6 +150,13 @@ func (j *JSONQ) From(node string) *JSONQ {
 	return j
 }
 
+// FromInterface reads the content from valid map[string]interface{}
+func (j *JSONQ) FromInterface(v map[string]interface{}) *JSONQ {
+	j.rootJSONContent = v
+	j.jsonContent = j.rootJSONContent
+	return j
+}
+
 // Select use for selection of the properties from query result
 func (j *JSONQ) Select(properties ...string) *JSONQ {
 	j.attributes = append(j.attributes, properties...)
