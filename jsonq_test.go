@@ -326,6 +326,60 @@ func TestJSONQ_From(t *testing.T) {
 	assertJSON(t, out, expJSON, "accessing group by data")
 }
 
+func TestJSONQ_FromInterface(t *testing.T) {
+	var v map[string]interface{}
+	err := json.Unmarshal([]byte(jsonStr), &v)
+	if err != nil {
+		t.Error(err)
+	}
+	testCases := []struct {
+		tag         string
+		query       string
+		expected    string
+		expectError bool
+	}{
+		{
+			tag:         "accessing node",
+			query:       "vendor.name",
+			expected:    `"Star Trek"`,
+			expectError: false,
+		},
+		{
+			tag:         "accessing not existed index",
+			query:       "vendor.items.[0]",
+			expected:    `{"id":1,"name":"MacBook Pro 13 inch retina","price":1350}`,
+			expectError: false,
+		},
+		{
+			tag:         "accessing not existed index",
+			query:       "vendor.items.[10]",
+			expected:    `null`,
+			expectError: false,
+		},
+		{
+			tag:         "accessing invalid index error",
+			query:       "vendor.items.[x]",
+			expectError: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		jq := New().FromInterface(v)
+		out := jq.From(tc.query).Get()
+		if tc.expectError && jq.Error() == nil {
+			t.Error("failed to catch error")
+		}
+		if !tc.expectError {
+			assertJSON(t, out, tc.expected, tc.tag)
+		}
+	}
+
+	jq := New().FromInterface(v)
+	expJSON := `[{"id":3,"name":"Sony VAIO","price":1200}]`
+	out := jq.From("vendor.items").GroupBy("price").From("1200").Get()
+	assertJSON(t, out, expJSON, "accessing group by data")
+}
+
 func TestJSONQ_Where_single_where(t *testing.T) {
 	jq := New().FromString(jsonStr).
 		From("vendor.items").
