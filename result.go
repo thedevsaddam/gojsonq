@@ -57,6 +57,10 @@ func (r *Result) As(v interface{}) error {
 			"*[]float32": "Float32Slice", "*[]float64": "Float64Slice",
 		}
 
+        if methodMap[method] == "" {
+            panic(fmt.Sprintf("The method '%v' must be part of '%v'", method, methodMap))
+        }
+
 		vv := reflect.ValueOf(r).MethodByName(methodMap[method]).Call(nil)
 		if vv != nil {
 			if vv[1].Interface() != nil {
