@@ -21,6 +21,7 @@ func TestNil(t *testing.T) {
 }
 
 func TestAs(t *testing.T) {
+	type flt float64
 	testCases := []struct {
 		tag              string
 		value            interface{}
@@ -84,6 +85,23 @@ func TestAs(t *testing.T) {
 			value: string("*nop"),
 			newExpectedValue: func() interface{} {
 				var a float64
+				return &a
+			},
+			expect: func(value, i interface{}) bool {
+				val, ok := i.(string)
+				if !ok {
+					return false
+				}
+
+				return val == (value.(string))
+			},
+			errExpect: true,
+		},
+		{
+			tag:   "custom type error check",
+			value: string("*nop"),
+			newExpectedValue: func() interface{} {
+				var a flt
 				return &a
 			},
 			expect: func(value, i interface{}) bool {

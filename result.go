@@ -57,6 +57,10 @@ func (r *Result) As(v interface{}) error {
 			"*[]float32": "Float32Slice", "*[]float64": "Float64Slice",
 		}
 
+		if methodMap[method] == "" {
+			return fmt.Errorf("gojsonq: type [%T] is not available", v)
+		}
+
 		vv := reflect.ValueOf(r).MethodByName(methodMap[method]).Call(nil)
 		if vv != nil {
 			if vv[1].Interface() != nil {

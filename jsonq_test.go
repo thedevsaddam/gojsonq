@@ -326,6 +326,24 @@ func TestJSONQ_From(t *testing.T) {
 	assertJSON(t, out, expJSON, "accessing group by data")
 }
 
+func TestJSONQ_FromInterface(t *testing.T) {
+	var v map[string]interface{}
+	err := json.Unmarshal([]byte(jsonStr), &v)
+	if err != nil {
+		t.Error(err)
+	}
+	jq := New().FromInterface(v)
+	if jq.rootJSONContent == nil || jq.jsonContent == nil {
+		t.Errorf("failed to assign value using FromInterface method")
+	}
+
+	var customType float64
+	jq = New().FromInterface(customType)
+	if jq.Error() == nil {
+		t.Errorf("failed to set error properly for FromInterface method")
+	}
+}
+
 func TestJSONQ_Where_single_where(t *testing.T) {
 	jq := New().FromString(jsonStr).
 		From("vendor.items").

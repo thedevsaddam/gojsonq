@@ -150,6 +150,18 @@ func (j *JSONQ) From(node string) *JSONQ {
 	return j
 }
 
+// FromInterface reads the content from valid map[string]interface{}
+func (j *JSONQ) FromInterface(v interface{}) *JSONQ {
+	switch data := v.(type) {
+	case []interface{}, map[string]interface{}, map[string][]interface{}:
+		j.rootJSONContent = data
+		j.jsonContent = j.rootJSONContent
+	default:
+		j.addError(fmt.Errorf("invalid type [%T]", v))
+	}
+	return j
+}
+
 // Select use for selection of the properties from query result
 func (j *JSONQ) Select(properties ...string) *JSONQ {
 	j.attributes = append(j.attributes, properties...)
