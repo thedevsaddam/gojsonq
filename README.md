@@ -88,5 +88,8 @@ Special thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiratio
 If you are interested to make the package better please send pull requests or create an issue so that others can fix.
 [Read the contribution guide here](CONTRIBUTING.md)
 
+## Special Thanks
+<a href="https://www.jetbrains.com/?from=gojsonq"><img src="jetbrains-grayscale.png" height="100" width="100" ></a>
+
 ## License
 The **gojsonq** is an open-source software licensed under the [MIT License](LICENSE.md).
