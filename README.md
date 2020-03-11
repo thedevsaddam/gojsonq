@@ -1,10 +1,10 @@
 ![gojsonq-logo](gojsonq.png)
 
 [![Build Status](https://travis-ci.org/thedevsaddam/gojsonq.svg?branch=master)](https://travis-ci.org/thedevsaddam/gojsonq)
-[![Project status](https://img.shields.io/badge/version-v2.5-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
+[![Project status](https://img.shields.io/badge/version-v2-green.svg)](https://github.com/thedevsaddam/gojsonq/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thedevsaddam/gojsonq)](https://goreportcard.com/report/github.com/thedevsaddam/gojsonq)
 [![Coverage Status](https://coveralls.io/repos/github/thedevsaddam/gojsonq/badge.svg?branch=master)](https://coveralls.io/github/thedevsaddam/gojsonq?branch=master)
-[![GoDoc](https://godoc.org/github.com/thedevsaddam/gojsonq?status.svg)](https://godoc.org/github.com/thedevsaddam/gojsonq)
+[![GoDoc](https://godoc.org/github.com/thedevsaddam/gojsonq?status.svg)](https://pkg.go.dev/github.com/thedevsaddam/gojsonq/v2)
 [![License](https://img.shields.io/dub/l/vibe-d.svg)](LICENSE.md)
 
 A simple Go package to Query over JSON Data. It provides [simple](https://github.com/thedevsaddam/gojsonq/wiki/Queries#jsonstringjson), [elegant](https://github.com/thedevsaddam/gojsonq/wiki/Queries#selectproperties) and [fast](https://github.com/thedevsaddam/gojsonq/wiki/Benchmark) [ODM](https://github.com/thedevsaddam/gojsonq/wiki/Queries#frompath) like API to access, query JSON document
@@ -13,18 +13,14 @@ A simple Go package to Query over JSON Data. It provides [simple](https://github
 
 Install the package using
 ```go
-$ go get github.com/thedevsaddam/gojsonq
-// or
-$ go get gopkg.in/thedevsaddam/gojsonq.v2
+$ go get github.com/thedevsaddam/gojsonq/v2
 ```
 
 ### Usage
 
 To use the package import it in your `*.go` code
 ```go
-import "github.com/thedevsaddam/gojsonq"
-// or
-import "gopkg.in/thedevsaddam/gojsonq.v2"
+import "github.com/thedevsaddam/gojsonq/v2"
 ```
 
 Let's see a quick example:
@@ -34,7 +30,7 @@ Let's see a quick example:
 ```go
 package main
 
-import "github.com/thedevsaddam/gojsonq"
+import gojsonq "github.com/thedevsaddam/gojsonq/v2"
 
 func main() {
 	const json = `{"name":{"first":"Tom","last":"Hanks"},"age":61}`
@@ -53,7 +49,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/thedevsaddam/gojsonq"
+	gojsonq "github.com/thedevsaddam/gojsonq/v2"
 )
 
 func main() {
