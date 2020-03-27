@@ -567,6 +567,7 @@ func (j *JSONQ) reset() *JSONQ {
 	j.offsetRecords = 0
 	j.limitRecords = 0
 	j.distinctProperty = ""
+	j.errors = make([]error, 0)
 	return j
 }
 
