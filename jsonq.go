@@ -351,8 +351,11 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 
 // processQuery makes the result
 func (j *JSONQ) processQuery() *JSONQ {
-	if aa, ok := j.jsonContent.([]interface{}); ok {
-		j.jsonContent = j.findInArray(aa)
+	switch v := j.jsonContent.(type) {
+	case []interface{}:
+		j.jsonContent = j.findInArray(v)
+	case map[string]interface{}:
+		j.jsonContent = j.findInMap(v)
 	}
 	return j
 }
