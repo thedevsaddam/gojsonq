@@ -46,6 +46,7 @@ type JSONQ struct {
 	jsonContent      interface{}          // copy of original decoded json data for further processing
 	queryIndex       int                  // contains number of orWhere query call
 	queries          [][]query            // nested queries
+	isQueriesHit     bool                 // is queries hit a result
 	attributes       []string             // select attributes that will be available in final resuls
 	offsetRecords    int                  // number of records that will be skipped in final result
 	limitRecords     int                  // number of records that will be available in final result
@@ -306,20 +307,29 @@ func (j *JSONQ) WhereLenNotEqual(key string, val interface{}) *JSONQ {
 
 // findInArray traverses through a list and returns the value list.
 // This helps to process Where/OrWhere queries
-func (j *JSONQ) findInArray(aa []interface{}) []interface{} {
-	result := make([]interface{}, 0)
+func (j *JSONQ) findInArray(aa []interface{}) (isHit bool, result []interface{}) {
+	result = make([]interface{}, 0)
+	if len(aa) == 0 {
+		return
+	}
+
 	for _, a := range aa {
 		if m, ok := a.(map[string]interface{}); ok {
-			result = append(result, j.findInMap(m)...)
+			mapIsHit, mapFindResult := j.findInMap(m)
+			if !mapIsHit {
+				return
+			}
+			result = append(result, mapFindResult...)
 		}
 	}
-	return result
+	isHit = true
+	return
 }
 
 // findInMap traverses through a map and returns the matched value list.
 // This helps to process Where/OrWhere queries
-func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
-	result := make([]interface{}, 0)
+func (j *JSONQ) findInMap(vm map[string]interface{}) (isHit bool, result []interface{}) {
+	result = make([]interface{}, 0)
 	orPassed := false
 	for _, qList := range j.queries {
 		andPassed := true
@@ -327,7 +337,7 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 			cf, ok := j.queryMap[q.operator]
 			if !ok {
 				j.addError(fmt.Errorf("invalid operator %s", q.operator))
-				return result
+				return
 			}
 			nv, errnv := getNestedValue(vm, q.key, j.option.separator)
 			if errnv != nil {
@@ -344,18 +354,19 @@ func (j *JSONQ) findInMap(vm map[string]interface{}) []interface{} {
 		orPassed = orPassed || andPassed
 	}
 	if orPassed {
+		isHit = true
 		result = append(result, vm)
 	}
-	return result
+	return
 }
 
 // processQuery makes the result
 func (j *JSONQ) processQuery() *JSONQ {
 	switch v := j.jsonContent.(type) {
 	case []interface{}:
-		j.jsonContent = j.findInArray(v)
+		j.isQueriesHit, j.jsonContent = j.findInArray(v)
 	case map[string]interface{}:
-		j.jsonContent = j.findInMap(v)
+		j.isQueriesHit, j.jsonContent = j.findInMap(v)
 	}
 	return j
 }
@@ -598,6 +609,11 @@ func (j *JSONQ) GetR() (*Result, error) {
 		return nil, err
 	}
 	return NewResult(v), nil
+}
+
+// IsHit return the query result is hit the target, should call it after Get or GetR
+func (j *JSONQ) IsHit() bool {
+	return j.isQueriesHit
 }
 
 // First returns the first element of a list
