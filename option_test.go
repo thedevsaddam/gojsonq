@@ -60,3 +60,24 @@ func TestSetSeparator_with_nil_expecting_an_error(t *testing.T) {
 		t.Error("failed to catch nil in SetSeparator")
 	}
 }
+
+func TestWithDefaults(t *testing.T) {
+	tests := []struct {
+		name      string
+		defaults  map[string]interface{}
+		wantError bool
+	}{
+		{name: "Nil defaults", wantError: true, defaults: nil},
+		{name: "Empty defaults", wantError: false, defaults: map[string]interface{}{}},
+		{name: "with defaults value", wantError: false, defaults: map[string]interface{}{"1": 1}},
+		{name: "with defaults array", wantError: false, defaults: map[string]interface{}{"1": []int{1, 2, 3}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			jq := New(WithDefaults(tt.defaults))
+			if err := jq.Error(); err != nil && !tt.wantError {
+				t.Errorf("WithDefaults() = Expected Error but got  %v", err)
+			}
+		})
+	}
+}
