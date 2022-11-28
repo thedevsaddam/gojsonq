@@ -13,7 +13,7 @@ const errMessage = "gojsonq: wrong method call for %v"
 var (
 	ErrExpectsPointer = fmt.Errorf("gojsonq: failed to unmarshal, expects pointer")
 	ErrImmutable      = fmt.Errorf("gojsonq: failed to unmarshal, target is not mutable")
-	ErrTypeMismatch   = fmt.Errorf("gojsonq: failed to unmarshal, target type misatched")
+	ErrTypeMismatch   = fmt.Errorf("gojsonq: failed to unmarshal, target type mismatched")
 )
 
 // NewResult return an instance of Result

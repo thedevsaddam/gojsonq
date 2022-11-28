@@ -6,6 +6,7 @@ import "errors"
 type option struct {
 	decoder   Decoder
 	separator string
+	defaults  map[string]interface{}
 }
 
 // OptionFunc represents a contract for option func, it basically set options to jsonq instance options
@@ -41,6 +42,18 @@ func WithSeparator(s string) OptionFunc {
 			return errors.New("separator can not be empty")
 		}
 		j.option.separator = s
+		return nil
+	}
+}
+
+// WithDefaults set all the default values for the attributes/node
+func WithDefaults(defaults map[string]interface{}) OptionFunc {
+	return func(j *JSONQ) error {
+		if defaults == nil {
+			return errors.New("defaults can not be empty")
+		}
+
+		j.option.defaults = defaults
 		return nil
 	}
 }
